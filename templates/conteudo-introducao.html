@@ -5,31 +5,36 @@
 {% block content_title %}Módulo 1: Introdução ao Pensamento Computacional{% endblock %}
 
 {% block content %}
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+    <!-- 1. Video Aula -->
+    <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto - Módulo 1
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: O que é Pensamento Computacional?
         </h2>
-        <p class="text-gray-700 mb-4">Esta é a primeira parte do seu Projeto Educacional. Sua resposta será armazenada para compor o projeto final.</p>
-        <form id="project-idea-form-m1">
-            <label for="project_idea_m1" class="block text-gray-800 font-medium mb-2">
-                <strong>1. Projeto Educacional, Objetivo Geral, Público-Alvo & Justificativa:</strong> 
-                Apresente o nome do seu projeto, defina o objetivo geral, o público-alvo (nível/disciplina) e justifique a relevância do uso do Pensamento Computacional para essa proposta.
-            </label>
-            <textarea id="project_idea_m1" name="project_idea_m1" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Nome do Projeto: Jornada de Reciclagem. Objetivo: Criar um algoritmo para otimizar a coleta seletiva na escola. Público-Alvo: Alunos do 5º ano. Justificativa: Utiliza PC (todos os pilares) para resolver um problema real e interdisciplinar de forma lógica."></textarea>
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar 1ª Parte do Projeto</button>
-        </form>
+        <div class="video-container">
+            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Assista e descubra como o PC pode transformar sua prática pedagógica.</p>
     </div>
-{% endblock %}
 
-{% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='introducao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
+    <!-- 2. Material de Apoio -->
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
+        </h2>
+        <p class="text-gray-700 mb-4">Baixe o nosso guia rápido para aprofundar os conceitos básicos deste módulo.</p>
+        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-download mr-2"></i> Baixar Guia de Introdução
+        </a>
     </div>
-{% endblock %}            
+
+    <!-- 3. Exercícios Práticos (Múltipla Escolha com Feedback) -->
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            
             <!-- Pergunta 1 (CESGRANRIO) -->
             <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>

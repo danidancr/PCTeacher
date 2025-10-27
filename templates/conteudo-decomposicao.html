@@ -5,16 +5,19 @@
 {% block content_title %}Módulo 2: A Arte da Decomposição{% endblock %}
 
 {% block content %}
+    <!-- 1. Video Aula -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Quebrando o Problema em Partes
         </h2>
         <div class="video-container">
+            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a simplificar qualquer desafio dividindo-o em subtarefas gerenciáveis.</p>
     </div>
 
+    <!-- 2. Material de Apoio -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
@@ -24,40 +27,14 @@
             <i class="fas fa-download mr-2"></i> Baixar Ferramentas de Decomposição
         </a>
     </div>
-    
+   
+    <!-- 3. Exercícios Práticos (Múltipla Escolha com Feedback) -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
         </h2>
         <div class="space-y-6">
-            <p class="text-gray-500">Insira aqui as questões de múltipla escolha sobre o conceito de Decomposição.</p>
-            </div>
-    </div>
-
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-tools mr-3"></i> Questão de Projeto - Módulo 2: Decomposição
-        </h2>
-        <p class="text-gray-700 mb-4">Desenvolva a etapa de Decomposição do seu projeto. Lembre-se que um bom projeto divide o problema em partes menores.</p>
-        <form id="project-idea-form-m2">
-            <label for="project_idea_m2" class="block text-gray-800 font-medium mb-2">
-                <strong>2. Decomposição:</strong> Descreva detalhadamente como o problema principal ou a atividade será dividida em partes menores e mais gerenciáveis (subtarefas) para os seus alunos. Liste os 3 a 5 principais passos ou componentes.
-            </label>
-            <textarea id="project_idea_m2" name="project_idea_m2" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Para o projeto 'Jornada de Reciclagem': 1. Mapear os pontos de descarte. 2. Classificar os materiais coletados. 3. Criar o fluxograma de descarte. 4. Avaliar o tempo de coleta por ponto."></textarea>
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar 2ª Parte do Projeto</button>
-        </form>
-    </div>
-{% endblock %}
-
-{% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='decomposicao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
-    </div>
-{% endblock %}            
+            
             <!-- Pergunta 1 (CESGRANRIO) -->
             <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>
