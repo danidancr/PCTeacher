@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>PC Teacher - {% block title %}{% endblock %}</title>
+
+    {# --- IMPORTAÇÕES (Tailwind, Fontes, Ícones) --- #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/modulos.css') }}">
 
+    {# CDN do Tailwind CSS 3.x - Uso de Script Config #}
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {# Font Awesome v6 - Sólido (fas) #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script>
         tailwind.config = {
@@ -24,23 +28,37 @@
                     },
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
-                    }
+                    },
+                    // Adiciona transições suaves por padrão
+                    transitionProperty: {
+                        'colors': 'background-color, border-color, color, fill, stroke',
+                        'shadow': 'box-shadow',
+                        'transform': 'transform',
+                    },
                 }
             }
         }
     </script>
     
     <style>
+        /* --- DEFINIÇÕES DE VARIÁVEIS CSS --- */
+        :root {
+            --primary-indigo: #4f46e5;
+            --secondary-green: #10b981;
+            --dark-gray: #1f2937;
+        }
+
         /* --- ESTILOS GERAIS E DO CORPO DA PÁGINA --- */
         
         *, ::before, ::after {
             box-sizing: border-box;
         }
-        /* Elimina a barra de rolagem horizontal e define a fonte Poppins */
+        
         html, body {
             overflow-x: hidden;
             width: 100%;
             font-family: 'Poppins', sans-serif;
+            min-height: 100vh; /* Garante que o corpo preencha a tela */
         }
         
         /* IMPEDE O OVERFLOW HORIZONTAL NO CONTEÚDO PRINCIPAL (FIX CRÍTICO) */
@@ -66,7 +84,12 @@
             border-radius: 0.75rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             margin-bottom: 1.5rem;
-            border-left: 5px solid #4f46e5; /* Detalhe lateral em indigo */
+            border-left: 5px solid var(--primary-indigo); /* Detalhe lateral em indigo */
+            transition: box-shadow 0.3s ease;
+        }
+
+        .content-section:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
         }
         
         /* Títulos Principais */
@@ -97,72 +120,79 @@
 
         /* Botão principal de finalização */
         .btn-finish {
-            background-color: #10b981; /* secondary-green */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
+            /* Uso de @apply para manter classes Tailwind nos estilos customizados */
+            @apply bg-secondary-green text-white py-3 px-6 rounded-lg font-semibold shadow-lg transition duration-200 ease-in-out;
         }
         
         .btn-finish:hover {
-            background-color: #059669; /* green-700 */
-            transform: translateY(-1px);
+            @apply bg-green-700 transform -translate-y-0.5 shadow-xl;
         }
 
         /* Estilo para as opções do quiz */
         .quiz-option {
-            transition: all 0.1s ease-in-out;
-            border: 1px solid #d1d5db; /* gray-300 */
-            cursor: pointer;
-            padding: 1rem;
-            border-radius: 0.5rem;
+            /* Simplificado com classes Tailwind para transição, borda e fundo */
+            @apply transition-colors duration-150 ease-in-out border border-gray-300 cursor-pointer p-4 rounded-lg flex items-center justify-between;
         }
         
         .quiz-option:hover:not(.pointer-events-none) {
-            background-color: #f3f4f6; /* gray-100 */
+            @apply bg-gray-50 shadow-sm;
+        }
+
+        /* Indicador de Status do Quiz (Adicionado) */
+        .quiz-status-icon {
+            @apply text-lg transition-opacity duration-300 ml-3;
+            opacity: 0; /* Inicia oculto */
+        }
+        .quiz-status-icon.visible {
+            opacity: 1; /* Torna visível após o clique */
         }
 
         /* Layout Responsivo para a Sidebar (Mobile/Tablet) */
         @media (max-width: 1023px) {
             .sidebar {
+                /* Sidebar fixada no topo/abaixo da nav-bar em mobile (se existir) */
                 width: 100%;
                 height: auto;
                 position: relative;
                 padding: 1rem 0;
+                /* Corrigindo display para bloco em mobile, mantendo flex no logo */
+                display: block; 
             }
             .main-content {
                 margin-left: 0;
                 padding-top: 1rem;
             }
-            /* Garantindo que a navegação seja horizontal em mobile */
+            
+            /* Garante que a navegação seja horizontal e flexível em mobile */
             .sidebar-nav {
-                flex-direction: row; 
-                flex-wrap: wrap;
-                justify-content: space-around;
-                border-top: 1px solid #374151;
-                padding-top: 1rem;
+                @apply flex flex-row flex-wrap justify-around border-t border-gray-700 pt-3 px-1;
             }
             .sidebar-item {
-                padding: 0.5rem 0.5rem;
-                margin: 0.25rem;
+                @apply flex-grow text-center py-2 px-1 text-sm rounded-md transition-all duration-150;
                 flex-basis: auto; 
-                justify-content: center;
             }
+            .sidebar-item i {
+                @apply block text-lg mb-1; /* Ícone acima do texto */
+            }
+
             .sidebar-footer {
-                display: none;
+                display: none; /* Oculta a opção Sair no footer em mobile */
             }
-            /* Oculta o texto do logo em mobile para economizar espaço */
-            .sidebar-header .title {
-                display: none;
-            }
-            /* Esconde o indicador de progresso em mobile para manter a sidebar limpa */
+            
+            /* Oculta o texto do logo e indicadores em mobile para economizar espaço */
+            .sidebar-header .title,
             .sidebar-progress-indicator {
-                display: none; 
+                display: none;
+            }
+
+            .sidebar-header {
+                /* Centraliza ou ajusta o logo em mobile */
+                @apply justify-center; 
             }
         }
     </style>
     
+    {# --- Importações do Firebase Client SDK (Versão 9 modular é preferível, mas mantendo a v8 por compatibilidade) --- #}
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -170,67 +200,67 @@
 </head>
 <body class="bg-light-bg">
 
-    <div class="min-h-screen"> 
+    <div class="min-h-screen lg:flex"> 
         
-        <aside class="sidebar w-full lg:w-72" id="sidebar">
-            <div class="sidebar-header">
-                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando"> 
-                <span class="title">PC Teacher</span>
+        {# --- SIDEBAR --- #}
+        <aside class="sidebar bg-dark-gray text-white w-full lg:w-72 flex flex-col fixed h-16 lg:h-full lg:static z-10 shadow-lg" id="sidebar">
+            <div class="sidebar-header flex items-center justify-start p-4 border-b border-gray-700 h-16">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando" class="h-8 w-8 mr-2 rounded-full bg-white p-1"> 
+                <span class="title text-xl font-bold">PC Teacher</span>
             </div>
             
-            {# ========================================================= #}
-            {# NOVO INDICADOR DE PROGRESSO GERAL NA SIDEBAR #}
-            {# A variável 'progresso' era buscada aqui, mas agora usamos 'progresso_data' #}
-            {# O {% if progresso_data %} garante que não haverá erro UndefinedError #}
-            {% if progresso_data and user %}
-            <div class="sidebar-progress-indicator p-4 text-white">
-                <p class="text-sm font-semibold mb-1">Olá, {{ user.nome.split(' ')[0] }}!</p>
-                <p class="text-xs text-gray-300 mb-2">Progresso Geral:</p>
-                <div class="w-full bg-gray-600 rounded-full h-2.5">
-                    <div class="bg-secondary-green h-2.5 rounded-full" 
-                        style="width: {{ progresso_data.overall_percent }}%">
+            <div class="flex flex-col flex-grow overflow-y-auto lg:p-0">
+                
+                {# ========================================================= #}
+                {# INDICADOR DE PROGRESSO GERAL #}
+                {% if progresso_data and user %}
+                <div class="sidebar-progress-indicator p-4 text-white">
+                    <p class="text-sm font-semibold mb-1 truncate">Olá, {{ user.nome.split(' ')[0] }}! 👋</p>
+                    <p class="text-xs text-gray-300 mb-2">Progresso Geral:</p>
+                    <div class="w-full bg-gray-600 rounded-full h-2.5">
+                        <div class="bg-secondary-green h-2.5 rounded-full transition-all duration-700 ease-out" 
+                            style="width: {{ progresso_data.overall_percent }}%">
+                        </div>
                     </div>
+                    <p class="text-xs mt-1 text-gray-300 font-bold text-right">
+                        {{ progresso_data.overall_percent }}% Concluído
+                    </p>
                 </div>
-                <p class="text-xs mt-1 text-gray-300 font-bold text-right">
-                    {{ progresso_data.overall_percent }}%
-                </p>
-            </div>
-            {% endif %}
-            {# ========================================================= #}
+                {% endif %}
+                {# ========================================================= #}
 
-            <nav class="sidebar-nav">
-                <a href="{{ url_for('perfil') }}" class="sidebar-item">
-                    <i class="fas fa-user-circle"></i> Meu Perfil
-                </a>
-                <a href="{{ url_for('modulos') }}" class="sidebar-item active">
-                    <i class="fas fa-book"></i> Módulos
-                </a>
-                <a href="{{ url_for('progresso') }}" class="sidebar-item">
-                    <i class="fas fa-chart-line"></i> Meu Progresso
-                </a>
-                <a href="{{ url_for('certificado') }}" class="sidebar-item">
-                    <i class="fas fa-certificate"></i> Certificado
-                </a>
-            </nav>
+                <nav class="sidebar-nav flex flex-col space-y-1 p-4 flex-grow">
+                    <a href="{{ url_for('perfil') }}" class="sidebar-item flex items-center p-3 text-gray-300 hover:bg-gray-700 rounded-lg">
+                        <i class="fas fa-user-circle w-6"></i> <span class="lg:inline">Meu Perfil</span>
+                    </a>
+                    <a href="{{ url_for('modulos') }}" class="sidebar-item active flex items-center p-3 text-white bg-primary-indigo/80 hover:bg-primary-indigo rounded-lg font-medium">
+                        <i class="fas fa-book w-6"></i> <span class="lg:inline">Módulos</span>
+                    </a>
+                    <a href="{{ url_for('progresso') }}" class="sidebar-item flex items-center p-3 text-gray-300 hover:bg-gray-700 rounded-lg">
+                        <i class="fas fa-chart-line w-6"></i> <span class="lg:inline">Meu Progresso</span>
+                    </a>
+                    <a href="{{ url_for('certificado') }}" class="sidebar-item flex items-center p-3 text-gray-300 hover:bg-gray-700 rounded-lg">
+                        <i class="fas fa-certificate w-6"></i> <span class="lg:inline">Certificado</span>
+                    </a>
+                </nav>
+            </div>
             
-            <a href="{{ url_for('logout') }}" class="sidebar-footer">
-                <i class="fas fa-sign-out-alt"></i> Sair
+            <a href="{{ url_for('logout') }}" class="sidebar-footer flex items-center justify-center p-4 border-t border-gray-700 hover:bg-red-700 transition duration-150 text-white font-semibold">
+                <i class="fas fa-sign-out-alt mr-2"></i> Sair
             </a>
         </aside>
 
-        <main class="main-content lg:ml-72 p-4 lg:p-8 flex-grow w-full space-y-6">
+        {# --- CONTEÚDO PRINCIPAL --- #}
+        <main class="main-content lg:ml-72 p-4 lg:p-8 flex-grow w-full space-y-6 pt-20 lg:pt-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">{% block content_title %}{% endblock %}</h1>
             
+            {# --- FLASH MESSAGES --- #}
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <div class="space-y-2">
                     {% for category, message in messages %}
-                        <div class="p-3 rounded-lg font-medium 
-                            {% if category == 'success' %}bg-secondary-green/10 text-secondary-green border border-secondary-green{% endif %}
-                            {% if category == 'danger' %}bg-red-100 text-red-600 border border-red-400{% endif %}
-                            {% if category == 'warning' %}bg-yellow-100 text-yellow-600 border border-yellow-400{% endif %}
-                            {% if category == 'info' %}bg-blue-100 text-blue-600 border border-blue-400{% endif %}
-                        " role="alert">
+                        {% set bg_class = {'success': 'bg-secondary-green/10 text-secondary-green border-secondary-green', 'danger': 'bg-red-100 text-red-600 border-red-400', 'warning': 'bg-yellow-100 text-yellow-600 border-yellow-400', 'info': 'bg-blue-100 text-blue-600 border-blue-400'}.get(category, 'bg-gray-100 text-gray-800 border-gray-400') %}
+                        <div class="p-3 rounded-lg font-medium border-l-4 {{ bg_class }}" role="alert">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -238,58 +268,64 @@
                 {% endif %}
             {% endwith %}
 
+            {# --- BLOCKS DE CONTEÚDO --- #}
             {% block content %}{% endblock %}
             
+            {# --- BOTÃO DE FINALIZAÇÃO (Ex: Quiz, Aula) --- #}
             {% block finish_button %}{% endblock %}
 
         </main>
     </div>
     
+    {# --- SCRIPTS DE INICIALIZAÇÃO E LÓGICA FRONT-END --- #}
     <script>
-        // Variáveis injetadas pelo Flask (ver app.py)
-        // CORREÇÃO CRÍTICA APLICADA: Usamos |default({}) para rotas públicas e |tojson | safe
+        // Variáveis injetadas pelo Flask (usamos const)
+        // Correção aplicada: Usamos |default({}) para rotas públicas e |tojson | safe
         // para garantir que a saída seja um objeto JS (ou null) válido.
         const FIREBASE_CONFIG = {{ __firebase_config | default({}) | tojson | safe }};
         const INITIAL_AUTH_TOKEN = '{{ __initial_auth_token | default('') }}';
         const APP_ID = '{{ __app_id | default('prod') }}';
 
-        // Variável global para saber se o Firebase está pronto
         let isFirebaseReady = false;
         
-        // Verifica se há configurações do Firebase e se a inicialização é necessária
-        // Usamos FIREBASE_CONFIG && FIREBASE_CONFIG !== null para verificar o valor
-        if (FIREBASE_CONFIG && FIREBASE_CONFIG !== null && Object.keys(FIREBASE_CONFIG).length > 0 && !firebase.apps.length) {
+        const hasFirebaseConfig = FIREBASE_CONFIG && Object.keys(FIREBASE_CONFIG).length > 0;
+
+        if (hasFirebaseConfig && !firebase.apps.length) {
             try {
                 // 1. Inicializa o Firebase Client
                 firebase.initializeApp(FIREBASE_CONFIG);
                 console.log("Firebase Client inicializado com sucesso.");
 
-                // 2. Autentica o usuário com o token customizado
+                // 2. Autentica o usuário com o token customizado (promessa)
                 firebase.auth().signInWithCustomToken(INITIAL_AUTH_TOKEN)
                     .then((userCredential) => {
                         console.log("Usuário autenticado no Firebase Client.");
                         isFirebaseReady = true;
                         
-                        // Opcional: Disparar um evento se outros scripts precisarem saber que a autenticação terminou
-                        const authEvent = new CustomEvent('firebaseAuthReady', { detail: { userId: userCredential.user.uid, appId: APP_ID } });
+                        // Dispara um evento customizado
+                        const authEvent = new CustomEvent('firebaseAuthReady', { 
+                            detail: { 
+                                userId: userCredential.user.uid, 
+                                appId: APP_ID 
+                            } 
+                        });
                         document.dispatchEvent(authEvent);
-
                     })
                     .catch((error) => {
                         console.error("Erro na autenticação Firebase Client:", error);
-                        // AVISO: Se a autenticação falhar, o salvamento não funcionará.
                     });
 
             } catch (e) {
                 console.error("Erro CRÍTICO ao iniciar o Firebase:", e);
             }
-        } else if (FIREBASE_CONFIG === null || Object.keys(FIREBASE_CONFIG).length === 0) {
-             console.warn("AVISO: Variáveis de configuração do Firebase (FIREBASE_CLIENT_CONFIG) não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
+        } else if (!hasFirebaseConfig) {
+             console.warn("AVISO: Variáveis de configuração do Firebase não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
         }
         
         // =================================================================
-        // Lógica do Quiz (Função checkAnswer existente, apenas movida para baixo)
+        // Lógica do Quiz
         // =================================================================
+        
         /**
          * Verifica a resposta do quiz, aplica estilos e exibe o feedback.
          * @param {string} questionId - ID da div que contém a pergunta (ex: 'q-mod0-1').
@@ -301,43 +337,51 @@
             const questionElement = document.getElementById(questionId);
             const options = questionElement.querySelectorAll('.quiz-option');
             const feedbackContainer = questionElement.querySelector('.feedback-message');
+            const statusIcon = selectedOption.querySelector('.quiz-status-icon');
             const isCorrect = isCorrectStr === 'true';
 
-            // 1. Desabilita todas as opções para evitar cliques duplicados
+            // 1. Desabilita todas as opções
             options.forEach(option => {
                 option.classList.add('pointer-events-none', 'opacity-80');
-                option.classList.remove('cursor-pointer', 'hover:bg-gray-100');
+                option.classList.remove('cursor-pointer', 'hover:bg-gray-50');
             });
             
-            // 2. Aplica o estilo de feedback
+            // 2. Aplica o estilo de feedback e o ícone de status
             if (isCorrect) {
-                selectedOption.classList.add('bg-green-100', 'border-green-500', 'shadow-md');
+                selectedOption.classList.add('bg-green-100', 'border-green-500', 'shadow-md', 'scale-105');
+                if (statusIcon) {
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle text-secondary-green"></i>';
+                    statusIcon.classList.add('visible');
+                }
             } else {
                 selectedOption.classList.add('bg-red-100', 'border-red-500', 'shadow-md');
+                 if (statusIcon) {
+                    statusIcon.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    statusIcon.classList.add('visible');
+                }
                 
-                // Destaca a resposta correta se a opção selecionada for incorreta
+                // Destaca a resposta correta
                 const correctAnswer = questionElement.querySelector('.quiz-option[data-correct="true"]');
                 if (correctAnswer) {
-                    // Remove o hover/fundo padrão e aplica o destaque verde
-                    correctAnswer.classList.remove('bg-gray-100', 'bg-red-100', 'opacity-80');
-                    correctAnswer.classList.add('bg-green-200', 'border-green-500', 'shadow-md');
+                    correctAnswer.classList.remove('opacity-80');
+                    correctAnswer.classList.add('bg-green-200', 'border-green-500', 'shadow-md', 'font-medium');
                 }
             }
             
             // 3. Exibe o feedback/racional
-            const icon = isCorrect ? '<i class="fas fa-check-circle mr-2"></i>' : '<i class="fas fa-times-circle mr-2"></i>';
-            const statusClass = isCorrect ? 'text-secondary-green border-green-500' : 'text-red-500 border-red-500';
+            const icon = isCorrect ? '<i class="fas fa-lightbulb mr-2 text-secondary-green"></i>' : '<i class="fas fa-exclamation-triangle mr-2 text-red-500"></i>';
+            const statusClass = isCorrect ? 'border-secondary-green' : 'border-red-500';
 
             feedbackContainer.innerHTML = `
-                <p class="font-semibold ${statusClass} flex items-center">
-                    ${icon} ${isCorrect ? 'Correto!' : 'Incorreto.'}
+                <p class="font-semibold text-gray-800 flex items-center mb-1">
+                    ${icon} Racional da Resposta
                 </p>
                 <p class="mt-2 text-gray-700">${rationale}</p>
             `;
             feedbackContainer.classList.remove('hidden');
-            feedbackContainer.classList.add('border-l-4', 'p-3', 'bg-white', 'shadow-inner');
+            feedbackContainer.classList.add('border-l-4', 'p-4', 'bg-white', 'shadow-inner', statusClass);
             
-            // 4. Rola para o feedback para garantir visibilidade em telas pequenas
+            // 4. Rola para o feedback para garantir visibilidade
             feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     </script>
