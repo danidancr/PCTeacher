@@ -5,260 +5,122 @@
 {% block content_title %}Módulo 5: Algoritmos - O Passo a Passo Lógico{% endblock %}
 
 {% block content %}
-    <!-- 1. Video Aula -->
-    <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-video mr-3"></i> Vídeo Aula: Sequência de Ações
-        </h2>
-        <div class="video-container">
-            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-500 mt-4">Crie instruções claras e organizadas para garantir resultados previsíveis e replicáveis.</p>
-    </div>
+        <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Sequência de Ações
+        </h2>
+        <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Crie instruções claras e organizadas para garantir resultados previsíveis e replicáveis.</p>
+    </div>
 
-    <!-- 2. Material de Apoio -->
-    <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
-        </h2>
-        <p class="text-gray-700 mb-4">Exemplos de fluxogramas e pseudocódigos aplicados a processos educacionais.</p>
-        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-download mr-2"></i> Baixar Template de Fluxograma
-        </a>
-    </div>
+        <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
+        </h2>
+        <p class="text-gray-700 mb-4">Exemplos de fluxogramas e pseudocódigos aplicados a processos educacionais.</p>
+        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-download mr-2"></i> Baixar Template de Fluxograma
+        </a>
+    </div>
 
-    <!-- 3. Exercícios Práticos (Múltipla Escolha com Feedback) -->
-    <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
-        </h2>
-        <div class="space-y-6">
-            
-            <!-- Pergunta 1 (CESGRANRIO) -->
-            <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">1. Um dos desafios enfrentados pelas organizações no século XXI é a crescente complexidade dos problemas que lhes são apresentados. Uma opção para que as organizações possam ser eficientes e eficazes é a utilização do pensamento computacional, por suas características peculiares. O pensamento computacional caracteriza-se pela(o)</p>
-                <div class="space-y-2">
-                    <!-- Opção A (CORRETA - Inferida como a mais plausível conceitualmente) -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'true', '✅ Correto! O PC é uma forma de pensar, que utiliza o raciocínio recursivo e heurístico na resolução de problemas complexos, e não se limita a linguagens de programação ou a passos mecânicos.')" data-correct="true">
-                        pensamento recursivo, pelo pensamento orientado à mitigação de problemas e pelo uso do raciocínio heurístico na busca de uma solução.
-                    </div>
-                    <!-- Opção B -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. Essa alternativa reduz ou distorce o conceito; o PC é mais amplo e abrange habilidades aplicáveis além da programação, além de usar múltiplos níveis de abstração.')" data-correct="false">
-                        conceitualização, ou seja, por adotar as especificações utilizadas na codificação de um programa de computador, com base em apenas um nível de abstração, para a resolução do problema apresentado.
-                    </div>
-                    <!-- Opção C -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é um conjunto de habilidades de pensamento e não se resume à capacidade de seguir instruções de forma mecanizada.')" data-correct="false">
-                        habilidade para seguir, de forma mecanizada, as especificações explicitadas nas rotas e nos protocolos de solução para o problema apresentado.
-                    </div>
-                    <!-- Opção D -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é mais amplo do que o tratamento puramente matemático e é aplicado em diversos contextos, não apenas em questões isoladas.')" data-correct="false">
-                        isolamento das questões referentes ao problema apresentado e tratamento puramente matemático dessas questões.
-                    </div>
-                    <!-- Opção E -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é uma forma de pensar, e não envolve diretamente a utilização da forma binária de tratamento de dados pelo ser humano.')" data-correct="false">
-                        promoção, no ser humano, de um modo de pensamento similar ao de computadores, pela utilização da forma binária de tratamento de dados na resolução do problema apresentado.
-                    </div>
-                </div>
-                <!-- Feedback / Rationale -->
-                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-            
-            <!-- Pergunta 2 (IADES) -->
-            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
-                                
-                <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
+        <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            
+                        <div id="q-mod5-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. O que distingue um Algoritmo de um simples conjunto de instruções?</p>
+                <div class="space-y-2">
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Embora ajude, a utilização de cores não é uma característica definidora do algoritmo.')" data-correct="false">
+                        A forma de apresentação das ações, preferencialmente utilizando cores e caixas de texto.
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Um algoritmo deve ter um fim e dar um resultado, não apenas listar ações.')" data-correct="false">
+                        O fato de listar todas as ações possíveis que o executor pode tomar, sem necessariamente chegar a um resultado.
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'true', '✅ Correto! Um Algoritmo é uma sequência finita, bem definida e não ambígua de passos para resolver uma classe de problemas e produzir um resultado.')" data-correct="true">
+                        A garantia de que os passos são finitos, não ambíguos e produzirão um resultado esperado a partir da entrada.
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Isso se aplica mais a Abstração e Decomposição do que ao Algoritmo em si.')" data-correct="false">
+                        O foco na identificação de padrões e a simplificação do problema complexo.
+                    </div>
+                </div>
+                                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            
+                        <div id="q-mod5-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Em um sistema de correção de provas, qual estrutura algorítmica é essencial para determinar se um aluno é aprovado ou reprovado?</p>
+                <div class="space-y-2">
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O laço de repetição é usado para executar o mesmo bloco de código várias vezes (ex: somar todas as notas).')" data-correct="false">
+                        Laço de Repetição (Loop)
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'true', '✅ Correto! A estrutura condicional (SE a nota for maior que 7, ENTÃO APROVADO) é usada para tomar decisões.')" data-correct="true">
+                        Estrutura Condicional (IF/THEN/ELSE)
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O array é uma estrutura de dados, não de controle de fluxo de um algoritmo.')" data-correct="false">
+                        Variável Array
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. Sequência se refere à ordem simples; a Condicional adiciona a lógica de decisão.')" data-correct="false">
+                        Estrutura de Sequência Simples
+                    </div>
+                </div>
+                                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            
+                        <div id="q-mod5-3" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-lg mb-4 text-gray-800">3. Qual dos seguintes exemplos do cotidiano representa um Algoritmo?</p>
+                <div class="space-y-2">
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Uma lista de compras é apenas uma lista de itens (dados), e não um processo com começo, meio e fim definido.')" data-correct="false">
+                        Uma lista de compras para o supermercado.
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso é Abstração ou Modelagem, representando a essência do objeto (o Mapa), mas não a sequência de ações.')" data-correct="false">
+                        O mapa da cidade.
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'true', '✅ Correto! Uma receita culinária é um conjunto finito e ordenado de instruções que, se seguidas corretamente, levam a um resultado previsível.')" data-correct="true">
+                        Uma receita culinária com passos definidos (ingredientes, sequência de mistura, tempo de cozimento).
+                    </div>
+                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso está mais relacionado à Decomposição (estrutura de classes) e Abstração (definições).')" data-correct="false">
+                        A hierarquia de cargos em uma empresa.
+                    </div>
+                </div>
+                                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Imagem Referente à Questão 2 (IADES) -->
-                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
-                </div>
-
-                <div class="space-y-2">
-                    <!-- Opção A -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
-                        Conhecimento algébrico e estatístico
-                    </div>
-                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
-                        Reformulação do problema e abstração
-                    </div>
-                    <!-- Opção C -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
-                        Depuração e habilidade com compiladores
-                    </div>
-                    <!-- Opção D -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
-                        Habilidade com programação e pensamento matemático
-                    </div>
-                    <!-- Opção E -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
-                        Decomposição e topologia
-                    </div>
-                </div>
-                <!-- Feedback / Rationale -->
-                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-
-            <!-- Pergunta 3 -->
-            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
-                
-                <!-- Imagem Referente à Questão 2 (IADES) -->
-                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
-                </div>
-                
-                <p class="font-semibold text-lg mb-4 text-gray-800">3. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
-                <div class="space-y-2">
-                    <!-- Opção A -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
-                        Conhecimento algébrico e estatístico
-                    </div>
-                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
-                        Reformulação do problema e abstração
-                    </div>
-                    <!-- Opção C -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
-                        Depuração e habilidade com compiladores
-                    </div>
-                    <!-- Opção D -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
-                        Habilidade com programação e pensamento matemático
-                    </div>
-                    <!-- Opção E -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
-                        Decomposição e topologia
-                    </div>
-                </div>
-                <!-- Feedback / Rationale -->
-                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-
-            <!-- Pergunta 4 -->
-            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
-                
-                <!-- Imagem Referente à Questão 2 (IADES) -->
-                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
-                </div>
-                
-                <p class="font-semibold text-lg mb-4 text-gray-800">4. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
-                <div class="space-y-2">
-                    <!-- Opção A -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
-                        Conhecimento algébrico e estatístico
-                    </div>
-                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
-                        Reformulação do problema e abstração
-                    </div>
-                    <!-- Opção C -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
-                        Depuração e habilidade com compiladores
-                    </div>
-                    <!-- Opção D -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
-                        Habilidade com programação e pensamento matemático
-                    </div>
-                    <!-- Opção E -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
-                        Decomposição e topologia
-                    </div>
-                </div>
-                <!-- Feedback / Rationale -->
-                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-
-            <!-- Pergunta 5 -->
-            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
-                
-                <!-- Imagem Referente à Questão 2 (IADES) -->
-                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
-                </div>
-                
-                <p class="font-semibold text-lg mb-4 text-gray-800">5. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
-                <div class="space-y-2">
-                    <!-- Opção A -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
-                        Conhecimento algébrico e estatístico
-                    </div>
-                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
-                        Reformulação do problema e abstração
-                    </div>
-                    <!-- Opção C -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
-                        Depuração e habilidade com compiladores
-                    </div>
-                    <!-- Opção D -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
-                        Habilidade com programação e pensamento matemático
-                    </div>
-                    <!-- Opção E -->
-                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
-                        Decomposição e topologia
-                    </div>
-                </div>
-                <!-- Feedback / Rationale -->
-                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 4. Pergunta para o Projeto Final -->
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto
-        </h2>
-        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final no último módulo.</p>
-        <form id="project-idea-form">
-            <label for="project_idea_0" class="block text-gray-800 font-medium mb-2">Indique o nome do seu projeto, objetivo e quais pilares do pensamento computacional você vai aplicar no seu projeto.</label>
-            <textarea id="project_idea_0" name="project_idea_0" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva sua ideia aqui..."></textarea>
-            <!-- Adicione aqui a lógica de armazenamento (Firebase/Firestore) -->
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Ideia</button>
-        </form>
-    </div>
+        <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
+        </h2>
+        <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
+        <form id="project-idea-form-mod5">
+            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
+                        <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
-    </div>
+    <div class="mt-8 text-center">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
+            <button type="submit" class="btn-finish hover:shadow-lg">
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+            </button>
+        </form>
+    </div>
 {% endblock %}
