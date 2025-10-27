@@ -120,7 +120,7 @@
         }
         
         .quiz-option:hover:not(.pointer-events-none) {
-             background-color: #f3f4f6; /* gray-100 */
+            background-color: #f3f4f6; /* gray-100 */
         }
 
         /* Layout Responsivo para a Sidebar (Mobile/Tablet) */
@@ -162,6 +162,11 @@
             }
         }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 </head>
 <body class="bg-light-bg">
 
@@ -241,6 +246,48 @@
     </div>
     
     <script>
+        // Variáveis injetadas pelo Flask (ver app.py)
+        // O | default('{}') previne erros caso as variáveis não sejam injetadas em rotas públicas (index, login)
+        const FIREBASE_CONFIG = JSON.parse('{{ __firebase_config | default('{}') | safe }}');
+        const INITIAL_AUTH_TOKEN = '{{ __initial_auth_token | default('') }}';
+        const APP_ID = '{{ __app_id | default('prod') }}';
+
+        // Variável global para saber se o Firebase está pronto
+        let isFirebaseReady = false;
+        
+        // Verifica se há configurações do Firebase e se a inicialização é necessária
+        if (Object.keys(FIREBASE_CONFIG).length > 0 && !firebase.apps.length) {
+            try {
+                // 1. Inicializa o Firebase Client
+                firebase.initializeApp(FIREBASE_CONFIG);
+                console.log("Firebase Client inicializado com sucesso.");
+
+                // 2. Autentica o usuário com o token customizado
+                firebase.auth().signInWithCustomToken(INITIAL_AUTH_TOKEN)
+                    .then((userCredential) => {
+                        console.log("Usuário autenticado no Firebase Client.");
+                        isFirebaseReady = true;
+                        
+                        // Opcional: Disparar um evento se outros scripts precisarem saber que a autenticação terminou
+                        const authEvent = new CustomEvent('firebaseAuthReady', { detail: { userId: userCredential.user.uid, appId: APP_ID } });
+                        document.dispatchEvent(authEvent);
+
+                    })
+                    .catch((error) => {
+                        console.error("Erro na autenticação Firebase Client:", error);
+                        // AVISO: Se a autenticação falhar, o salvamento não funcionará.
+                    });
+
+            } catch (e) {
+                console.error("Erro CRÍTICO ao iniciar o Firebase:", e);
+            }
+        } else if (Object.keys(FIREBASE_CONFIG).length === 0) {
+             console.warn("AVISO: Variáveis de configuração do Firebase (FIREBASE_CLIENT_CONFIG) não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
+        }
+        
+        // =================================================================
+        // Lógica do Quiz (Função checkAnswer existente, apenas movida para baixo)
+        // =================================================================
         /**
          * Verifica a resposta do quiz, aplica estilos e exibe o feedback.
          * @param {string} questionId - ID da div que contém a pergunta (ex: 'q-mod0-1').
