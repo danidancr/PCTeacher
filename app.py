@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sua_chave_secreta_padrao_muito_longa')
 # Define o ID do App para o uso no Frontend (Módulo 6 JS/Firestore)
 # OBS: O ID do projeto (pc-teacher-6c75f) é o mais seguro, mas para o seu modelo de FS, 'prod' é suficiente.
-APP_ID_FOR_FIREBASE = os.environ.get('APP_ID_FIREBASE', 'prod') 
+APP_ID_FOR_FIREBASE = os.environ.get('APP_ID_FIREBASE', 'prod')
 
 
 # =========================================================
