@@ -176,22 +176,195 @@
 
     <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto - Fase 5: Algoritmo
         </h2>
-        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final no último módulo.</p>
-        <form id="project-idea-form">
-            <label for="project_idea_4" class="block text-gray-800 font-medium mb-2">Descreva o algoritmo principal do seu projeto. Quais são os passos sequenciais, lógicos e finitos que levam à solução ou ao resultado desejado?</label>
-            <textarea id="project_idea_4" name="project_idea_4" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva o algoritmo aqui, em passos enumerados..."></textarea>
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Ideia</button>
+        <p class="text-gray-700 mb-4">Com base na Abstração, crie a sequência de passos (algoritmo) que o seu projeto irá executar para resolver o problema definido.</p>
+
+        <div class="p-3 mb-4 bg-white rounded-lg border border-indigo-300">
+            <h3 class="font-bold text-indigo-700 mb-2">Seu Projeto (Contexto):</h3>
+            <p class="text-sm mb-1"><strong>Objetivo Geral (M1):</strong> <span id="display_objetivo_geral" class="font-normal text-gray-600 italic">Carregando...</span></p>
+            <p class="text-sm mb-1"><strong>Decomposição (M2):</strong> <span id="display_decomposicao" class="font-normal text-gray-600 italic">Carregando...</span></p>
+            <p class="text-sm mb-1"><strong>Padrões (M3):</strong> <span id="display_reconhecimento_padroes" class="font-normal text-gray-600 italic">Carregando...</span></p>
+            <p class="text-sm"><strong>Abstração (M4):</strong> <span id="display_abstracao" class="font-normal text-gray-600 italic">Carregando...</span></p>
+        </div>
+
+        <form id="project-form-5">
+            <div class="mb-4">
+                <label for="algoritmo" class="block text-gray-800 font-medium mb-2">Algoritmo: Descreva os passos sequenciais (Passo 1, Passo 2, etc.) que o seu projeto/solução deve seguir, incluindo possíveis decisões (SE/ENTÃO/SENÃO).</label>
+                <textarea id="algoritmo" name="algoritmo" rows="7" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo:
+1. INÍCIO
+2. COLETAR: Nota do Aluno.
+3. SE Nota for >= 7:
+4. ENTONCES: Exibir 'Aprovado'.
+5. SENAO: Exibir 'Estudar mais'.
+6. FIM"></textarea>
+            </div>
+            
+            <div id="project-feedback" class="mt-4 text-sm font-medium text-gray-600 hidden"></div>
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Fase 5 do Projeto</button>
         </form>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração e Inicialização do Firebase (Assegure que as variáveis globais sejam injetadas pelo backend Flask)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let db, auth, userId;
+        const PROJECT_COLLECTION = 'project_data';
+        const DOCUMENT_ID = 'main_project'; // Documento único para o projeto final
+
+        setLogLevel('Debug');
+
+        if (firebaseConfig) {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            async function authenticate() {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined') {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    userId = auth.currentUser?.uid || crypto.randomUUID();
+                    console.log("Firebase autenticado com userId:", userId);
+                    loadProjectData();
+                } catch (error) {
+                    console.error("Erro na autenticação Firebase:", error);
+                }
+            }
+            
+            authenticate();
+        } else {
+            console.error("Configuração do Firebase não encontrada.");
+        }
+
+        // --------------------------------------------------
+        // Lógica de Salvamento e Carregamento do Projeto
+        // --------------------------------------------------
+
+        function getProjectDocRef(dbInstance, uid) {
+            // Caminho: artifacts / [appId] / users / [userId] / project_data / main_project
+            return doc(dbInstance, 'artifacts', appId, 'users', uid, PROJECT_COLLECTION, DOCUMENT_ID);
+        }
+
+        async function saveProjectData(data) {
+            if (!db || !userId) {
+                console.error("Firebase ou userId não estão prontos.");
+                return;
+            }
+            const feedbackEl = document.getElementById('project-feedback');
+            try {
+                const docRef = getProjectDocRef(db, userId);
+                // Usamos merge: true para que cada módulo só atualize seus próprios campos
+                await setDoc(docRef, data, { merge: true }); 
+                feedbackEl.textContent = "✅ Projeto da Fase 5 (Algoritmo) salvo com sucesso! Você concluiu o esqueleto do seu projeto!";
+                feedbackEl.classList.remove('hidden', 'text-red-500');
+                feedbackEl.classList.add('text-green-500');
+            } catch (error) {
+                console.error("Erro ao salvar dados do projeto:", error);
+                feedbackEl.textContent = "❌ Erro ao salvar o projeto. Tente novamente.";
+                feedbackEl.classList.remove('hidden', 'text-green-500');
+                feedbackEl.classList.add('text-red-500');
+            }
+        }
+
+        async function loadProjectData() {
+            if (!db || !userId) {
+                setTimeout(loadProjectData, 500); // Tenta novamente
+                return;
+            }
+
+            try {
+                const docRef = getProjectDocRef(db, userId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const truncate = (text) => text && text.length > 100 ? text.substring(0, 100) + '...' : text;
+
+                    // 1. Carrega o campo do Módulo 5 (Algoritmo) para edição
+                    document.getElementById('algoritmo').value = data.algoritmo || '';
+                    
+                    // 2. Carrega campos dos Módulos Anteriores para visualização (contexto)
+                    document.getElementById('display_objetivo_geral').textContent = data.objetivo_geral || 'N/A (Módulo 1)';
+                    document.getElementById('display_decomposicao').textContent = truncate(data.decomposicao) || 'N/A (Módulo 2)';
+                    document.getElementById('display_reconhecimento_padroes').textContent = truncate(data.reconhecimento_padroes) || 'N/A (Módulo 3)';
+                    document.getElementById('display_abstracao').textContent = truncate(data.abstracao) || 'N/A (Módulo 4)';
+
+
+                    console.log("Dados do projeto carregados:", data);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do projeto:", error);
+            }
+        }
+
+        document.getElementById('project-form-5').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                // Salva o campo específico deste módulo
+                algoritmo: document.getElementById('algoritmo').value,
+                timestamp_m5: new Date().toISOString() // Adiciona um timestamp de salvamento
+            };
+            saveProjectData(data);
+        });
+
+        // --------------------------------------------------
+        // Lógica de Verificação do Quiz (Mantida de módulos anteriores)
+        // --------------------------------------------------
+        window.checkAnswer = function(questionId, selectedOption, isCorrect, feedbackMessage) {
+            const questionDiv = document.getElementById(questionId);
+            const feedbackEl = questionDiv.querySelector('.feedback-message');
+            const options = questionDiv.querySelectorAll('.quiz-option');
+
+            // Converte o parâmetro 'isCorrect' para booleano
+            const correct = isCorrect === 'true';
+
+            // Desabilita todas as opções
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.onclick = null; // Remove o evento de clique
+            });
+
+            // Aplica estilos e exibe feedback
+            if (correct) {
+                selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                selectedOption.classList.add('correct', 'border-green-500', 'bg-green-100');
+                feedbackEl.textContent = feedbackMessage;
+                feedbackEl.classList.remove('hidden', 'text-red-500', 'bg-red-100');
+                feedbackEl.classList.add('text-green-700', 'bg-green-100', 'p-2', 'rounded');
+            } else {
+                selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                selectedOption.classList.add('incorrect', 'border-red-500', 'bg-red-100');
+                
+                // Encontra e destaca a resposta correta
+                options.forEach(opt => {
+                    if (opt.getAttribute('data-correct') === 'true') {
+                        opt.classList.remove('bg-gray-100');
+                        opt.classList.add('correct', 'border-green-500', 'bg-green-200');
+                    }
+                });
+                
+                feedbackEl.textContent = feedbackMessage;
+                feedbackEl.classList.remove('hidden', 'text-green-500', 'bg-green-100');
+                feedbackEl.classList.add('text-red-700', 'bg-red-100', 'p-2', 'rounded');
+            }
+        };
+    </script>
 {% endblock %}
 
 {% block finish_button %}
     <div class="mt-8 text-center">
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo (Conclusão do Projeto)
             </button>
         </form>
     </div>
