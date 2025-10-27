@@ -6,7 +6,9 @@
 
     <title>PC Teacher - {% block title %}{% endblock %}</title>
 
+    {# ========================================================= #}
     {# --- IMPORTAÇÕES (Tailwind, Fontes, Ícones) --- #}
+    {# ========================================================= #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/modulos.css') }}">
 
@@ -17,14 +19,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script>
+        // --- Configuração Customizada do Tailwind CSS ---
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary-indigo': '#4f46e5', // Cor principal (ativo/botões)
-                        'secondary-green': '#10b981', // Cor de sucesso/progresso
-                        'dark-gray': '#1f2937', // Cor da sidebar
-                        'light-bg': '#f7f9fc',
+                        'primary-indigo': '#4f46e5',    // Cor principal (ativo/botões)
+                        'secondary-green': '#10b981',   // Cor de sucesso/progresso
+                        'dark-gray': '#1f2937',         // Cor da sidebar
+                        'light-bg': '#f7f9fc',          // Fundo principal
                     },
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
@@ -41,15 +44,17 @@
     </script>
     
     <style>
-        /* --- DEFINIÇÕES DE VARIÁVEIS CSS --- */
+        /* ========================================================= */
+        /* --- ESTILOS GERAIS --- */
+        /* ========================================================= */
+        
+        /* DEFINIÇÕES DE VARIÁVEIS CSS */
         :root {
             --primary-indigo: #4f46e5;
             --secondary-green: #10b981;
             --dark-gray: #1f2937;
         }
 
-        /* --- ESTILOS GERAIS E DO CORPO DA PÁGINA --- */
-        
         *, ::before, ::after {
             box-sizing: border-box;
         }
@@ -69,10 +74,10 @@
             min-height: calc(100vh - 4rem); 
         }
 
-        /* FIX PARA ALINHAMENTO LATERAL EM DESKTOP */
+        /* FIX PARA ALINHAMENTO LATERAL EM DESKTOP (Sidebar 18rem) */
         @media (min-width: 1024px) {
             .main-content {
-                /* Garante que o main use APENAS a largura restante (100vw - 18rem da sidebar) */
+                /* Garante que o main use APENAS a largura restante */
                 max-width: calc(100vw - 18rem); 
             }
         }
@@ -98,7 +103,9 @@
             padding-bottom: 0.5rem;
         }
 
+        /* ========================================================= */
         /* --- ESTILOS DE COMPONENTES --- */
+        /* ========================================================= */
         
         .video-container {
             position: relative;
@@ -147,10 +154,12 @@
             opacity: 1; /* Torna visível após o clique */
         }
 
-        /* Layout Responsivo para a Sidebar (Mobile/Tablet) */
+        /* ========================================================= */
+        /* --- LAYOUT RESPONSIVO (MOBILE/TABLET) --- */
+        /* ========================================================= */
         @media (max-width: 1023px) {
             .sidebar {
-                /* Sidebar fixada no topo/abaixo da nav-bar em mobile (se existir) */
+                /* Sidebar fixada no topo/abaixo da nav-bar em mobile (h-16) */
                 width: 100%;
                 height: auto;
                 position: relative;
@@ -189,10 +198,17 @@
                 /* Centraliza ou ajusta o logo em mobile */
                 @apply justify-center; 
             }
+            
+            /* Ajusta o padding-top do main-content para a altura da sidebar fixada em mobile */
+            .main-content {
+                padding-top: 5rem; /* Ajuste para a altura de h-16 (4rem) + padding */
+            }
         }
     </style>
     
-    {# --- Importações do Firebase Client SDK (Versão 9 modular é preferível, mas mantendo a v8 por compatibilidade) --- #}
+    {# ========================================================= #}
+    {# --- Importações do Firebase Client SDK (v8) --- #}
+    {# ========================================================= #}
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -202,8 +218,11 @@
 
     <div class="min-h-screen lg:flex"> 
         
+        {# ========================================================= #}
         {# --- SIDEBAR --- #}
+        {# ========================================================= #}
         <aside class="sidebar bg-dark-gray text-white w-full lg:w-72 flex flex-col fixed h-16 lg:h-full lg:static z-10 shadow-lg" id="sidebar">
+            
             <div class="sidebar-header flex items-center justify-start p-4 border-b border-gray-700 h-16">
                 <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando" class="h-8 w-8 mr-2 rounded-full bg-white p-1"> 
                 <span class="title text-xl font-bold">PC Teacher</span>
@@ -211,7 +230,6 @@
             
             <div class="flex flex-col flex-grow overflow-y-auto lg:p-0">
                 
-                {# ========================================================= #}
                 {# INDICADOR DE PROGRESSO GERAL #}
                 {% if progresso_data and user %}
                 <div class="sidebar-progress-indicator p-4 text-white">
@@ -227,7 +245,6 @@
                     </p>
                 </div>
                 {% endif %}
-                {# ========================================================= #}
 
                 <nav class="sidebar-nav flex flex-col space-y-1 p-4 flex-grow">
                     <a href="{{ url_for('perfil') }}" class="sidebar-item flex items-center p-3 text-gray-300 hover:bg-gray-700 rounded-lg">
@@ -250,7 +267,9 @@
             </a>
         </aside>
 
+        {# ========================================================= #}
         {# --- CONTEÚDO PRINCIPAL --- #}
+        {# ========================================================= #}
         <main class="main-content lg:ml-72 p-4 lg:p-8 flex-grow w-full space-y-6 pt-20 lg:pt-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">{% block content_title %}{% endblock %}</h1>
             
@@ -277,7 +296,9 @@
         </main>
     </div>
     
+    {# ========================================================= #}
     {# --- SCRIPTS DE INICIALIZAÇÃO E LÓGICA FRONT-END --- #}
+    {# ========================================================= #}
     <script>
         // Variáveis injetadas pelo Flask (usamos const)
         // Correção aplicada: Usamos |default({}) para rotas públicas e |tojson | safe
@@ -319,7 +340,7 @@
                 console.error("Erro CRÍTICO ao iniciar o Firebase:", e);
             }
         } else if (!hasFirebaseConfig) {
-             console.warn("AVISO: Variáveis de configuração do Firebase não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
+            console.warn("AVISO: Variáveis de configuração do Firebase não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
         }
         
         // =================================================================
@@ -355,7 +376,7 @@
                 }
             } else {
                 selectedOption.classList.add('bg-red-100', 'border-red-500', 'shadow-md');
-                 if (statusIcon) {
+                if (statusIcon) {
                     statusIcon.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
                     statusIcon.classList.add('visible');
                 }
