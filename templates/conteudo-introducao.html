@@ -10,7 +10,6 @@
             <i class="fas fa-video mr-3"></i> Vídeo Aula: O que é Pensamento Computacional?
         </h2>
         <div class="video-container">
-            <!-- Vídeo de exemplo (Rickroll) - Substitua pelo vídeo real! -->
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Assista e descubra como o PC pode transformar sua prática pedagógica.</p>
@@ -66,7 +65,6 @@
                 <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
 
                 <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <!-- Substitua o URL da imagem por um placeholder ou recurso local se o caminho não for acessível -->
                     <img src="https://placehold.co/800x200/4f46e5/ffffff?text=TEXTO+DE+SUPORTE+IADES+2022" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
                 </div>
 
@@ -180,35 +178,30 @@
         </div>
     </div>
 
-    <!-- SEÇÃO DE PROJETO ATUALIZADA - FASE 1: OBJETIVO GERAL, PÚBLICO-ALVO, JUSTIFICATIVA -->
     <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto - Fase 1: Escopo Inicial
         </h2>
         <p class="text-gray-700 mb-4">Neste módulo, defina o escopo do seu Projeto Educacional de Pensamento Computacional. As respostas serão salvas para o seu projeto final.</p>
         <form id="project-form-1">
-            <!-- Nome do Projeto -->
             <div class="mb-4">
-                <label for="project_name_1" class="block text-gray-800 font-medium mb-2">Nome do Projeto Educacional:</label>
-                <input type="text" id="project_name_1" name="project_name_1" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Aventura do Algoritmo em Sala de Aula">
+                <label for="project_name" class="block text-gray-800 font-medium mb-2">Nome do Projeto Educacional:</label>
+                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Aventura do Algoritmo em Sala de Aula">
             </div>
 
-            <!-- Objetivo Geral -->
             <div class="mb-4">
-                <label for="objetivo_geral_1" class="block text-gray-800 font-medium mb-2">Objetivo Geral:</label>
-                <textarea id="objetivo_geral_1" name="objetivo_geral_1" rows="3" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva o que o projeto pretende alcançar."></textarea>
+                <label for="objetivo_geral" class="block text-gray-800 font-medium mb-2">Objetivo Geral:</label>
+                <textarea id="objetivo_geral" name="objetivo_geral" rows="3" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva o que o projeto pretende alcançar."></textarea>
             </div>
 
-            <!-- Público-Alvo -->
             <div class="mb-4">
-                <label for="publico_alvo_1" class="block text-gray-800 font-medium mb-2">Público-Alvo:</label>
-                <input type="text" id="publico_alvo_1" name="publico_alvo_1" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 6º ano do Ensino Fundamental.">
+                <label for="publico_alvo" class="block text-gray-800 font-medium mb-2">Público-Alvo:</label>
+                <input type="text" id="publico_alvo" name="publico_alvo" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 6º ano do Ensino Fundamental.">
             </div>
 
-            <!-- Justificativa -->
             <div class="mb-4">
-                <label for="justificativa_1" class="block text-gray-800 font-medium mb-2">Justificativa:</label>
-                <textarea id="justificativa_1" name="justificativa_1" rows="5" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Por que este projeto é importante para o público-alvo e para a disciplina?"></textarea>
+                <label for="justificativa" class="block text-gray-800 font-medium mb-2">Justificativa:</label>
+                <textarea id="justificativa" name="justificativa" rows="5" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Por que este projeto é importante para o público-alvo e para a disciplina?"></textarea>
             </div>
 
             <div id="project-feedback" class="mt-4 text-sm font-medium text-gray-600 hidden"></div>
@@ -216,7 +209,6 @@
         </form>
     </div>
 
-    <!-- LÓGICA DO QUIZ E FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -228,7 +220,8 @@
 
         let db, auth, userId;
         const PROJECT_COLLECTION = 'project_data';
-        const DOCUMENT_ID = 'modulo_1_introducao';
+        // AJUSTE CRUCIAL: Usar um ID único para o projeto principal, que será atualizado em todos os módulos.
+        const DOCUMENT_ID = 'main_project';
 
         setLogLevel('Debug');
 
@@ -263,6 +256,7 @@
         // --------------------------------------------------
 
         function getProjectDocRef(dbInstance, uid) {
+            // Caminho: artifacts/{appId}/users/{uid}/project_data/main_project
             return doc(dbInstance, 'artifacts', appId, 'users', uid, PROJECT_COLLECTION, DOCUMENT_ID);
         }
 
@@ -274,7 +268,8 @@
             const feedbackEl = document.getElementById('project-feedback');
             try {
                 const docRef = getProjectDocRef(db, userId);
-                await setDoc(docRef, data, { merge: true });
+                // Usamos merge: true para que cada módulo só atualize seus próprios campos
+                await setDoc(docRef, data, { merge: true }); 
                 feedbackEl.textContent = "✅ Projeto da Fase 1 salvo com sucesso!";
                 feedbackEl.classList.remove('hidden', 'text-red-500');
                 feedbackEl.classList.add('text-green-500');
@@ -299,10 +294,11 @@
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    document.getElementById('project_name_1').value = data.project_name_1 || '';
-                    document.getElementById('objetivo_geral_1').value = data.objetivo_geral_1 || '';
-                    document.getElementById('publico_alvo_1').value = data.publico_alvo_1 || '';
-                    document.getElementById('justificativa_1').value = data.justificativa_1 || '';
+                    // Carrega dados usando os nomes de campo padronizados
+                    document.getElementById('project_name').value = data.project_name || '';
+                    document.getElementById('objetivo_geral').value = data.objetivo_geral || '';
+                    document.getElementById('publico_alvo').value = data.publico_alvo || '';
+                    document.getElementById('justificativa').value = data.justificativa || '';
                     console.log("Dados do projeto carregados:", data);
                 }
             } catch (error) {
@@ -312,12 +308,13 @@
 
         document.getElementById('project-form-1').addEventListener('submit', function(e) {
             e.preventDefault();
+            // Dados enviados com nomes de campo padronizados (sem "_1")
             const data = {
-                project_name_1: document.getElementById('project_name_1').value,
-                objetivo_geral_1: document.getElementById('objetivo_geral_1').value,
-                publico_alvo_1: document.getElementById('publico_alvo_1').value,
-                justificativa_1: document.getElementById('justificativa_1').value,
-                timestamp: new Date().toISOString()
+                project_name: document.getElementById('project_name').value,
+                objetivo_geral: document.getElementById('objetivo_geral').value,
+                publico_alvo: document.getElementById('publico_alvo').value,
+                justificativa: document.getElementById('justificativa').value,
+                timestamp_m1: new Date().toISOString() // Adiciona um timestamp de salvamento
             };
             saveProjectData(data);
         });
@@ -366,7 +363,6 @@
 
 {% block finish_button %}
     <div class="mt-8 text-center">
-        <!-- O action aqui é placeholder, use o endpoint real do seu backend -->
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='introducao') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-check-double mr-2"></i>Próximo Módulo
