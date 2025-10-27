@@ -5,7 +5,7 @@ from functools import wraps
 from datetime import datetime
 import json # NOVO: Importa json para manipular a chave de serviço
 
-import firebase_admin 
+import firebase_admin
 from firebase_admin import credentials, firestore, auth
 
 
