@@ -1,0 +1,120 @@
+{% extends "conteudo-base.html" %}
+
+{% block title %}Módulo 3: Reconhecimento de Padrões{% endblock %}
+
+{% block content_title %}Módulo 3: Reconhecimento de Padrões{% endblock %}
+
+{% block content %}
+    <!-- 1. Video Aula -->
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Identificando Semelhanças
+        </h2>
+        <div class="video-container">
+            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Encontrar padrões em dados e eventos é o primeiro passo para criar soluções genéricas e eficientes.</p>
+    </div>
+
+    <!-- 2. Material de Apoio -->
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
+        </h2>
+        <p class="text-gray-700 mb-4">Guia sobre a aplicação de padrões comportamentais e de desempenho em sala de aula.</p>
+        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-download mr-2"></i> Baixar Padrões Pedagógicos
+        </a>
+    </div>
+
+    <!-- 3. Exercícios Práticos (Múltipla Escolha com Feedback) -->
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            <!-- Pergunta 1 -->
+            <div id="q-mod2-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. Por que a identificação de padrões é crucial após a decomposição de um problema?</p>
+                <div class="space-y-2">
+                    <!-- Opção A -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-1', this, 'false', 'A decomposição já quebrou o problema; o padrão serve para encontrar similaridades, não para re-dividir.')" data-correct="false">
+                        Para re-dividir o problema em etapas ainda menores.
+                    </div>
+                    <!-- Opção B (Correta) -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-1', this, 'true', 'Correto! Padrões permitem a criação de uma solução única e genérica (abstração) que pode ser aplicada a todas as subtarefas semelhantes.')" data-correct="true">
+                        Para criar soluções genéricas que podem ser aplicadas a várias subtarefas semelhantes.
+                    </div>
+                    <!-- Opção C -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-1', this, 'false', 'A identificação de padrões pode simplificar, mas o objetivo primário é a otimização da solução.')" data-correct="false">
+                        Para garantir que o problema não tenha detalhes irrelevantes.
+                    </div>
+                    <!-- Opção D -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-1', this, 'false', 'Algoritmos é o próximo passo. O padrão é a ponte entre a decomposição e a abstração/algoritmo.')" data-correct="false">
+                        Para gerar o algoritmo final sem precisar de mais etapas.
+                    </div>
+                </div>
+                <!-- Feedback / Rationale -->
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            
+            <!-- Pergunta 2 -->
+            <div id="q-mod2-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Em um conjunto de provas de matemática, 80% dos alunos cometeram erros na mesma fórmula. Qual ação demonstra o reconhecimento e uso de um padrão?</p>
+                <div class="space-y-2">
+                    <!-- Opção A -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-2', this, 'false', 'Isso é Decomposição, não reconhecimento de padrões. O padrão já está estabelecido (erro na fórmula).')" data-correct="false">
+                        Criar 10 provas diferentes para evitar que os alunos copiem as respostas.
+                    </div>
+                    <!-- Opção B -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-2', this, 'false', 'Essa é uma resposta individualizada, não uma otimização sistêmica baseada no padrão do erro.')" data-correct="false">
+                        Devolver as provas e pedir que cada aluno revise seus próprios erros.
+                    </div>
+                    <!-- Opção C -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-2', this, 'false', 'A abstração viria após identificar o erro recorrente, focando no princípio por trás da fórmula, mas a ação ainda não demonstra o uso do padrão.')" data-correct="false">
+                        Explicar aos alunos o conceito fundamental por trás da fórmula, ignorando a parte prática.
+                    </div>
+                    <!-- Opção D (Correta) -->
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod2-2', this, 'true', 'Correto! Ao notar que o erro é comum, o professor aplica uma solução centralizada (revisão da fórmula) que aborda o ponto fraco de forma eficiente.')" data-correct="true">
+                        Interromper a próxima aula para fazer uma revisão coletiva focada apenas na aplicação correta daquela fórmula.
+                    </div>
+                </div>
+                <!-- Feedback / Rationale -->
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Pergunta para o Projeto Final -->
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-lightbulb mr-3"></i> Ideia para o Projeto Final
+        </h2>
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final no último módulo.</p>
+        <form id="project-idea-form">
+            <label for="project_idea_2" class="block text-gray-800 font-medium mb-2">Dentro das etapas que você decompos no Módulo 1, identifique um padrão (repetição de ação ou comportamento) que ocorre em pelo menos duas dessas etapas. Como este padrão pode ser padronizado?</label>
+            <textarea id="project_idea_2" name="project_idea_2" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva o padrão aqui..."></textarea>
+            <!-- Adicione aqui a lógica de armazenamento (Firebase/Firestore) -->
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Ideia</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block finish_button %}
+    <div class="mt-8 text-center">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='rec_padrao') }}">
+            <button type="submit" class="btn-finish hover:shadow-lg">
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+            </button>
+        </form>
+    </div>
+{% endblock %}

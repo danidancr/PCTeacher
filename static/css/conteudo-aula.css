@@ -1,0 +1,230 @@
+/* ------------------------------------- */
+/* Layout de Conteúdo (Aula) */
+/* ------------------------------------- */
+
+/* Redefinindo o Main Content para usar Grid */
+.main-content-aula {
+    /* O main-content precisa ser redefinido para acomodar a navegação lateral da aula */
+    margin-left: 250px; /* Mantém o espaço da Sidebar do Dashboard */
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* Coluna Principal (75%) e Navegação (25%) */
+    gap: 30px;
+    padding: 30px 40px; 
+}
+
+/* O conteúdo da aula em si (Vídeo, Texto, Exercícios) */
+.lesson-main {
+    grid-column: 1 / 2;
+}
+
+.lesson-main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-dark-blue);
+    margin-bottom: 5px;
+}
+
+.lesson-main .module-title {
+    font-size: 1.1rem;
+    color: var(--color-green);
+    font-weight: 500;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------------- */
+/* Área de Vídeo */
+/* ------------------------------------- */
+
+.video-player {
+    aspect-ratio: 16 / 9; /* Padrão de vídeo */
+    width: 100%;
+    background-color: #000;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.video-player iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ------------------------------------- */
+/* Seções (Material de Apoio, Exercícios) */
+/* ------------------------------------- */
+
+.lesson-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.lesson-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    color: var(--color-dark-blue);
+}
+
+.lesson-section p, .lesson-section ul {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.lesson-section .material-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.lesson-section .material-item i {
+    color: var(--color-green);
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.lesson-section .material-item a {
+    color: var(--color-dark-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.lesson-section .material-item a:hover {
+    color: var(--color-green);
+    text-decoration: underline;
+}
+
+/* ------------------------------------- */
+/* Navegação Lateral do Módulo (Sidebar de Aula) */
+/* ------------------------------------- */
+
+.lesson-nav {
+    grid-column: 2 / 3;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.lesson-nav h3 {
+    font-size: 1.3rem;
+    color: var(--color-dark-blue);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.lesson-list {
+    list-style: none;
+    padding: 0;
+}
+
+.lesson-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.lesson-list li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.lesson-list li:hover {
+    background-color: #f7f7f7;
+}
+
+.lesson-list li.active {
+    background-color: #E6F7ED; /* Fundo verde claro para ativo */
+    border-left: 3px solid var(--color-green);
+    padding-left: 7px;
+}
+
+.lesson-list li.active a {
+    font-weight: 600;
+    color: var(--color-green);
+}
+
+.lesson-list .lesson-icon {
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 1rem;
+    color: #999;
+}
+
+.lesson-list li.active .lesson-icon {
+    color: var(--color-green);
+}
+
+/* Indicadores de Status */
+.lesson-list .completed .lesson-icon {
+    color: var(--color-green);
+}
+
+.lesson-list .locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* Bloqueia o clique */
+}
+
+.lesson-list .locked a {
+    color: #999;
+}
+
+/* ------------------------------------- */
+/* Botão de Conclusão */
+/* ------------------------------------- */
+
+.completion-actions {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+.btn-complete {
+    background-color: var(--color-green);
+    color: var(--color-text-light);
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.1rem;
+}
+
+.btn-complete:hover {
+    background-color: #4AA561;
+}
+
+
+/* ------------------------------------- */
+/* Responsividade */
+/* ------------------------------------- */
+
+@media (max-width: 992px) {
+    .main-content-aula {
+        grid-template-columns: 1fr; /* Coluna única no mobile/tablet */
+        padding: 20px;
+        margin-left: 0;
+    }
+    
+    .lesson-nav {
+        grid-column: 1 / 2;
+        order: -1; /* Move a navegação para o topo no mobile */
+    }
+}

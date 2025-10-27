@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PC Teacher - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modulos.css') }}">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-indigo': '#4f46e5', // Cor principal (ativo/botões)
+                        'secondary-green': '#10b981', // Cor de sucesso/progresso
+                        'dark-gray': '#1f2937', // Cor da sidebar
+                        'light-bg': '#f7f9fc',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- ESTILOS GERAIS E DO CORPO DA PÁGINA --- */
+        
+        *, ::before, ::after {
+            box-sizing: border-box;
+        }
+        /* Elimina a barra de rolagem horizontal e define a fonte Poppins */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* IMPEDE O OVERFLOW HORIZONTAL NO CONTEÚDO PRINCIPAL (FIX CRÍTICO) */
+        .main-content {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            min-height: calc(100vh - 4rem); 
+        }
+
+        /* FIX PARA ALINHAMENTO LATERAL EM DESKTOP */
+        @media (min-width: 1024px) {
+            .main-content {
+                /* Garante que o main use APENAS a largura restante (100vw - 18rem da sidebar) */
+                max-width: calc(100vw - 18rem); 
+            }
+        }
+        
+        /* Estilos base para o Container de Conteúdo (cartões) */
+        .content-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #4f46e5; /* Detalhe lateral em indigo */
+        }
+        
+        /* Títulos Principais */
+        .main-content h1 {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        /* --- ESTILOS DE COMPONENTES --- */
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Botão principal de finalização */
+        .btn-finish {
+            background-color: #10b981; /* secondary-green */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .btn-finish:hover {
+            background-color: #059669; /* green-700 */
+            transform: translateY(-1px);
+        }
+
+        /* Estilo para as opções do quiz */
+        .quiz-option {
+            transition: all 0.1s ease-in-out;
+            border: 1px solid #d1d5db; /* gray-300 */
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        
+        .quiz-option:hover:not(.pointer-events-none) {
+             background-color: #f3f4f6; /* gray-100 */
+        }
+
+        /* Layout Responsivo para a Sidebar (Mobile/Tablet) */
+        @media (max-width: 1023px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem 0;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            /* Garantindo que a navegação seja horizontal em mobile */
+            .sidebar-nav {
+                flex-direction: row; 
+                flex-wrap: wrap;
+                justify-content: space-around;
+                border-top: 1px solid #374151;
+                padding-top: 1rem;
+            }
+            .sidebar-item {
+                padding: 0.5rem 0.5rem;
+                margin: 0.25rem;
+                flex-basis: auto; 
+                justify-content: center;
+            }
+            .sidebar-footer {
+                display: none;
+            }
+            /* Oculta o texto do logo em mobile para economizar espaço */
+            .sidebar-header .title {
+                display: none;
+            }
+            /* Esconde o indicador de progresso em mobile para manter a sidebar limpa */
+            .sidebar-progress-indicator {
+                display: none; 
+            }
+        }
+    </style>
+</head>
+<body class="bg-light-bg">
+
+    <div class="min-h-screen"> 
+        
+        <aside class="sidebar w-full lg:w-72" id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando"> 
+                <span class="title">PC Teacher</span>
+            </div>
+            
+            {# ========================================================= #}
+            {# NOVO INDICADOR DE PROGRESSO GERAL NA SIDEBAR #}
+            {# A variável 'progresso' era buscada aqui, mas agora usamos 'progresso_data' #}
+            {# O {% if progresso_data %} garante que não haverá erro UndefinedError #}
+            {% if progresso_data and user %}
+            <div class="sidebar-progress-indicator p-4 text-white">
+                <p class="text-sm font-semibold mb-1">Olá, {{ user.nome.split(' ')[0] }}!</p>
+                <p class="text-xs text-gray-300 mb-2">Progresso Geral:</p>
+                <div class="w-full bg-gray-600 rounded-full h-2.5">
+                    <div class="bg-secondary-green h-2.5 rounded-full" 
+                        style="width: {{ progresso_data.overall_percent }}%">
+                    </div>
+                </div>
+                <p class="text-xs mt-1 text-gray-300 font-bold text-right">
+                    {{ progresso_data.overall_percent }}%
+                </p>
+            </div>
+            {% endif %}
+            {# ========================================================= #}
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('perfil') }}" class="sidebar-item">
+                    <i class="fas fa-user-circle"></i> Meu Perfil
+                </a>
+                <a href="{{ url_for('modulos') }}" class="sidebar-item active">
+                    <i class="fas fa-book"></i> Módulos
+                </a>
+                <a href="{{ url_for('progresso') }}" class="sidebar-item">
+                    <i class="fas fa-chart-line"></i> Meu Progresso
+                </a>
+                <a href="{{ url_for('certificado') }}" class="sidebar-item">
+                    <i class="fas fa-certificate"></i> Certificado
+                </a>
+            </nav>
+            
+            <a href="{{ url_for('logout') }}" class="sidebar-footer">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </aside>
+
+        <main class="main-content lg:ml-72 p-4 lg:p-8 flex-grow w-full space-y-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">{% block content_title %}{% endblock %}</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-2">
+                    {% for category, message in messages %}
+                        <div class="p-3 rounded-lg font-medium 
+                            {% if category == 'success' %}bg-secondary-green/10 text-secondary-green border border-secondary-green{% endif %}
+                            {% if category == 'danger' %}bg-red-100 text-red-600 border border-red-400{% endif %}
+                            {% if category == 'warning' %}bg-yellow-100 text-yellow-600 border border-yellow-400{% endif %}
+                            {% if category == 'info' %}bg-blue-100 text-blue-600 border border-blue-400{% endif %}
+                        " role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+            
+            {% block finish_button %}{% endblock %}
+
+        </main>
+    </div>
+    
+    <script>
+        /**
+         * Verifica a resposta do quiz, aplica estilos e exibe o feedback.
+         * @param {string} questionId - ID da div que contém a pergunta (ex: 'q-mod0-1').
+         * @param {HTMLElement} selectedOption - O elemento de opção clicado.
+         * @param {string} isCorrectStr - 'true' ou 'false' indicando se a opção clicada é correta.
+         * @param {string} rationale - A explicação para a resposta.
+         */
+        function checkAnswer(questionId, selectedOption, isCorrectStr, rationale) {
+            const questionElement = document.getElementById(questionId);
+            const options = questionElement.querySelectorAll('.quiz-option');
+            const feedbackContainer = questionElement.querySelector('.feedback-message');
+            const isCorrect = isCorrectStr === 'true';
+
+            // 1. Desabilita todas as opções para evitar cliques duplicados
+            options.forEach(option => {
+                option.classList.add('pointer-events-none', 'opacity-80');
+                option.classList.remove('cursor-pointer', 'hover:bg-gray-100');
+            });
+            
+            // 2. Aplica o estilo de feedback
+            if (isCorrect) {
+                selectedOption.classList.add('bg-green-100', 'border-green-500', 'shadow-md');
+            } else {
+                selectedOption.classList.add('bg-red-100', 'border-red-500', 'shadow-md');
+                
+                // Destaca a resposta correta se a opção selecionada for incorreta
+                const correctAnswer = questionElement.querySelector('.quiz-option[data-correct="true"]');
+                if (correctAnswer) {
+                    // Remove o hover/fundo padrão e aplica o destaque verde
+                    correctAnswer.classList.remove('bg-gray-100', 'bg-red-100', 'opacity-80');
+                    correctAnswer.classList.add('bg-green-200', 'border-green-500', 'shadow-md');
+                }
+            }
+            
+            // 3. Exibe o feedback/racional
+            const icon = isCorrect ? '<i class="fas fa-check-circle mr-2"></i>' : '<i class="fas fa-times-circle mr-2"></i>';
+            const statusClass = isCorrect ? 'text-secondary-green border-green-500' : 'text-red-500 border-red-500';
+
+            feedbackContainer.innerHTML = `
+                <p class="font-semibold ${statusClass} flex items-center">
+                    ${icon} ${isCorrect ? 'Correto!' : 'Incorreto.'}
+                </p>
+                <p class="mt-2 text-gray-700">${rationale}</p>
+            `;
+            feedbackContainer.classList.remove('hidden');
+            feedbackContainer.classList.add('border-l-4', 'p-3', 'bg-white', 'shadow-inner');
+            
+            // 4. Rola para o feedback para garantir visibilidade em telas pequenas
+            feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+    
+</body>
+</html>

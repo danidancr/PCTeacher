@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulos - PC Teacher</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Logo PC Teacher">
+                <span class="title">PC Teacher</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('perfil') }}" class="sidebar-item"><i class="fas fa-user"></i> Meu Perfil</a>
+                <a href="{{ url_for('modulos') }}" class="sidebar-item active"><i class="fas fa-book"></i> Módulos</a>
+                <a href="{{ url_for('progresso') }}" class="sidebar-item"><i class="fas fa-chart-line"></i> Meu Progresso</a>
+                <a href="{{ url_for('certificado') }}" class="sidebar-item"><i class="fas fa-certificate"></i> Certificado</a>
+            </nav>
+            <a href="{{ url_for('logout') }}" class="sidebar-footer"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        </aside>
+
+        <main class="main-content">
+            <h1>Meus Módulos</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="modules-grid">
+                
+                {# O loop itera sobre a lista 'modulos' que o Flask passa, que contém o status de desbloqueio #}
+                {% for module in modulos %}
+                
+                {# Define variáveis de status/classe com base nos dados do módulo #}
+                {% set is_completed = module.is_completed %}
+                {% set is_unlocked = module.is_unlocked %}
+                
+                <div class="module-card {% if not is_unlocked %}locked{% endif %}">
+                    
+                    {# Título e descrição vêm do módulo dinâmico #}
+                    <h2>{{ module.order }}. {{ module.title }}</h2>
+                    <p>{{ module.description }}</p>
+
+                    {# Lógica de Status e Botão #}
+                    {% if is_completed %}
+                        <div class="status-tag status-completed">Concluído</div>
+                        {# O link para módulos concluídos deve ir para o conteúdo para revisão #}
+                        <a href="{{ url_for('conteudo_dinamico', modulo_slug=module.slug) }}" class="btn primary">Revisar</a>
+                    {% elif is_unlocked %}
+                        {# Módulo desbloqueado mas não concluído #}
+                        {# CHAMA A ROTA DINÂMICA 'conteudo_dinamico' e passa o SLUG #}
+                        <a href="{{ url_for('conteudo_dinamico', modulo_slug=module.slug) }}" class="btn primary">Iniciar</a>
+                    {% else %}
+                        {# Módulo bloqueado #}
+                        <div class="status-tag status-locked">🔒 Bloqueado</div>
+                    {% endif %}
+                    
+                </div>
+                {% endfor %}
+
+            </div>
+        </main>
+    </div>
+
+    <style>
+        /* CSS para as mensagens de Flash */
+        .flashes-container {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* O resto do CSS original */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 20px;
+        }
+
+        .module-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .module-card.locked {
+            opacity: 0.6;
+            filter: grayscale(80%);
+        }
+
+        .module-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn.primary {
+            background-color: #4A90E2;
+            color: white;
+        }
+
+        .btn.disabled {
+            background-color: #bbb;
+            color: #fff;
+            cursor: not-allowed;
+        }
+
+        .status-tag {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .status-locked {
+            background-color: #ccc;
+            color: #555;
+        }
+
+        .status-completed {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+    </style>
+</body>
+</html>

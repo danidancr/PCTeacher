@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Teacher - Decomposição</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/curso-descricao.css') }}"> 
+</head>
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <header class="main-header">
+        <div class="logo">
+            <a href="{{ url_for('index') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                <img src="{{ url_for('static', filename='img/logo-icon.png') }}" alt="Professores ensinando"> 
+                PC Teacher
+            </a>
+        </div>
+        <nav>
+            <a href="{{ url_for('index') }}#cursos" class="nav-item">Cursos</a>
+            <a href="{{ url_for('index') }}#sobre" class="nav-item">Sobre</a>
+            
+            {% if usuario %}
+              <a href="{{ url_for('dashboard') }}" class="btn-entrar">Dashboard</a>
+              <a href="{{ url_for('logout') }}" class="btn-entrar" style="margin-left: 10px;">Sair</a>
+            {% else %}
+              <a href="{{ url_for('login') }}" class="btn-entrar">Entrar</a>
+              <a href="{{ url_for('cadastro') }}" class="btn-entrar" style="margin-left: 10px;">Cadastrar</a>
+            {% endif %}
+            
+        </nav>
+    </header>
+
+    <main>
+        <section class="module-intro">
+            <div class="container-content">
+                <div class="intro-text">
+                    <h1>Decomposição</h1>
+                    <p>A Decomposição é um dos pilares fundamentais do pensamento computacional. Ela nos ajuda a entender e resolver problemas complexos ao dividi-los em partes menores e mais gerenciáveis. Ao aplicar a decomposição, conseguimos enxergar cada parte individualmente, tornando mais fácil encontrar soluções específicas, identificar padrões e criar estratégias eficientes.</p>
+                    
+                    {% if usuario %}
+                      <a href="{{ url_for('modulos') }}" class="btn-primary-start">Acessar o Módulo</a> 
+                    {% else %}
+                      <a href="{{ url_for('cadastro') }}" class="btn-primary-start">Comece já</a> 
+                    {% endif %}
+                    
+                    </div>
+                <div class="intro-image">
+                    <img src="{{ url_for('static', filename='img/Decomposicao.png') }}" alt="Ilustração de decomposicao com um quebra-cabeça"> 
+                </div>
+            </div>
+        </section>
+
+        <section class="section-gray-background">
+            <div class="container-content">
+                <h2>Para Iniciar</h2>
+                <p class="section-subtitle">O que você precisa saber antes de iniciar seus estudos</p>
+                
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h3>Sobre este Curso</h3>
+                        <ul>
+                            <li><i class="fas fa-arrow-right"></i> Nível Iniciante</li>
+                            <li><i class="fas fa-arrow-right"></i> Duração estimada:</li>
+                            <li><i class="fas fa-arrow-right"></i> 3 módulos práticos</li>
+                            <li><i class="fas fa-arrow-right"></i> Área: Pensamento Computacional / Lógica</li>
+                            <li><i class="fas fa-arrow-right"></i> 100% online e gratuito</li>
+                            <li><i class="fas fa-arrow-right"></i> Voltado para uso em sala de aula e desenvolvimento docente</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>Público-Alvo</h3>
+                        <ul>
+                            <li><i class="fas fa-arrow-right"></i> Finalistas no curso de Licenciatura em Computação ou Pedagogia, e Professores do Ensino Técnico e Ensino Superior</li>
+                            <li><i class="fas fa-arrow-right"></i> Educadores interessados em inovação pedagógica</li>
+                            <li><i class="fas fa-arrow-right"></i> Profissionais de educação que desejam aplicar conceitos de pensamento computacional em sala</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>Pré-Requisitos</h3>
+                        <ul>
+                            <li><i class="fas fa-arrow-right"></i> Não é necessário conhecimento prévio em programação ou tecnologia</li>
+                            <li><i class="fas fa-arrow-right"></i> Ter acesso a um computador ou tablet com internet</li>
+                            <li><i class="fas fa-arrow-right"></i> Vontade de aprender e aplicar novas estratégias em sala de aula</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white-background">
+            <div class="container-content">
+                <h2>O que você vai aprender</h2>
+                
+                <div class="learning-list">
+                    <p class="learning-item"><span>01</span> O que é decomposição e por que ela é essencial.</p>
+                    <p class="learning-item"><span>02</span> Como aplicá-la em diferentes contextos (educacional, cotidiano e tecnológico).</p>
+                    <p class="learning-item"><span>03</span> Exemplos práticos que mostram como dividir grandes desafios em pequenas etapas facilita o aprendizado e a resolução de problemas.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="main-footer">
+        <div class="container">
+            <p>2025 PC Teacher</p>
+        </div>
+    </footer>
+    
+</body>
+</html>

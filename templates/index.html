@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Teacher - Curso de Pensamento Computacional para Professores</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo-icon.png') }}" alt="Professores ensinando"> 
+            PC Teacher
+        </div>
+        <nav>
+            <a href="#cursos" class="nav-item">Cursos</a> 
+            <a href="#sobre" class="nav-item">Sobre</a> 
+            
+            <a href="{{ url_for('login') }}" class="btn-entrar">Entrar</a>
+            <a href="{{ url_for('cadastro') }}" class="btn-entrar" style="margin-left: 10px;">Cadastrar</a>
+            
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-container">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        <section class="hero-banner">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>PC Teacher</h1>
+                    <p class="subtitle">Curso Online de Pensamento Computacional</p>
+                    <p class="description">Desenvolva suas habilidades cognitivas para estruturar o raciocínio, planejar soluções e criar projetos que aproximam a lógica computacional do cotidiano. </p>
+                    <a href="#cursos" class="btn-primary">Explore os Cursos</a>
+                </div>
+                <div class="hero-image">
+                    <img src="{{ url_for('static', filename='img/hero-image.png') }}" alt="Professores ensinando">
+                </div>
+            </div>
+        </section>
+
+        <section class="section-passos">
+            <div class="container">
+                <h2>Aprender Pensamento Computacional é aprender a enxergar soluções!</h2>
+                <div class="passos-grid">
+                    
+                    <div class="passo-card">
+                        <div class="passo-number">1</div>
+                        <h3>Explore</h3>
+                        <p>Descubra o que é Pensamento Computacional, seus quatro pilares e como eles transformam problemas em soluções criativas e lógicas.</p>
+                    </div>
+
+                    <div class="passo-card">
+                        <div class="passo-number">2</div>
+                        <h3>Inscreva-se</h3>
+                        <p>É rápido e gratuito! Crie seu perfil e tenha acesso imediato a todo o conteúdo, feito sob medida para a Formação Docente.</p>
+                    </div>
+                    
+                    <div class="passo-card">
+                        <div class="passo-number">3</div>
+                        <h3>Inicie sua jornada</h3>
+                        <p>Assista às aulas, faça os exercícios e desenvolva atividades e *feedback* imediato. </p>
+                    </div>
+                    
+                    <div class="passo-card">
+                        <div class="passo-number">4</div>
+                        <h3>Aplique em sala</h3>
+                        <p>Transfira sua aprendizagem para atividades didáticas criativas e inteligentes em sala de aula.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+      <section class="section-cursos" id="cursos">
+  <style>
+    .cursos-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .curso-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* garante alinhamento vertical */
+      align-items: center;
+      text-align: center;
+      height: 420px; /* todos com mesma altura */
+      box-sizing: border-box;
+    }
+
+    .curso-card p {
+      flex-grow: 1; /* empurra o botão pra baixo */
+    }
+
+    .btn-saibamais {
+      margin-top: 10px;
+    }
+  </style>
+
+  <div class="container">
+    <h2>Cursos</h2>
+    <div class="cursos-grid">
+      
+      <div class="curso-card decomposicao">
+        <img src="{{ url_for('static', filename='img/Decomposicao.png') }}" alt="Ícone Decomposição">
+        <h3>Decomposição</h3>
+        <p>É a habilidade de quebrar grandes problemas em partes menores e mais simples, tornando a solução mais fácil e eficiente.</p>
+        <a href="{{ url_for('infor_curso_decomposicao') }}" class="btn-saibamais">Saiba Mais</a>
+      </div>
+
+      <div class="curso-card padroes">
+        <img src="{{ url_for('static', filename='img/recpadrao.png') }}" alt="Ícone Padrões">
+        <h3>Reconhecimento de Padrões</h3>
+        <p>É a identificação de semelhanças e repetições em problemas, o que economiza tempo e permite a reutilização de soluções.</p>
+        <a href="{{ url_for('infor_curso_rec_padrao') }}" class="btn-saibamais">Saiba Mais</a>
+      </div>
+
+      <div class="curso-card abstracao">
+        <img src="{{ url_for('static', filename='img/abstracao.png') }}" alt="Ícone Abstração">
+        <h3>Abstração</h3>
+        <p>Você aprende a focar nas informações importantes, ignorando detalhes irrelevantes para facilitar a criação de modelos e representações.</p>
+        <a href="{{ url_for('infor_curso_abstracao') }}" class="btn-saibamais">Saiba Mais</a>
+      </div>
+
+      <div class="curso-card algoritmos">
+        <img src="{{ url_for('static', filename='img/algoritmo.png') }}" alt="Ícone Algoritmos">
+        <h3>Algoritmos</h3>
+        <p>São as sequências de passos lógicos e organizados que permitem resolver problemas ou executar uma tarefa, de forma estruturada e replicável.</p>
+        <a href="{{ url_for('infor_curso_algoritmo') }}" class="btn-saibamais">Saiba Mais</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+        <section class="section-sobre" id="sobre">
+            <div class="container">
+                <h2>Sobre</h2>
+                <div class="sobre-grid">
+                    
+                    <div class="sobre-item">
+                        <i class="fas fa-eye sobre-icon" aria-hidden="true"></i>
+                        <h3>Aprendizagem Visual</h3>
+                        <p>Você vai desenvolver e como resolver problemas e criar novos projetos em soluções criativas.</p>
+                    </div>
+                    
+                    <div class="sobre-item">
+                        <i class="fas fa-puzzle-piece sobre-icon" aria-hidden="true"></i>
+                        <h3>Prática com Desafios</h3>
+                        <p>Receba problemas concretos para aplicar o conhecimento e experiência e aprimorar a capacidade de resolução de problemas.</p>
+                    </div>
+                    
+                    <div class="sobre-item">
+                        <i class="fas fa-comment-dots sobre-icon" aria-hidden="true"></i>
+                        <h3>Feedback Imediato</h3>
+                        <p>Receba a correção automática acompanhando sua evolução em cada módulo.</p>
+                    </div>
+
+                    <div class="sobre-item">
+                        <i class="fas fa-clock sobre-icon" aria-hidden="true"></i>
+                        <h3>Flexibilidade</h3>
+                        <p>Estude no seu ritmo, encaixando o curso no seu tempo e disponibilidade para aprimorar sua prática profissional.</p>
+                    </div>
+                    
+                    <div class="sobre-item">
+                        <i class="fas fa-chalkboard-teacher sobre-icon" aria-hidden="true"></i>
+                        <h3>Formação Docente</h3>
+                        <p>Você aprenderá como aplicar o Pensamento Computacional em sala, com a BNCC e a Base Nacional Comum Curricular (BNCC).</p>
+                    </div>
+                    
+                    <div class="sobre-item">
+                        <i class="fas fa-certificate sobre-icon" aria-hidden="true"></i>
+                        <h3>Certificado Gratuito</h3>
+                        <p>Certificado que valoriza sua Formação na área de Pensamento Computacional.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="section-equipe">
+            <div class="container">
+                <h2>Quem faz o PC Teacher acontecer?</h2>
+                <div class="equipe-cards">
+                    
+                    <div class="equipe-card">
+                        <img src="{{ url_for('static', filename='img/dani.png') }}" alt="Foto de Daniela">
+                        <p>Daniela</p>
+                    </div>
+
+                    <div class="equipe-card">
+                        <img src="{{ url_for('static', filename='img/manu.png') }}" alt="Foto de Emanuele">
+                        <p>Emanuele</p>
+                    </div>
+
+                    <div class="equipe-card">
+                        <img src="{{ url_for('static', filename='img/jr.png') }}" alt="Foto de Junior">
+                        <p>Junior</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>2025 PC Teacher</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+/* Definições de Cores e Tipografia (Cores Finais do Usuário) */
+:root {
+    --color-primary-dark: #1F192F; /* Fundo dos Cursos e Áreas Escuras (AZUL ESCURO) */
+    --color-primary-light: #FFFFFF; /* Fundo Geral Claro */
+    --color-accent-blue: #1F192F; /* Cor do botão primário */
+    --color-blue: #2D6073; /* Fundo da Seção "O que você vai aprender" */
+    --color-text-dark: #000000;
+    --color-text-light: #ffffff;
+    --color-green: #55B770; /* Cor de destaque (se houver ícones) */
+    --font-family: 'Poppins', sans-serif;
+}
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+}
+
+
+/* ------------------------------------- */
+/* Layout Base (Header e Footer já vêm da home.css) */
+/* ------------------------------------- */
+
+/* CORREÇÃO: Remove o padding-top padrão para a Seção 1 subir */
+main {
+    padding-top: 0; 
+}
+
+/* Container específico para o conteúdo, um pouco mais estreito */
+.container-content {
+    max-width: 1000px; 
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ------------------------------------- */
+/* Seções de Fundo */
+/* ------------------------------------- */
+
+.section-gray-background {
+    background-color: var(--color-primary-light); 
+    padding: 60px 0;
+}
+
+.section-white-background {
+    /* Usa a cor azul para a seção de aprendizado */
+    background-color: var(--color-blue); 
+    padding: 60px 0;
+}
+
+/* Títulos da Seção Branca/Cinza */
+.section-gray-background h2 {
+    font-size: 2.2rem; 
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    margin-bottom: 10px;
+    text-align: left; 
+}
+
+/* Títulos da Seção Azul (O que você vai aprender) */
+.section-white-background h2 {
+    font-size: 2.2rem; 
+    font-weight: 700;
+    color: var(--color-text-light); /* Título branco no fundo azul */
+    margin-bottom: 10px;
+    text-align: left; 
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+
+/* ------------------------------------- */
+/* 1. SEÇÃO SUPERIOR: Título, Descrição e Imagem */
+/* ------------------------------------- */
+
+.module-intro {
+    background-color: var(--color-primary-dark); 
+    /* CORREÇÃO: Compensação do padding-top do 'main' (Assumindo Header de 80px a 100px de altura) */
+    padding: 100px 0 80px 0; 
+    color: var(--color-text-light); 
+    position: relative; 
+    overflow: hidden; 
+}
+
+.module-intro h1 {
+    font-size: 3.5rem; 
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    color: var(--color-text-light);
+}
+
+.module-intro p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.85); 
+}
+
+.module-intro .container-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 40px;
+    align-items: flex-start; 
+    position: relative;
+    z-index: 2; 
+}
+
+.intro-image {
+    /* CORREÇÃO: Centraliza a imagem na coluna, ao invés de jogá-la para a direita */
+    text-align: center; 
+    position: relative;
+    padding-top: 20px; 
+}
+
+.intro-image img {
+    max-width: 100%; 
+    height: auto;
+}
+
+.illustration-bottom {
+    position: absolute;
+    bottom: -150px; 
+    right: 0;
+    width: 300px; 
+    z-index: 1; 
+    pointer-events: none; 
+}
+.illustration-bottom img {
+    width: 100%;
+    height: auto;
+}
+
+.btn-primary-start {
+    display: inline-block;
+    background-color: var(--color-primary-light);
+    color: var(--color-primary-dark); /* Texto do botão escuro */
+    padding: 12px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary-start:hover {
+    background-color: #dcdcdc;
+}
+
+/* ------------------------------------- */
+/* 2. SEÇÃO "PARA INICIAR": Três Colunas de Cards */
+/* ------------------------------------- */
+
+.section-gray-background {
+    background-color: #E6EEF4;
+}
+
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px;
+}
+
+.info-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    margin-bottom: 15px;
+}
+
+.info-card ul {
+    list-style: none;
+}
+
+.info-card ul li {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 8px;
+    display: flex; 
+    align-items: flex-start;
+    text-align: left;
+}
+
+.info-card ul li i {
+    color: var(--color-primary-dark); /* Ícone escuro */
+    margin-right: 10px;
+    margin-top: 3px; 
+    font-size: 0.8rem;
+}
+
+/* ------------------------------------- */
+/* 3. SEÇÃO "O QUE VOCÊ VAI APRENDER": Lista Numerada */
+/* ------------------------------------- */
+
+.learning-list {
+    max-width: 800px; 
+    margin: 0 auto;
+    /* CORREÇÃO: Padding esquerdo para alinhar o texto do tópico com o título da seção */
+    padding-left: 5px; 
+}
+
+.learning-item {
+    font-size: 1.1rem;
+    /* CORREÇÃO: Cor branca no fundo azul */
+    color: var(--color-text-light); 
+    margin-bottom: 20px;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    /* CORREÇÃO: Alinhamento esquerdo para o texto do item */
+    text-align: left; 
+}
+
+.learning-item span {
+    font-size: 2.2rem; 
+    font-weight: 700;
+    /* CORREÇÃO: Número branco para alto contraste */
+    color: var(--color-primary-light); 
+    margin-right: 20px;
+    line-height: 1;
+    /* CORREÇÃO: Largura mínima para alinhar corretamente números de um e dois dígitos */
+    min-width: 45px; 
+    text-align: left;
+}
+
+/* ------------------------------------- */
+/* RESPONSIVIDADE */
+/* ------------------------------------- */
+
+@media (max-width: 1000px) {
+    .module-intro .container-content {
+        grid-template-columns: 1fr; 
+        text-align: center;
+    }
+    .intro-text {
+        order: 2; 
+    }
+    .intro-image {
+        order: 1; 
+        text-align: center;
+        padding-top: 0;
+    }
+    .intro-image img {
+        max-width: 70%; 
+    }
+    
+    .module-intro {
+        padding-top: 50px; /* Reduz o padding superior no mobile */
+        padding-bottom: 50px;
+    }
+    .illustration-bottom {
+        display: none; 
+    }
+    .info-cards {
+        grid-template-columns: 1fr; 
+    }
+    
+    /* Centraliza títulos no mobile */
+    .section-gray-background h2,
+    .section-white-background h2,
+    .section-subtitle {
+        text-align: center; 
+    }
+    
+    .learning-list {
+        padding: 0 10px; 
+        margin: 0 auto; 
+    }
+    
+    /* Alinhamento do Tópico no Mobile */
+    .learning-item {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+    }
+    .learning-item span {
+        margin-right: 0;
+        margin-bottom: 10px;
+        min-width: auto;
+        text-align: center;
+    }
+
+    /* Ajustes Finos de Fontes para Mobile */
+    .module-intro h1 {
+        font-size: 2.5rem;
+    }
+    .module-intro p, .learning-item {
+        font-size: 1rem;
+    }
+}

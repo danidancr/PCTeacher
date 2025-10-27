@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Teacher - Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="static/css/modulos.css"> 
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando"> 
+                <span class="title">PC Teacher</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('perfil') }}" class="sidebar-item">
+                    <i class="fas fa-user-circle"></i> Meu Perfil
+                </a>
+                <a href="{{ url_for('modulos') }}" class="sidebar-item">
+                    <i class="fas fa-book"></i> Módulos
+                </a>
+                <a href="{{ url_for('progresso') }}" class="sidebar-item">
+                    <i class="fas fa-chart-line"></i> Meu Progresso
+                </a>
+                <a href="{{ url_for('certificado') }}" class="sidebar-item">
+                    <i class="fas fa-certificate"></i> Certificado
+                </a>
+            </nav>
+            
+            <a href="{{ url_for('logout') }}" class="sidebar-footer">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h1>Área do Participante</h1>
+
+            <p>Bem-vindo(a) à área do participante</p>
+        </main>
+    </div>
+    
+</body>
+</html>

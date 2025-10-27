@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - PC Teacher</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/certificado.css') }}"> 
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Logo PC Teacher"> 
+                <span class="title">PC Teacher</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('perfil') }}" class="sidebar-item">
+                    <i class="fas fa-user-circle"></i> Meu Perfil
+                </a>
+                <a href="{{ url_for('modulos') }}" class="sidebar-item">
+                    <i class="fas fa-book"></i> Módulos
+                </a>
+                <a href="{{ url_for('progresso') }}" class="sidebar-item">
+                    <i class="fas fa-chart-line"></i> Meu Progresso
+                </a>
+                <a href="{{ url_for('certificado') }}" class="sidebar-item active">
+                    <i class="fas fa-certificate"></i> Certificado
+                </a>
+            </nav>
+            
+            <a href="{{ url_for('logout') }}" class="sidebar-footer">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h1>Certificados de Conclusão</h1>
+            
+            {# Bloco para exibir mensagens flash do Flask #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {# Lógica dinâmica para exibir o cartão de status #}
+            {% if certificado_disponivel %}
+                
+                <div class="certificate-status-card available">
+                    <div class="certificate-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h2>Curso: Pensamento Computacional (40h)</h2>
+                    <p>Parabéns, {{ user.nome }}! Você concluiu o curso em {{ data_emissao }}. Seu certificado está pronto para download.</p>
+                    
+                    {# Botão de download: Aponta para a rota que gera o certificado #}
+                    <a href="{{ url_for('static', filename='img/Certificado.pdf') }}" class="btn-download-cert">
+                        <i class="fas fa-download"></i> Baixar Certificado
+                    </a>
+                </div>
+                
+            {% else %}
+
+                <div class="certificate-status-card unavailable">
+                    <div class="certificate-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2>Curso: Pensamento Computacional</h2>
+                    <p>O seu certificado ainda não está disponível.</p>
+                    <p>Você precisa Completar 100% de todos os módulos para liberar a emissão. Verifique seu <a href="{{ url_for('progresso') }}">Progresso</a>.</p>
+                    
+                    <a href="#" class="btn-download-cert disabled">
+                        <i class="fas fa-times-circle"></i> Indisponível
+                    </a>
+                </div>
+
+            {% endif %}
+            
+        </main>
+    </div>
+    
+    {# Adicione um estilo básico para as mensagens flash se não estiverem em dashboard.css #}
+    <style>
+        .flashes-container {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        /* Estilos para o cartão de status no certificado */
+        .certificate-status-card {
+            margin-top: 30px;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .certificate-status-card.available {
+            background-color: #f7fff7;
+            border: 2px solid #4CAF50;
+        }
+        .certificate-status-card.unavailable {
+            background-color: #fff3f3;
+            border: 2px solid #f44336;
+        }
+        .certificate-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .available .certificate-icon { color: #4CAF50; }
+        .unavailable .certificate-icon { color: #f44336; }
+
+        .btn-download-cert {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 25px;
+            background-color: #4A90E2; /* Cor Primária */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-download-cert:hover {
+            background-color: #3b7ad6;
+        }
+        .btn-download-cert.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .small-text {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #777;
+        }
+    </style>
+</body>
+</html>

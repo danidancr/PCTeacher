@@ -1,0 +1,164 @@
+/* ------------------------------------- */
+/* Módulos (Listagem de Cursos/Aulas) - Fiel à imagem 'módulos.png' */
+/* ------------------------------------- */
+
+.course-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    /* A imagem 'módulos.png' não tem borda lateral verde no card. */
+    /* Se a intenção era ter borda, ignore as linhas abaixo. Se for para ser como na foto, mantenha assim: */
+    border-left: none; 
+    
+    display: flex;
+    gap: 30px;
+    align-items: center; /* Alinha o conteúdo verticalmente ao centro, se necessário */
+}
+
+.course-info {
+    flex: 3; /* Ocupa a maior parte do espaço */
+}
+
+.course-info h2 {
+    font-size: 1.5rem;
+    color: var(--color-text-dark); /* Cor de texto mais escura */
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.course-info p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 25px; /* Espaço maior antes da lista de módulos */
+}
+
+.module-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.module-list li {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: var(--color-text-dark);
+    margin-bottom: 8px;
+    /* Na foto, os itens da lista não têm borda vertical */
+    border-left: none;
+    padding-left: 0; 
+    transition: color 0.2s;
+}
+
+.module-list li a {
+    color: inherit; /* Mantém a cor do texto do li */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.module-list li:hover a {
+    color: var(--color-green);
+}
+
+.module-list i {
+    width: 20px; /* Garante que os ícones fiquem alinhados */
+    text-align: center;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.module-list li.completed i {
+    color: var(--color-green); /* Verde para concluído */
+}
+
+.module-list li.uncompleted i,
+.module-list li i {
+    color: #999; /* Cinza suave para pendente/não iniciado */
+}
+
+
+/* ------------------------------------- */
+/* Progresso Lateral (Progresso/Botão) */
+/* ------------------------------------- */
+
+.course-progress {
+    flex: 1.5; /* Ocupa um espaço menor que a informação do curso */
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    /* Na foto, este bloco é simples, sem fundo cinza, mas tem um padding implícito */
+    /* Fundo branco (sem alteração) */
+}
+
+.progress-circle {
+    width: 110px;
+    height: 110px;
+    /* Progresso (Exemplo 30%) */
+    background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                conic-gradient(var(--color-green) 30%, #eee 0); 
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    box-shadow: 0 0 0 1px #eee; /* Borda sutil */
+}
+
+.progress-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.progress-status {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-green); /* Cor de status em andamento */
+    margin-bottom: 15px;
+}
+
+/* Botão de Continuação */
+.btn-continue {
+    background-color: var(--color-green);
+    color: var(--color-text-light);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    width: 100%;
+    text-align: center;
+    max-width: 200px; /* Limita a largura do botão para não esticar muito */
+}
+
+.btn-continue:hover {
+    background-color: #4AA561;
+}
+
+
+/* ------------------------------------- */
+/* Responsividade */
+/* ------------------------------------- */
+
+@media (max-width: 900px) {
+    .course-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .course-progress {
+        margin-top: 20px;
+        width: 100%;
+        min-width: auto;
+        /* Centraliza os elementos de progresso no mobile */
+        align-items: center; 
+    }
+    .btn-continue {
+        max-width: 100%;
+    }
+}

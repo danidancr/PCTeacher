@@ -1,0 +1,123 @@
+/* ------------------------------------- */
+/* Certificado (Tela 'certificado.png') */
+/* ------------------------------------- */
+
+.certificate-status-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.certificate-status-card.available {
+    border-left: 5px solid var(--color-green);
+}
+
+.certificate-icon {
+    font-size: 3rem;
+    color: var(--color-green);
+    margin-bottom: 15px;
+}
+
+.certificate-icon.unavailable {
+    color: #FFC107; /* Amarelo/Atenção */
+}
+
+.certificate-status-card h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-dark-blue);
+    margin-bottom: 10px;
+}
+
+.certificate-status-card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Botão de Download */
+.btn-download-cert {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--color-green);
+    color: var(--color-text-light);
+    padding: 12px 35px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    font-size: 1.1rem;
+}
+
+.btn-download-cert i {
+    color: var(--color-text-light);
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.btn-download-cert:hover {
+    background-color: #4AA561;
+}
+
+/* Estado de Certificado Indisponível (botão desativado) */
+.btn-disabled {
+    background-color: #999;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Área de Visualização (Placeholder) */
+.certificate-preview {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.certificate-preview h3 {
+    font-size: 1.4rem;
+    color: var(--color-dark-blue);
+    margin-bottom: 15px;
+}
+
+.certificate-placeholder {
+    width: 100%;
+    height: 300px;
+    background-color: #fff;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-style: italic;
+    margin-bottom: 20px;
+    /* Simulação de um documento na horizontal */
+    aspect-ratio: 3 / 2; 
+    max-height: 400px; 
+    margin: 0 auto 20px auto;
+}
+
+/* Estilo para Certificado indisponível na pré-visualização */
+.certificate-placeholder.locked {
+    background-color: #fcfcfc;
+    border: 2px dashed #FFC107;
+    color: #FFC107;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .certificate-preview {
+        padding: 20px;
+    }
+    .btn-download-cert {
+        width: 100%;
+        justify-content: center;
+        padding: 15px 10px;
+    }
+}

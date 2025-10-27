@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Teacher - Meu Progresso</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/progresso.css') }}"> 
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo-black.png') }}" alt="Professores ensinando"> 
+                <span class="title">PC Teacher</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('perfil') }}" class="sidebar-item">
+                    <i class="fas fa-user-circle"></i> Meu Perfil
+                </a>
+                <a href="{{ url_for('modulos') }}" class="sidebar-item">
+                    <i class="fas fa-book"></i> Módulos
+                </a>
+                <a href="{{ url_for('progresso') }}" class="sidebar-item active">
+                    <i class="fas fa-chart-line"></i> Meu Progresso
+                </a>
+                <a href="{{ url_for('certificado') }}" class="sidebar-item">
+                    <i class="fas fa-certificate"></i> Certificado
+                </a>
+            </nav>
+            
+            <a href="{{ url_for('logout') }}" class="sidebar-footer">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h1>Meu Progresso Geral</h1>
+
+            <div class="progress-summary">
+                
+                <div class="metric-card main">
+                    <div class="metric-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <!-- Progresso Geral do Curso (Calculado no app.py) -->
+                    <div class="metric-value">{{ progresso_data.overall_percent }}%</div>
+                    <div class="metric-label">Conclusão do Curso "Pensamento Computacional" ({{ progresso_data.completed_modules }}/{{ progresso_data.total_modules }} Módulos)</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: #FFC107;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <!-- Aulas Finalizadas (Calculado no app.py) -->
+                    <div class="metric-value">{{ progresso_data.completed_lessons }}/{{ progresso_data.total_lessons }}</div>
+                    <div class="metric-label">Aulas Finalizadas</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: #3399FF;">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <!-- Exercícios Concluídos (Calculado no app.py) -->
+                    <div class="metric-value">{{ progresso_data.completed_exercises }}/{{ progresso_data.total_exercises }}</div>
+                    <div class="metric-label">Exercícios Concluídos</div>
+                </div>
+            </div>
+
+            <h2>Progresso Detalhado por Módulo</h2>
+
+            <div class="module-progress-list">
+                
+                {% for module in progresso_data.modules %}
+                
+                {# 1. Define o Status e Cores com base nas chaves do Python: is_completed e is_unlocked #}
+                {% set is_completed = module.is_completed %}
+                {% set is_unlocked = module.is_unlocked %}
+                
+                {% if is_completed %}
+                    {% set percent = 100 %}
+                    {% set status_class = 'status-completed' %}
+                    {% set status_text = 'Concluído' %}
+                    {% set bar_color = '#4CAF50' %} {# Verde #}
+                    {% set percent_text_color = '#333' %}
+                {% elif is_unlocked %}
+                    {% set percent = 50 %} {# Exibe 50% para "Em Andamento/Desbloqueado" #}
+                    {% set status_class = 'status-pending' %}
+                    {% set status_text = 'Desbloqueado' %}
+                    {% set bar_color = '#007BFF' %} {# Azul #}
+                    {% set percent_text_color = '#333' %}
+                {% else %}
+                    {% set percent = 0 %}
+                    {% set status_class = 'status-locked' %} {# Corrigido para status-locked para melhor CSS #}
+                    {% set status_text = 'Bloqueado' %}
+                    {% set bar_color = '#E9ECEF' %} {# Cinza Claro #}
+                    {% set percent_text_color = '#999' %}
+                {% endif %}
+                
+                <div class="progress-item">
+                    <div class="item-info">
+                        <h3>{{ module.title }}</h3>
+                        <p>{{ module.lessons }} Aulas, {{ module.exercises }} Exercícios</p>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: {{ percent }}%; background-color: {{ bar_color }};"></div>
+                    </div>
+                    <div class="progress-percentage" style="color: {{ percent_text_color }};">{{ percent }}%</div>
+                    <div class="status-tag {{ status_class }}">{{ status_text }}</div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </main>
+    </div>
+    
+</body>
+</html>

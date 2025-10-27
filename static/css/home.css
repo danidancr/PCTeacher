@@ -1,0 +1,525 @@
+/* Definições de Cores e Tipografia */
+:root {
+    --color-primary-dark: #1F192F; /* Fundo dos Cursos e Áreas Escuras */
+    --color-primary-light: #FFFFFF; /* Fundo Geral Claro */
+    --color-accent-blue: #1F192F; /* Cor do botão primário (pode ser ajustada) */
+    --color-blue: #2D6073 ;
+    --color-text-dark: #000000;
+    --color-text-light: #ffffff;
+    --font-family: 'Poppins', sans-serif;
+}
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
+    color: var(--color-text-dark);
+}
+
+body {
+    background-color: var(--color-primary-light);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px; /* Limite de largura para o conteúdo central */
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Estilo do Botão Primário */
+.btn-primary {
+    display: inline-block;
+    background-color: var(--color-accent-blue);
+    color: var(--color-text-light);
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #4b00b3;
+}
+
+/* ------------------------------------- */
+/* 1. CABEÇALHO / HEADER */
+/* ------------------------------------- */
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.main-header .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.main-header nav a {
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+}
+
+.btn-entrar {
+    border: 1px solid var(--color-text-dark);
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-left: 30px !important;
+}
+
+/* ------------------------------------- */
+/* 2. SEÇÃO BANNER PRINCIPAL */
+/* ------------------------------------- */
+
+.hero-banner {
+    background-color: #E6EEF4; /* Fundo azul bem claro */
+    padding: 80px 0;
+}
+
+.hero-banner .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hero-content {
+    max-width: 50%;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.hero-content .subtitle {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--color-accent-blue);
+    margin-bottom: 20px;
+}
+
+.hero-content .description {
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ------------------------------------- */
+/* 3. SEÇÃO DOS 4 PASSOS */
+/* ------------------------------------- */
+
+.section-passos {
+    background-color: var(--color-blue);
+    color: var(--color-text-light);
+    padding: 60px 0;
+}
+
+.section-passos h2 {
+    color: var(--color-text-light);
+    margin-bottom: 50px;
+}
+
+.passos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+    gap: 30px;
+    text-align: center;
+    padding: 0 40px;
+}
+
+.passo-card {
+    color: var(--color-text-light);
+}
+
+.passo-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-bottom: 10px;
+}
+
+.passo-card h3 {
+    color: var(--color-text-light);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.passo-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+}
+
+/* ------------------------------------- */
+/* 4. SEÇÃO CURSOS (Os 4 Pilares) */
+/* ------------------------------------- */
+
+.section-cursos {
+    padding: 80px 0;
+    background-color: var(--color-primary-dark); /* Mantém o fundo escuro da seção anterior */
+}
+
+.section-cursos h2 {
+    color: var(--color-text-light);
+    margin-bottom: 50px;
+}
+
+.cursos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+    gap: 30px;
+}
+
+.curso-card {
+    background-color: var(--color-primary-dark); /* Cor principal dos cards (Escura) */
+    color: var(--color-text-light);
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.curso-card img {
+    max-width: 80px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.curso-card h3 {
+    color: var(--color-text-light);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.curso-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    min-height: 80px; /* Garante que os cards tenham altura similar */
+    margin-bottom: 15px;
+}
+
+.btn-saibamais {
+    display: inline-block;
+    background-color: var(--color-text-light);
+    color: var(--color-primary-dark);
+    padding: 8px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* ------------------------------------- */
+/* 5. SEÇÃO SOBRE (6 Diferenciais) */
+/* ------------------------------------- */
+
+.section-sobre {
+    padding: 80px 0;
+    background-color: white; /* Fundo branco/claro */
+}
+
+.section-sobre h2 {
+    color: var(--color-text-dark);
+}
+
+.sobre-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas em duas linhas (3x2) */
+    gap: 40px 30px;
+    text-align: center;
+}
+
+.sobre-item {
+    padding: 20px;
+}
+
+.sobre-item .sobre-icon {
+    font-size: 3rem; /* Tamanho maior para o ícone */
+    color: var(--color-primary-dark); /* Cor escura do ícone */
+    margin-bottom: 15px;
+    /* Adicionando um círculo de fundo, se você quiser simular os cards da imagem */
+    /* Se quiser só o ícone, remova as 5 linhas abaixo */
+    background-color: #E6EEF4; /* Fundo azul claro */
+    padding: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.sobre-item h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.sobre-item p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ------------------------------------- */
+/* 6. SEÇÃO EQUIPE */
+/* ------------------------------------- */
+
+.section-equipe {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--color-text-light);
+    background-color:  #2D6073; /* Fundo azul claro para a seção */
+}
+
+.section-equipe p{
+        color: var(--color-text-light);
+}
+
+.section-equipe h2{
+        color: var(--color-text-light);
+}
+
+.equipe-cards {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 50px;
+}
+
+.equipe-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.equipe-card p {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+/* ------------------------------------- */
+/* 7. RODAPÉ */
+/* ------------------------------------- */
+
+footer {
+    background-color: var(--color-primary-dark);
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+/* AJUSTE PARA O ÍCONE DA LOGO NO HEADER */
+.main-header .logo {
+    display: flex; /* Permite alinhar o ícone e o texto */
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.logo-icon {
+    /* Cor do ícone da logo, similar ao verde/azul da imagem */
+    color: #55B770; 
+    font-size: 1.8rem; 
+    margin-right: 8px; /* Espaço entre o ícone e o texto "PC Teacher" */
+}
+
+/* ------------------------------------- */
+/* AJUSTE NOS LINKS DE NAVEGAÇÃO */
+/* ------------------------------------- */
+/* Para garantir a rolagem suave quando clicar em Cursos ou Sobre */
+html {
+    scroll-behavior: smooth;
+}
+
+
+
+/* ===================================== */
+/* AJUSTES DE RESPONSIVIDADE (MEDIA QUERIES) */
+/* ===================================== */
+
+/* 1. Telas Médias (Tablets e Laptops pequenos, até 992px) */
+@media (max-width: 992px) {
+    
+    /* Cursos: Mudar de 4 para 2 colunas */
+    .cursos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Sobre: Mudar de 3 para 2 colunas */
+    .sobre-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 4 Passos: Mudar de 4 para 2 colunas */
+    .passos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 20px;
+    }
+
+    /* Banner Principal (Hero): Ajustar para empilhar em telas menores */
+    .hero-banner .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+}
+
+/* 2. Telas Pequenas (Smartphones, até 576px) */
+@media (max-width: 576px) {
+    
+    /* Mudar todos os grids para 1 coluna */
+    .cursos-grid,
+    .sobre-grid,
+    .passos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px; /* Reduz o espaçamento */
+    }
+
+    /* Cabeçalho: Ajustar a navegação */
+    .main-header {
+        padding: 15px 20px;
+    }
+
+    .main-header nav {
+        display: none; /* Esconde a navegação para simplificar em mobile.
+                       * Em um projeto real, você usaria um ícone de menu hambúrguer aqui.
+                       */
+    }
+    
+    .main-header .logo {
+        font-size: 1.3rem;
+    }
+    
+    /* Textos grandes */
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Garantir que o conteúdo dos cursos não fique muito apertado */
+    .curso-card p {
+        min-height: auto;
+    }
+    
+    /* Equipe: Mudar de linha */
+    .equipe-cards {
+        flex-direction: column;
+        gap: 30px;
+    }
+}
+
+
+/* ===================================== */
+/* AJUSTES DE RESPONSIVIDADE (MEDIA QUERIES) */
+/* ===================================== */
+
+/* 1. Telas Médias (Tablets e Laptops pequenos, até 992px) */
+@media (max-width: 992px) {
+    
+    /* Cursos: Mudar de 4 para 2 colunas */
+    .cursos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Sobre: Mudar de 3 para 2 colunas */
+    .sobre-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 4 Passos: Mudar de 4 para 2 colunas */
+    .passos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 20px;
+    }
+
+    /* Banner Principal (Hero): Ajustar para empilhar em telas menores */
+    .hero-banner .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+
+    /* Esconder a imagem do Banner em tablets */
+    .hero-image {
+        display: none;
+    }
+}
+
+/* 2. Telas Pequenas (Smartphones, até 576px) */
+@media (max-width: 576px) {
+    
+    /* Mudar todos os grids para 1 coluna */
+    .cursos-grid,
+    .sobre-grid,
+    .passos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px; 
+    }
+
+    /* Cabeçalho: Ajustar a navegação */
+    .main-header {
+        padding: 15px 20px;
+    }
+
+    .main-header nav {
+        /* Se você quer a navegação mobile, aqui é onde colocaria o botão hambúrguer. */
+        display: none; 
+    }
+    
+    .main-header .logo {
+        font-size: 1.3rem;
+    }
+    
+    /* Textos grandes */
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Equipe: Mudar de linha */
+    .equipe-cards {
+        flex-direction: column;
+        gap: 30px;
+    }
+}

@@ -1,0 +1,180 @@
+/* ------------------------------------- */
+/* Progresso do Usuário (Tela 'progresso.png') */
+/* ------------------------------------- */
+
+/* Container Principal de Métricas */
+.progress-summary {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.metric-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    min-width: 200px; /* Garante que os cards não fiquem muito estreitos */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.metric-card.main {
+    flex: 2; /* Card principal do progresso total será maior */
+}
+
+.metric-icon {
+    font-size: 2.5rem;
+    color: var(--color-green);
+    margin-bottom: 15px;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-dark-blue);
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Gráfico de Progresso (Simulado) */
+.chart-placeholder {
+    height: 250px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-style: italic;
+    border-left: 5px solid var(--color-dark-blue);
+}
+
+/* Detalhe por Módulo */
+.module-progress-list {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.module-progress-list h2 {
+    font-size: 1.5rem;
+    color: var(--color-dark-blue);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.progress-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.progress-item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    flex-grow: 1;
+}
+
+.item-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-dark-blue);
+    margin-bottom: 5px;
+}
+
+.item-info p {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.progress-bar-container {
+    width: 250px;
+    background-color: #ddd;
+    border-radius: 5px;
+    height: 10px;
+    margin-right: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 5px;
+    background-color: var(--color-green);
+    width: 0%; /* Será preenchido inline */
+    transition: width 0.5s ease;
+}
+
+.progress-percentage {
+    font-weight: 700;
+    color: var(--color-green);
+    width: 50px; /* Garante alinhamento */
+    text-align: right;
+}
+
+/* Indicador de Status (Concluído/Pendente) */
+.status-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+}
+
+.status-completed {
+    background-color: var(--color-green);
+}
+
+.status-pending {
+    background-color: #FFC107; /* Amarelo */
+}
+
+.status-not-started {
+    background-color: #999; /* Cinza */
+}
+
+/* Responsividade */
+@media (max-width: 700px) {
+    .progress-summary {
+        flex-direction: column;
+    }
+
+    .metric-card {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .progress-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .progress-bar-container {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .progress-percentage {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+}

@@ -1,0 +1,11 @@
+# Core do Framework Web
+Flask
+
+# Para a segurança (hashing de senhas), que você usa via werkzeug.security
+Werkzeug
+
+# Firebase Admin SDK para acesso ao Firestore, Auth, etc.
+firebase-admin
+
+# Servidor Web de produção (obrigatório para rodar o Flask no Render)
+gunicorn
