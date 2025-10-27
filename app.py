@@ -5,7 +5,7 @@ from functools import wraps
 from datetime import datetime
 import json # NOVO: Importa json para manipular a chave de serviço
 
-import firebase_admin
+import firebase_admin 
 from firebase_admin import credentials, firestore, auth
 
 
@@ -17,22 +17,15 @@ app = Flask(__name__)
 # Configurações de segurança
 # Em produção, o Render fornecerá a 'SECRET_KEY'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sua_chave_secreta_padrao_muito_longa')
-# Define o ID do App para o uso no Frontend (Módulo 6 JS/Firestore)
-# OBS: O ID do projeto (pc-teacher-6c75f) é o mais seguro, mas para o seu modelo de FS, 'prod' é suficiente.
-APP_ID_FOR_FIREBASE = os.environ.get('APP_ID_FIREBASE', 'prod')
 
 
 # =========================================================
 # 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK (NOVO)
 # =========================================================
-db = None # Inicializa db como None
-FIREBASE_CLIENT_CONFIG = None # Variável para guardar a config do frontend
-
 try:
     # 1. Tenta carregar da variável de ambiente (USO EM PRODUÇÃO)
     FIREBASE_SERVICE_ACCOUNT_JSON = os.environ.get('FIREBASE_CONFIG_JSON')
-    FIREBASE_CLIENT_CONFIG_STR = os.environ.get('FIREBASE_CLIENT_CONFIG') # Carrega config do cliente
-
+    
     if FIREBASE_SERVICE_ACCOUNT_JSON:
         # Carrega o JSON da string (variável de ambiente)
         cred_json = json.loads(FIREBASE_SERVICE_ACCOUNT_JSON)
@@ -61,81 +54,66 @@ if not firebase_admin._apps and cred:
 elif not firebase_admin._apps:
     print("ERRO CRÍTICO: Firebase Admin SDK não foi inicializado. Verifique as credenciais.")
 
-# Tenta carregar a configuração do cliente para injeção no frontend
-if FIREBASE_CLIENT_CONFIG_STR:
-    try:
-        FIREBASE_CLIENT_CONFIG = json.loads(FIREBASE_CLIENT_CONFIG_STR)
-        print("INFO: Configuração do Firebase Client carregada.")
-    except json.JSONDecodeError:
-        print("ERRO: Variável FIREBASE_CLIENT_CONFIG não é um JSON válido.")
-        FIREBASE_CLIENT_CONFIG = None
-
-
 # =========================================================
 # 3. HELPERS E DECORATORS (REVISADOS)
 # =========================================================
 
-# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS (Módulo 6 adicionado) ---
+# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS (Sem alterações) ---
 MODULO_CONFIG = [
+    # ... (Seu MODULO_CONFIG permanece o mesmo) ...
     {
         'title': '1. Introdução ao Pensamento Computacional',
         'field': 'introducao_concluido',
         'slug': 'introducao',
-        'template': 'conteudo-introducao.html',
+        'template': 'conteudo-introducao.html', 
         'order': 1,
         'description': 'Entenda o que é o Pensamento Computacional, seus pilares e por que ele é crucial para o futuro.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': None,
-        'project_field': 'objetivo_geral' ## NOVO: Campo de projeto associado
+        'lessons': 1, 'exercises': 5, 'dependency_field': None
     },
     {
         'title': '2. Decomposição',
         'field': 'decomposicao_concluido',
         'slug': 'decomposicao',
-        'template': 'conteudo-decomposicao.html',
+        'template': 'conteudo-decomposicao.html', 
         'order': 2,
         'description': 'Aprenda a quebrar problemas complexos em partes menores e gerenciáveis.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido',
-        'project_field': 'decomposicao' ## NOVO: Campo de projeto associado
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido'
     },
     {
         'title': '3. Reconhecimento de Padrões',
         'field': 'reconhecimento_padroes_concluido',
         'slug': 'rec-padrao',
-        'template': 'conteudo-rec-padrao.html',
+        'template': 'conteudo-rec-padrao.html', 
         'order': 3,
         'description': 'Identifique similaridades e tendências para simplificar a resolução de problemas.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'decomposicao_concluido',
-        'project_field': 'reconhecimento_padroes' ## NOVO: Campo de projeto associado
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'decomposicao_concluido'
     },
     {
         'title': '4. Abstração',
         'field': 'abstracao_concluido',
         'slug': 'abstracao',
-        'template': 'conteudo-abstracao.html',
+        'template': 'conteudo-abstracao.html', 
         'order': 4,
         'description': 'Foque apenas nas informações importantes, ignorando detalhes irrelevantes.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'reconhecimento_padroes_concluido',
-        'project_field': 'abstracao' ## NOVO: Campo de projeto associado
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'reconhecimento_padroes_concluido'
     },
     {
         'title': '5. Algoritmos',
         'field': 'algoritmo_concluido',
         'slug': 'algoritmo',
-        'template': 'conteudo-algoritmo.html',
+        'template': 'conteudo-algoritmo.html', 
         'order': 5,
         'description': 'Desenvolva sequências lógicas e organizadas para resolver problemas de forma eficaz.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'abstracao_concluido',
-        'project_field': 'algoritmo' ## NOVO: Campo de projeto associado
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'abstracao_concluido'
     },
     {
         'title': '6. Projeto Final',
         'field': 'projeto_final_concluido',
         'slug': 'projeto-final',
-        'template': 'conteudo-projeto-final.html',
+        'template': 'conteudo-projeto-final.html', 
         'order': 6,
         'description': 'Aplique todos os pilares do PC para solucionar um desafio prático de sala de aula.',
-        'lessons': 1, 'exercises': 0, 'dependency_field': 'algoritmo_concluido',
-        'project_field': None ## Módulo final não tem campo de salvamento, só de resumo
+        'lessons': 1, 'exercises': 0, 'dependency_field': 'algoritmo_concluido'
     },
 ]
 
@@ -144,7 +122,6 @@ MODULO_BY_SLUG = {m['slug']: m for m in MODULO_CONFIG}
 
 def get_firestore_doc(collection_name, doc_id):
     """Auxiliar para buscar um documento no Firestore e retornar como dict."""
-    if not db: return None
     doc_ref = db.collection(collection_name).document(str(doc_id))
     doc = doc_ref.get()
     if doc.exists:
@@ -153,14 +130,6 @@ def get_firestore_doc(collection_name, doc_id):
         return data
     return None
 
-## NOVO: Helper para o caminho padronizado do projeto
-def get_project_doc_ref(user_id):
-    """Retorna a referência para o documento principal do projeto do usuário."""
-    if not db: return None
-    # Estrutura: artifacts / [APP_ID] / users / [userId] / project_data / main_project
-    # Isso corresponde ao que o JS no frontend está esperando.
-    return db.collection('artifacts').document(APP_ID_FOR_FIREBASE).collection('users').document(user_id).collection('project_data').document('main_project')
-
 def usuario_logado():
     """Retorna o objeto (dict) Usuario logado ou None, buscando no Firestore."""
     if 'usuario_id' in session:
@@ -168,7 +137,7 @@ def usuario_logado():
         user_data = get_firestore_doc('usuarios', session['usuario_id'])
         
         if user_data:
-            # Busca o progresso associado (se existir)
+             # Busca o progresso associado (se existir)
             progresso_data = get_firestore_doc('progresso', session['usuario_id'])
             # Anexa o progresso ao objeto do usuário para manter a compatibilidade
             user_data['progresso'] = progresso_data if progresso_data else {}
@@ -187,7 +156,7 @@ def requires_auth(func):
 
 def calculate_progress(progresso_db):
     """Calcula todas as métricas de progresso do curso.
-        progresso_db agora é um dicionário (dict) do Firestore."""
+       progresso_db agora é um dicionário (dict) do Firestore."""
     
     total_modules = len(MODULO_CONFIG)
     completed_modules = 0
@@ -202,7 +171,7 @@ def calculate_progress(progresso_db):
         db_field = module_config['field']
         
         # MUDANÇA: Acessa o status de conclusão como uma chave de dicionário
-        is_completed = progresso_db.get(db_field, False)
+        is_completed = progresso_db.get(db_field, False) 
         
         # Lógica de Desbloqueio (BASEADA NA DEPENDÊNCIA explícita)
         dependency_field = module_config.get('dependency_field')
@@ -212,7 +181,7 @@ def calculate_progress(progresso_db):
         else:
             # MUDANÇA: Acessa o status da dependência como chave de dicionário
             dependency_is_completed = progresso_db.get(dependency_field, False)
-            is_unlocked_for_current_module = dependency_is_completed
+            is_unlocked_for_current_module = dependency_is_completed 
 
         # Contadores
         if is_completed:
@@ -241,7 +210,7 @@ def calculate_progress(progresso_db):
         'total_lessons': total_lessons,
         'completed_exercises': completed_exercises,
         'total_exercises': total_exercises,
-        'modules': dynamic_modules
+        'modules': dynamic_modules 
     }
 
 # =========================================================
@@ -319,6 +288,11 @@ def login():
         email = request.form.get('email')
         senha = request.form.get('senha')
         
+        # MUDANÇA: O Auth do Firebase é usado para validar a senha, mas
+        # para projetos Flask/Admin SDK, é mais simples buscar no Firestore
+        # e usar o werkzeug.security se você não estiver usando o Firebase
+        # Client SDK para login. 
+        
         # 1. Busca o usuário pelo e-mail
         user_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
         usuario_doc = next(user_query, None)
@@ -328,6 +302,8 @@ def login():
             usuario_data['id'] = usuario_doc.id # O ID é o UID/Doc ID
             
             # 2. Verifica a senha (usando o hash armazenado por compatibilidade)
+            # IDEALMENTE: Você usaria o Firebase Client SDK aqui para fazer o login
+            # e obter o Token de autenticação.
             if 'senha_hash' in usuario_data and check_password_hash(usuario_data['senha_hash'], senha):
                 session['usuario_id'] = usuario_data['id'] # Salva o ID (UID) no Flask Session
                 flash(f'Bem-vindo(a), {usuario_data["nome"]}!', 'success')
@@ -371,9 +347,13 @@ def infor_curso_algoritmo():
     return render_template('infor-curso-algoritmo.html', user=usuario)
 
 
+
 # =========================================================
 # 5. ROTAS DE ÁREA RESTRITA E PERFIL (REVISADAS)
 # =========================================================
+
+# As rotas 'index', 'dashboard' e 'progresso' permanecem iguais em sua lógica de renderização,
+# pois usam a função 'usuario_logado' e 'calculate_progress' que foram atualizadas.
 
 @app.route('/')
 def index():
@@ -387,7 +367,7 @@ def dashboard():
     return render_template('dashboard.html', user=usuario)
 
 
-@app.route('/perfil', methods=['GET', 'POST'])
+@app.route('/perfil', methods=['GET', 'POST']) 
 @requires_auth
 def perfil():
     usuario = usuario_logado()
@@ -454,7 +434,7 @@ def perfil():
         except Exception as e:
             flash(f"Ocorreu um erro inesperado ao salvar: {str(e)}", 'danger')
             # Retorna o template para não perder os dados do formulário
-            return render_template('perfil.html', user=usuario)
+            return render_template('perfil.html', user=usuario) 
 
     # Lógica GET: A função usuario_logado já retorna o usuário atualizado
     return render_template('perfil.html', user=usuario)
@@ -464,14 +444,14 @@ def perfil():
 def progresso():
     usuario = usuario_logado()
     # MUDANÇA: progresso_db agora é um dicionário contido dentro do objeto usuario
-    progresso_db = usuario.get('progresso', {})
+    progresso_db = usuario.get('progresso', {}) 
     
-    progresso_data = calculate_progress(progresso_db)
+    progresso_data = calculate_progress(progresso_db) 
 
     context = {
         'user': usuario,
         'title': "Meu Progresso",
-        'progresso_data': progresso_data
+        'progresso_data': progresso_data 
     }
     
     return render_template('progresso.html', **context)
@@ -480,6 +460,8 @@ def progresso():
 # =========================================================
 # 6. ROTAS DE CERTIFICADO (REVISADAS)
 # =========================================================
+# O cálculo do progresso já foi adaptado, estas rotas só precisam garantir
+# que pegam o progresso como dicionário.
 
 @app.route('/certificado')
 @requires_auth
@@ -496,7 +478,7 @@ def certificado():
         'user': usuario,
         'title': "Certificado",
         'certificado_disponivel': certificado_disponivel,
-        'nome_usuario': usuario['nome'],
+        'nome_usuario': usuario['nome'], 
         'data_emissao': data_emissao
     }
     return render_template('certificado.html', **context)
@@ -514,18 +496,17 @@ def gerar_certificado():
 
     nome_completo = usuario['nome'].upper()
     data_conclusao_str = datetime.now().strftime('%d de \%B de \%Y')
-    carga_horaria = 24
+    carga_horaria = 24 
     
-    # OBS: A função generate_latex_certificate não está definida neste snippet,
-    # mas a lógica de roteamento aqui está correta.
-    # latex_content = generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
-    latex_content = "Conteúdo de certificado LaTeX de exemplo"
+    latex_content = generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
     
     return Response(
         latex_content,
         mimetype='application/x-tex',
         headers={'Content-Disposition': f'attachment;filename=Certificado_{nome_completo.replace(" ", "_")}.tex'}
     )
+
+# A função generate_latex_certificate não foi alterada, pois não toca no DB.
 
 
 # =========================================================
@@ -539,7 +520,7 @@ def modulos():
     progresso = usuario.get('progresso', {})
     
     progresso_data = calculate_progress(progresso)
-    modulos_list = progresso_data.get('modules', [])
+    modulos_list = progresso_data.get('modules', []) 
 
     return render_template('modulos.html', user=usuario, modulos=modulos_list, progresso_data=progresso_data)
 
@@ -553,44 +534,40 @@ def salvar_projeto_modulo(modulo_slug):
     if not request.is_json:
         return jsonify({'success': False, 'message': 'Requisição deve ser JSON.'}), 400
         
-    data = request.get_json()
-    
-    # AJUSTADO: Usa o campo 'project_field' do MODULO_CONFIG para saber qual chave salvar
-    modulo_config = MODULO_BY_SLUG.get(modulo_slug)
-    if not modulo_config or not modulo_config.get('project_field'):
-        return jsonify({'success': False, 'message': 'Módulo ou campo de projeto não configurado.'}), 400
-        
-    project_field_name = modulo_config['project_field']
-    # A resposta deve vir no JSON com a chave do campo de projeto
-    project_idea = data.get(project_field_name)
+    data = request.get_json() 
+    field_name = f'project_idea_{MODULO_BY_SLUG.get(modulo_slug, {}).get("order", 0)}'
+    project_idea = data.get(field_name) 
 
     if not project_idea or len(project_idea.strip()) < 10:
         return jsonify({'success': False, 'message': 'Resposta muito curta ou ausente.'}), 400
 
-    # AJUSTADO: Usa a referência padronizada do projeto
-    project_ref = get_project_doc_ref(user_id)
+    # MUDANÇA: As respostas são armazenadas em um documento na coleção 'respostas_projeto'.
+    # Usamos uma chave composta (usuario_id + modulo_slug) para o ID do documento
+    doc_id = f"{user_id}_{modulo_slug}"
+    resposta_ref = db.collection('respostas_projeto').document(doc_id)
 
     try:
-        # Cria um dicionário para a atualização (ex: {'decomposicao': 'minha resposta'})
-        update_data = {
-            project_field_name: project_idea,
-            f'data_atualizacao_{modulo_slug}': firestore.SERVER_TIMESTAMP
+        # Dados a serem salvos/atualizados
+        resposta_data = {
+            'usuario_id': user_id,
+            'modulo_slug': modulo_slug,
+            'conteudo_resposta': project_idea,
+            'data_atualizacao': firestore.SERVER_TIMESTAMP # Atualiza o timestamp
         }
         
-        # Use set(data, merge=True) para criar o documento (project_data/main_project) se não existir ou atualizar se existir
-        project_ref.set(update_data, merge=True)
+        # Use set(data, merge=True) para criar se não existir ou atualizar se existir
+        resposta_ref.set(resposta_data, merge=True)
         
         return jsonify({'success': True, 'message': 'Ideia de projeto salva com sucesso!'})
     
     except Exception as e:
-        print(f"Erro ao salvar projeto do módulo {modulo_slug}: {e}")
+        print(f"Erro ao salvar projeto do módulo {modulo_slug}: {e}") 
         return jsonify({'success': False, 'message': f'Erro interno ao salvar no DB: {str(e)}'}), 500
 
 
 @app.route('/concluir-modulo/<string:modulo_nome>', methods=['POST'])
 @requires_auth
 def concluir_modulo(modulo_nome):
-    # Lógica de conclusão de módulo (permanece a mesma)
     usuario = usuario_logado()
     user_id = usuario['id']
     progresso = usuario.get('progresso', {}) # Progresso como dicionário
@@ -653,61 +630,39 @@ def conteudo_dinamico(modulo_slug):
         flash(f'Você deve completar o módulo anterior primeiro.', 'warning')
         return redirect(url_for('modulos'))
         
-    # 3. LÓGICA DE CARREGAMENTO DAS RESPOSTAS DO PROJETO
-    
-    # AJUSTADO: Carrega o documento 'main_project' para todos os módulos (1-5 para pré-preenchimento, 6 para resumo)
-    project_doc_ref = get_project_doc_ref(user_id)
-    project_doc_snap = project_doc_ref.get()
-    project_data = project_doc_snap.to_dict() if project_doc_snap.exists else {}
-
+    # 3. LÓGICA ESPECÍFICA PARA O MÓDULO FINAL (carregar respostas)
+    respostas_projeto_modulos = {}
     extra_context = {}
     
     if modulo_slug == 'projeto-final':
-        ## NOVO: Lógica de Carregamento para o Módulo Final (Módulo 6)
+        # MUDANÇA: Busca todas as respostas do projeto deste usuário (Firestore Query)
+        respostas_query = db.collection('respostas_projeto').where('usuario_id', '==', user_id).stream()
         
-        # Cria uma lista ordenada com os dados do projeto para o template, usando os campos do MODULO_CONFIG
+        for r_doc in respostas_query:
+            r = r_doc.to_dict()
+            # Mapeia as respostas para um dicionário: {'introducao': 'texto...', 'decomposicao': 'texto...'}
+            respostas_projeto_modulos[r['modulo_slug']] = r['conteudo_resposta']
+            
         respostas_projeto_ordenadas = []
         for mod in MODULO_CONFIG:
-            if mod.get('project_field'):
-                field_name = mod['project_field']
+            if mod['slug'] != 'projeto-final': 
                 respostas_projeto_ordenadas.append({
                     'title': mod['title'],
                     'slug': mod['slug'],
-                    # Puxa a resposta do documento consolidado (project_data)
-                    'resposta': project_data.get(field_name, 'Nenhuma resposta salva.'),
-                    'is_saved': field_name in project_data
+                    'resposta': respostas_projeto_modulos.get(mod['slug'], 'Nenhuma resposta salva.'),
+                    'is_saved': mod['slug'] in respostas_projeto_modulos
                 })
         
-        # Este contexto não é estritamente necessário se o frontend usar o JS/Firestore,
-        # mas mantém a opção de renderização via Flask:
-        extra_context['respostas_projeto'] = respostas_projeto_ordenadas
-
+        extra_context = {'respostas_projeto': respostas_projeto_ordenadas}
     else:
-        # Para outros módulos (1 a 5), pré-preenche o campo de texto se houver resposta salva
-        project_field = modulo_config.get('project_field')
-        if project_field:
-            extra_context = {
-                'resposta_anterior': project_data.get(project_field, '')
-            }
+        # Para outros módulos (1 a 5), checa se já existe uma resposta salva para preencher o campo
+        doc_id = f"{user_id}_{modulo_slug}"
+        resposta_pre_salva = get_firestore_doc('respostas_projeto', doc_id)
+        
+        extra_context = {
+            'resposta_anterior': resposta_pre_salva.get('conteudo_resposta', '') if resposta_pre_salva else ''
+        }
 
-    # =========================================================================
-    # INJEÇÃO DA CONFIGURAÇÃO DO FIREBASE CLIENT E TOKEN
-    # =========================================================================
-    
-    # Adicionando a injeção da config do cliente (agora carregada no início do arquivo)
-    extra_context['__firebase_config'] = FIREBASE_CLIENT_CONFIG 
-    
-    # MANTIDO: A injeção do token de autenticação e do APP_ID
-    # O token DEVE ser gerado dinamicamente no backend.
-    # OBS: Pode falhar se o Firebase Admin não foi inicializado (credenciais ausentes)
-    try:
-        extra_context['__initial_auth_token'] = auth.create_custom_token(user_id).decode()
-    except Exception as e:
-        print(f"AVISO: Não foi possível criar o token de autenticação. Erro: {e}")
-        extra_context['__initial_auth_token'] = '' # Garante que o frontend não quebre
-        
-    extra_context['__app_id'] = APP_ID_FOR_FIREBASE
-        
     # 4. Renderiza o template do módulo
     template_name = modulo_config['template']
     return render_template(template_name, user=usuario, progresso=progresso, modulo=modulo_config, **extra_context)
@@ -718,5 +673,7 @@ def conteudo_dinamico(modulo_slug):
 # =========================================================
 
 if __name__ == '__main__':
+    # REMOVIDO: db.create_all() 
+    
     # Roda o servidor de desenvolvimento
     app.run(debug=True)

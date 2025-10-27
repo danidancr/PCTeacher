@@ -5,16 +5,19 @@
 {% block content_title %}Módulo 2: A Arte da Decomposição{% endblock %}
 
 {% block content %}
+    <!-- 1. Video Aula -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Quebrando o Problema em Partes
         </h2>
         <div class="video-container">
+            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a simplificar qualquer desafio dividindo-o em subtarefas gerenciáveis.</p>
     </div>
 
+    <!-- 2. Material de Apoio -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
@@ -24,322 +27,230 @@
             <i class="fas fa-download mr-2"></i> Baixar Ferramentas de Decomposição
         </a>
     </div>
-    
+   
+    <!-- 3. Exercícios Práticos (Múltipla Escolha com Feedback) -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
         </h2>
         <div class="space-y-6">
             
-            <div id="q-mod2-1" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">Módulo 2: Decomposição</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">1. No contexto do Pensamento Computacional, a Decomposição é a primeira etapa crucial. Qual é o seu principal objetivo?</p>
+            <!-- Pergunta 1 (CESGRANRIO) -->
+            <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. Um dos desafios enfrentados pelas organizações no século XXI é a crescente complexidade dos problemas que lhes são apresentados. Uma opção para que as organizações possam ser eficientes e eficazes é a utilização do pensamento computacional, por suas características peculiares. O pensamento computacional caracteriza-se pela(o)</p>
                 <div class="space-y-2">
+                    <!-- Opção A (CORRETA - Inferida como a mais plausível conceitualmente) -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-1', this, true, '✅ Exato! O objetivo é transformar um grande desafio em subtarefas que podem ser resolvidas uma de cada vez.')" data-correct="true">
-                        A) Simplificar um problema complexo dividindo-o em partes menores e mais gerenciáveis.
+                        onclick="checkAnswer('q-mod0-1', this, 'true', '✅ Correto! O PC é uma forma de pensar, que utiliza o raciocínio recursivo e heurístico na resolução de problemas complexos, e não se limita a linguagens de programação ou a passos mecânicos.')" data-correct="true">
+                        pensamento recursivo, pelo pensamento orientado à mitigação de problemas e pelo uso do raciocínio heurístico na busca de uma solução.
                     </div>
+                    <!-- Opção B -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-1', this, false, '❌ Incorreto. O foco inicial não é a solução (algoritmo) ou os padrões, mas sim a divisão para reduzir a complexidade e permitir o gerenciamento das partes.')" data-correct="false">
-                        B) Identificar padrões repetitivos no problema para replicá-los.
+                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. Essa alternativa reduz ou distorce o conceito; o PC é mais amplo e abrange habilidades aplicáveis além da programação, além de usar múltiplos níveis de abstração.')" data-correct="false">
+                        conceitualização, ou seja, por adotar as especificações utilizadas na codificação de um programa de computador, com base em apenas um nível de abstração, para a resolução do problema apresentado.
                     </div>
+                    <!-- Opção C -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-1', this, false, '❌ Incorreto. O foco inicial não é a solução (algoritmo) ou os padrões, mas sim a divisão para reduzir a complexidade e permitir o gerenciamento das partes.')" data-correct="false">
-                        C) Criar um algoritmo final imediatamente, sem revisar as partes.
+                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é um conjunto de habilidades de pensamento e não se resume à capacidade de seguir instruções de forma mecanizada.')" data-correct="false">
+                        habilidade para seguir, de forma mecanizada, as especificações explicitadas nas rotas e nos protocolos de solução para o problema apresentado.
                     </div>
+                    <!-- Opção D -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-1', this, false, '❌ Incorreto. O foco inicial não é a solução (algoritmo) ou os padrões, mas sim a divisão para reduzir a complexidade e permitir o gerenciamento das partes.')" data-correct="false">
-                        D) Focar apenas nos detalhes irrelevantes, ignorando o quadro geral.
+                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é mais amplo do que o tratamento puramente matemático e é aplicado em diversos contextos, não apenas em questões isoladas.')" data-correct="false">
+                        isolamento das questões referentes ao problema apresentado e tratamento puramente matemático dessas questões.
                     </div>
+                    <!-- Opção E -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-1', this, false, '❌ Incorreto. O foco inicial não é a solução (algoritmo) ou os padrões, mas sim a divisão para reduzir a complexidade e permitir o gerenciamento das partes.')" data-correct="false">
-                        E) Traduzir o problema para uma linguagem de programação específica.
+                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é uma forma de pensar, e não envolve diretamente a utilização da forma binária de tratamento de dados pelo ser humano.')" data-correct="false">
+                        promoção, no ser humano, de um modo de pensamento similar ao de computadores, pela utilização da forma binária de tratamento de dados na resolução do problema apresentado.
                     </div>
                 </div>
+                <!-- Feedback / Rationale -->
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
             
-            <div id="q-mod2-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">Módulo 2: Decomposição</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">2. Embora interligadas, a Decomposição e a Abstração (outro pilar do Pensamento Computacional) têm focos distintos. A Decomposição foca na *divisão*. Qual é o foco da Abstração, em contraste?</p>
+            <!-- Pergunta 2 (IADES) -->
+            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
+                                
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
+
+                <!-- Imagem Referente à Questão 2 (IADES) -->
+                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
+                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
+                </div>
+
                 <div class="space-y-2">
+                    <!-- Opção A -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-2', this, false, '❌ Incorreto. A decomposição divide o problema, e a abstração permite focar no que é mais importante em cada parte, desconsiderando o ruído.')" data-correct="false">
-                        A) Na repetição de etapas para aumentar a eficiência na resolução.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
+                        Conhecimento algébrico e estatístico
                     </div>
+                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-2', this, false, '❌ Incorreto. A decomposição divide o problema, e a abstração permite focar no que é mais importante em cada parte, desconsiderando o ruído.')" data-correct="false">
-                        B) Na identificação de erros de lógica (depuração).
+                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
+                        Reformulação do problema e abstração
                     </div>
+                    <!-- Opção C -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-2', this, false, '❌ Incorreto. A decomposição divide o problema, e a abstração permite focar no que é mais importante em cada parte, desconsiderando o ruído.')" data-correct="false">
-                        C) No mapeamento das interdependências entre todas as partes divididas.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
+                        Depuração e habilidade com compiladores
                     </div>
+                    <!-- Opção D -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-2', this, true, '✅ Correto! A Abstração é o ato de filtrar, destacando o que é crucial e ignorando o que é supérfluo para a solução do subproblema.')" data-correct="true">
-                        D) Na ocultação de detalhes irrelevantes para se concentrar nas informações essenciais.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
+                        Habilidade com programação e pensamento matemático
                     </div>
+                    <!-- Opção E -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-2', this, false, '❌ Incorreto. A decomposição divide o problema, e a abstração permite focar no que é mais importante em cada parte, desconsiderando o ruído.')" data-correct="false">
-                        E) Na criação de um passo a passo detalhado (algoritmo) para a máquina.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
+                        Decomposição e topologia
                     </div>
                 </div>
+                <!-- Feedback / Rationale -->
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
 
-            <div id="q-mod2-3" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">Módulo 2: Decomposição</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">3. Um professor de História deseja que seus alunos analisem a complexa Revolução Francesa. Aplicando a Decomposição, o professor deve:</p>
+            <!-- Pergunta 3 -->
+            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
+                
+                <!-- Imagem Referente à Questão 2 (IADES) -->
+                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
+                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
+                </div>
+                
+                <p class="font-semibold text-lg mb-4 text-gray-800">3. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
                 <div class="space-y-2">
+                    <!-- Opção A -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-3', this, false, '❌ Incorreto. A decomposição busca estruturar o conhecimento em partes coerentes e interligadas, e não fragmentá-lo em dados aleatórios ou simplificá-lo de forma incompleta.')" data-correct="false">
-                        A) Pedir aos alunos que memorizem todas as datas e nomes importantes isoladamente.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
+                        Conhecimento algébrico e estatístico
                     </div>
+                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-3', this, false, '❌ Incorreto. A decomposição busca estruturar o conhecimento em partes coerentes e interligadas, e não fragmentá-lo em dados aleatórios ou simplificá-lo de forma incompleta.')" data-correct="false">
-                        B) Apresentar apenas um vídeo curto e não aprofundar o tema.
+                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
+                        Reformulação do problema e abstração
                     </div>
+                    <!-- Opção C -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-3', this, true, '✅ Perfeito! Dividir um evento histórico em fases lógicas e interconectadas torna o estudo e a compreensão de cada parte mais fácil.')" data-correct="true">
-                        C) Sugerir a divisão do tema em fases: Crise do Antigo Regime, Período do Terror, e o Diretório.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
+                        Depuração e habilidade com compiladores
                     </div>
+                    <!-- Opção D -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-3', this, false, '❌ Incorreto. A decomposição busca estruturar o conhecimento em partes coerentes e interligadas, e não fragmentá-lo em dados aleatórios ou simplificá-lo de forma incompleta.')" data-correct="false">
-                        D) Exigir um trabalho de pesquisa sobre todas as revoluções europeias simultaneamente.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
+                        Habilidade com programação e pensamento matemático
                     </div>
+                    <!-- Opção E -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-3', this, false, '❌ Incorreto. A decomposição busca estruturar o conhecimento em partes coerentes e interligadas, e não fragmentá-lo em dados aleatórios ou simplificá-lo de forma incompleta.')" data-correct="false">
-                        E) Focar apenas na biografia de um único personagem histórico, ignorando o contexto.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
+                        Decomposição e topologia
                     </div>
                 </div>
+                <!-- Feedback / Rationale -->
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
 
-            <div id="q-mod2-4" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">Módulo 2: Decomposição</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">4. A Decomposição é uma ferramenta poderosa, mas pode ser mal aplicada se for "excessiva". Qual é o principal risco de dividir um problema em subproblemas *muito* pequenos e isolados?</p>
+            <!-- Pergunta 4 -->
+            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
+                
+                <!-- Imagem Referente à Questão 2 (IADES) -->
+                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
+                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
+                </div>
+                
+                <p class="font-semibold text-lg mb-4 text-gray-800">4. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
                 <div class="space-y-2">
+                    <!-- Opção A -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-4', this, false, '❌ Incorreto. O objetivo da decomposição é simplificar, mas a fragmentação extrema pode destruir a coerência lógica e a visão sistêmica do problema.')" data-correct="false">
-                        A) Levar à descoberta imediata de padrões (Reconhecimento de Padrões).
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
+                        Conhecimento algébrico e estatístico
                     </div>
+                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-4', this, false, '❌ Incorreto. O objetivo da decomposição é simplificar, mas a fragmentação extrema pode destruir a coerência lógica e a visão sistêmica do problema.')" data-correct="false">
-                        B) Aumentar a clareza da solução algorítmica, tornando-a muito simples.
+                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
+                        Reformulação do problema e abstração
                     </div>
+                    <!-- Opção C -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-4', this, true, '✅ Exato! Subproblemas precisam ser coerentes e suas conexões devem ser mantidas, caso contrário, o processo perde o sentido e a coerência geral da solução.')" data-correct="true">
-                        C) Perder a visão da interdependência e da solução do problema original (o todo).
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
+                        Depuração e habilidade com compiladores
                     </div>
+                    <!-- Opção D -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-4', this, false, '❌ Incorreto. O objetivo da decomposição é simplificar, mas a fragmentação extrema pode destruir a coerência lógica e a visão sistêmica do problema.')" data-correct="false">
-                        D) Tornar o problema mais simples de codificar ou executar.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
+                        Habilidade com programação e pensamento matemático
                     </div>
+                    <!-- Opção E -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-4', this, false, '❌ Incorreto. O objetivo da decomposição é simplificar, mas a fragmentação extrema pode destruir a coerência lógica e a visão sistêmica do problema.')" data-correct="false">
-                        E) Exigir menos tempo de planejamento devido à simplificação.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
+                        Decomposição e topologia
                     </div>
                 </div>
+                <!-- Feedback / Rationale -->
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
 
-            <div id="q-mod2-5" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">Módulo 2: Decomposição</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">5. Qual das seguintes ações **NÃO** representa um princípio da Decomposição no Pensamento Computacional?</p>
+            <!-- Pergunta 5 -->
+            <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
+                
+                <!-- Imagem Referente à Questão 2 (IADES) -->
+                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
+                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
+                </div>
+                
+                <p class="font-semibold text-lg mb-4 text-gray-800">5. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
                 <div class="space-y-2">
+                    <!-- Opção A -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-5', this, false, '❌ Incorreto. A decomposição trata da divisão lógica de um problema em partes. Reconhecimento de Padrões trata da busca por similaridades.')" data-correct="false">
-                        A) Dividir uma redação em seções lógicas: Introdução, Desenvolvimento e Conclusão.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
+                        Conhecimento algébrico e estatístico
                     </div>
+                    <!-- Opção B (CORRETA - Reformulação do problema é um sinônimo para Decomposição) -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-5', this, false, '❌ Incorreto. A decomposição trata da divisão lógica de um problema em partes. Reconhecimento de Padrões trata da busca por similaridades.')" data-correct="false">
-                        B) Quebrar uma receita de bolo em etapas sequenciais (preparar, misturar, assar).
+                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
+                        Reformulação do problema e abstração
                     </div>
+                    <!-- Opção C -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-5', this, true, '✅ Correto! Detectar elementos repetitivos é a definição de **Reconhecimento de Padrões**, outro pilar do Pensamento Computacional, não de Decomposição.')" data-correct="true">
-                        C) Focar na detecção de elementos que se repetem em problemas diferentes ou similares.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
+                        Depuração e habilidade com compiladores
                     </div>
+                    <!-- Opção D -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-5', this, false, '❌ Incorreto. A decomposição trata da divisão lógica de um problema em partes. Reconhecimento de Padrões trata da busca por similaridades.')" data-correct="false">
-                        D) Separar as etapas de um projeto de robótica (design, programação, montagem e teste).
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
+                        Habilidade com programação e pensamento matemático
                     </div>
+                    <!-- Opção E -->
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod2-5', this, false, '❌ Incorreto. A decomposição trata da divisão lógica de um problema em partes. Reconhecimento de Padrões trata da busca por similaridades.')" data-correct="false">
-                        E) Analisar um sistema solar complexo pela separação de cada planeta e sua órbita individualmente.
+                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
+                        Decomposição e topologia
                     </div>
                 </div>
+                <!-- Feedback / Rationale -->
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
 
         </div>
     </div>
 
+    <!-- 4. Pergunta para o Projeto Final -->
     <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto - Fase 2: Decomposição
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto
         </h2>
-        <p class="text-gray-700 mb-4">Com base no seu projeto inicial (Módulo 1), aplique o conceito de Decomposição, dividindo o objetivo geral em etapas ou subproblemas menores.</p>
-        
-        <div class="p-3 mb-4 bg-white rounded-lg border border-indigo-300">
-            <h3 class="font-bold text-indigo-700 mb-2">Seu Projeto Inicial (Módulo 1):</h3>
-            <p class="text-sm"><strong>Objetivo Geral:</strong> <span id="display_objetivo_geral" class="font-normal text-gray-600 italic">Carregando...</span></p>
-        </div>
-
-        <form id="project-form-2">
-            <div class="mb-4">
-                <label for="decomposicao" class="block text-gray-800 font-medium mb-2">Decomposição: Divida o seu projeto em 3 a 5 subetapas ou subproblemas:</label>
-                <textarea id="decomposicao" name="decomposicao" rows="5" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo: 1. Pesquisa de Materiais. 2. Criação do Cenário. 3. Teste com o Público-Alvo."></textarea>
-            </div>
-
-            <div id="project-feedback" class="mt-4 text-sm font-medium text-gray-600 hidden"></div>
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Fase 2 do Projeto</button>
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final no último módulo.</p>
+        <form id="project-idea-form">
+            <label for="project_idea_0" class="block text-gray-800 font-medium mb-2">Indique o nome do seu projeto, objetivo e quais pilares do pensamento computacional você vai aplicar no seu projeto.</label>
+            <textarea id="project_idea_0" name="project_idea_0" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Descreva sua ideia aqui..."></textarea>
+            <!-- Adicione aqui a lógica de armazenamento (Firebase/Firestore) -->
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Ideia</button>
         </form>
     </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Configuração e Inicialização do Firebase (Assegure que as variáveis globais sejam injetadas pelo backend Flask)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-
-        let db, auth, userId;
-        const PROJECT_COLLECTION = 'project_data';
-        const DOCUMENT_ID = 'main_project'; // Documento único para o projeto final
-
-        setLogLevel('Debug');
-
-        if (firebaseConfig) {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            
-            async function authenticate() {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined') {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    userId = auth.currentUser?.uid || crypto.randomUUID();
-                    console.log("Firebase autenticado com userId:", userId);
-                    loadProjectData();
-                } catch (error) {
-                    console.error("Erro na autenticação Firebase:", error);
-                }
-            }
-            
-            authenticate();
-        } else {
-            console.error("Configuração do Firebase não encontrada.");
-        }
-
-        // --------------------------------------------------
-        // Lógica de Salvamento e Carregamento do Projeto
-        // --------------------------------------------------
-
-        function getProjectDocRef(dbInstance, uid) {
-            return doc(dbInstance, 'artifacts', appId, 'users', uid, PROJECT_COLLECTION, DOCUMENT_ID);
-        }
-
-        async function saveProjectData(data) {
-            if (!db || !userId) {
-                console.error("Firebase ou userId não estão prontos.");
-                return;
-            }
-            const feedbackEl = document.getElementById('project-feedback');
-            try {
-                const docRef = getProjectDocRef(db, userId);
-                // Usamos merge: true para que cada módulo só atualize seus próprios campos
-                await setDoc(docRef, data, { merge: true }); 
-                feedbackEl.textContent = "✅ Projeto da Fase 2 (Decomposição) salvo com sucesso!";
-                feedbackEl.classList.remove('hidden', 'text-red-500');
-                feedbackEl.classList.add('text-green-500');
-            } catch (error) {
-                console.error("Erro ao salvar dados do projeto:", error);
-                feedbackEl.textContent = "❌ Erro ao salvar o projeto. Tente novamente.";
-                feedbackEl.classList.remove('hidden', 'text-green-500');
-                feedbackEl.classList.add('text-red-500');
-            }
-        }
-
-        async function loadProjectData() {
-            if (!db || !userId) {
-                setTimeout(loadProjectData, 500); // Tenta novamente
-                return;
-            }
-
-            try {
-                const docRef = getProjectDocRef(db, userId);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-
-                    // 1. Carrega o campo do Módulo 2 (Decomposição) para edição
-                    document.getElementById('decomposicao').value = data.decomposicao || '';
-                    
-                    // 2. Carrega campos do Módulo 1 para visualização (contexto)
-                    document.getElementById('display_objetivo_geral').textContent = data.objetivo_geral || 'N/A (Preencha no Módulo 1)';
-
-                    console.log("Dados do projeto carregados:", data);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dados do projeto:", error);
-            }
-        }
-
-        document.getElementById('project-form-2').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const data = {
-                // Salva o campo específico deste módulo
-                decomposicao: document.getElementById('decomposicao').value,
-                timestamp_m2: new Date().toISOString() // Adiciona um timestamp de salvamento
-            };
-            saveProjectData(data);
-        });
-
-        // --------------------------------------------------
-        // Lógica de Verificação do Quiz (Mantida do Módulo 1)
-        // --------------------------------------------------
-        window.checkAnswer = function(questionId, selectedOption, isCorrect, feedbackMessage) {
-            const questionDiv = document.getElementById(questionId);
-            const feedbackEl = questionDiv.querySelector('.feedback-message');
-            const options = questionDiv.querySelectorAll('.quiz-option');
-
-            // Desabilita todas as opções
-            options.forEach(opt => {
-                opt.classList.add('disabled');
-                opt.onclick = null; // Remove o evento de clique
-            });
-
-            // Aplica estilos e exibe feedback
-            if (isCorrect) {
-                selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
-                selectedOption.classList.add('correct');
-                feedbackEl.textContent = feedbackMessage;
-                feedbackEl.classList.remove('hidden', 'text-red-500');
-                feedbackEl.classList.add('text-green-500');
-            } else {
-                selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
-                selectedOption.classList.add('incorrect');
-                
-                // Encontra e destaca a resposta correta
-                options.forEach(opt => {
-                    if (opt.getAttribute('data-correct') === 'true') {
-                        opt.classList.remove('bg-gray-100');
-                        opt.classList.add('correct');
-                    }
-                });
-                
-                feedbackEl.textContent = feedbackMessage;
-                feedbackEl.classList.remove('hidden', 'text-green-500');
-                feedbackEl.classList.add('text-red-500');
-            }
-        };
-    </script>
 {% endblock %}
 
 {% block finish_button %}
