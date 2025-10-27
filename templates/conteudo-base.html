@@ -247,8 +247,9 @@
     
     <script>
         // Variáveis injetadas pelo Flask (ver app.py)
-        // O | default('{}') previne erros caso as variáveis não sejam injetadas em rotas públicas (index, login)
-        const FIREBASE_CONFIG = JSON.parse('{{ __firebase_config | default('{}') | safe }}');
+        // CORREÇÃO CRÍTICA APLICADA: Usamos |default({}) para rotas públicas e |tojson | safe
+        // para garantir que a saída seja um objeto JS (ou null) válido.
+        const FIREBASE_CONFIG = {{ __firebase_config | default({}) | tojson | safe }};
         const INITIAL_AUTH_TOKEN = '{{ __initial_auth_token | default('') }}';
         const APP_ID = '{{ __app_id | default('prod') }}';
 
@@ -256,7 +257,8 @@
         let isFirebaseReady = false;
         
         // Verifica se há configurações do Firebase e se a inicialização é necessária
-        if (Object.keys(FIREBASE_CONFIG).length > 0 && !firebase.apps.length) {
+        // Usamos FIREBASE_CONFIG && FIREBASE_CONFIG !== null para verificar o valor
+        if (FIREBASE_CONFIG && FIREBASE_CONFIG !== null && Object.keys(FIREBASE_CONFIG).length > 0 && !firebase.apps.length) {
             try {
                 // 1. Inicializa o Firebase Client
                 firebase.initializeApp(FIREBASE_CONFIG);
@@ -281,7 +283,7 @@
             } catch (e) {
                 console.error("Erro CRÍTICO ao iniciar o Firebase:", e);
             }
-        } else if (Object.keys(FIREBASE_CONFIG).length === 0) {
+        } else if (FIREBASE_CONFIG === null || Object.keys(FIREBASE_CONFIG).length === 0) {
              console.warn("AVISO: Variáveis de configuração do Firebase (FIREBASE_CLIENT_CONFIG) não foram injetadas. Funcionalidades de projeto serão desabilitadas.");
         }
         
