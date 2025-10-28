@@ -2,7 +2,9 @@
 
 {% block title %}Módulo 3: Reconhecimento de Padrões{% endblock %}
 
-{% block content_title %}Módulo 3: Reconhecimento de Padrões{% endblock %}
+{% block content_title %}
+    <i class="fas fa-search-plus text-primary-indigo mr-2"></i> Módulo 3: Reconhecimento de Padrões
+{% endblock %}
 
 {% block content %}
     <div class="content-section">
@@ -136,130 +138,59 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            </div>
+        </div>
     </div>
 
-  <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-sitemap mr-3"></i> Questão de Projeto: Otimização da Metodologia por Padrões
-        </h2>
+    {# ========================================================= #}
+    {# SEÇÃO DE PROJETO (OTIMIZAÇÃO DE PADRÕES) - AJUSTADA PARA A LÓGICA FLASK/AJAX #}
+    {# ========================================================= #}
+    <div class="content-section bg-indigo-50 border-indigo-300">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold text-primary-indigo">🧠 Meu Projeto: Otimização por Padrões</h2>
+            {# Este span será atualizado pela função JavaScript saveProjectData na base_dashboard.html #}
+            <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
+        </div>
+        
         <p class="text-gray-700 mb-4">Relembre as subpartes do seu projeto (decomposição) e encontre similaridades. Use a identificação de padrões para otimizar a metodologia.</p>
         
-        <form id="project-idea-form-mod3" onsubmit="saveProjectDataMod3(event)">
+        {# O ID do formulário é usado para o JavaScript, e o 'onchange' garante o salvamento assíncrono. #}
+        {# O campo 'name' deve ser um nome de campo válido no banco de dados, e o formulário usa 'project-form-modulo-3' para o AJAX. #}
+        <form id="project-form-modulo-3" method="POST" onchange="saveProjectData(this)">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Identificação e Otimização de Padrões</h3>
             
-            <p id="project-name-display-mod3" class="text-sm italic text-gray-600 mb-4">Carregando dados do projeto...</p>
+            {# Informação de contexto do projeto (Nome do Projeto do Módulo 1) #}
+            <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">
+                Projeto Atual: **{{ projeto_data.nome_projeto | default('Projeto Sem Nome') }}**
+            </p>
 
             <div class="mb-4">
-                <label for="project_pattern_optimization" class="block text-gray-800 font-medium mb-2">Identifique uma **ação ou recurso** que se repete em diferentes fases do seu projeto. Como você pode criar um **mecanismo único** para reutilizar ou simplificar essa repetição?</label>
-                <textarea id="project_pattern_optimization" name="project_pattern_optimization" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: A avaliação formativa é um padrão que se repete em 3 módulos. Podemos otimizá-la criando um único 'Template de Feedback' em vez de criar três documentos diferentes." required></textarea>
+                <label for="otimizacao_padrao" class="block text-gray-800 font-medium mb-2">Identifique uma **ação ou recurso** que se repete em diferentes fases do seu projeto. Como você pode criar um **mecanismo único** para reutilizar ou simplificar essa repetição?</label>
+                <textarea id="otimizacao_padrao" name="otimizacao_padrao" rows="6" 
+                          class="w-full p-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-primary-indigo focus:border-primary-indigo" 
+                          placeholder="Ex: A avaliação formativa é um padrão que se repete em 3 módulos. Podemos otimizá-la criando um único 'Template de Feedback' em vez de criar três documentos diferentes." required>
+                    {# Carrega o valor salvo do banco de dados, se existir #}
+                    {{ projeto_data.otimizacao_padrao | default('') }}
+                </textarea>
+                <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente.</p>
             </div>
             
-            <button type="submit" id="save-button-mod3" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
+            {# Botão de salvamento mantido, mas o onchange fará o trabalho. #}
+            <button type="submit" class="mt-4 hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-indigo hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo">
                 Salvar Otimização de Padrão
             </button>
-            <span id="save-feedback-mod3" class="ml-4 text-sm font-semibold text-red-600"></span>
+            
         </form>
     </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='rec_padrao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+    <div class="flex justify-end pt-4">
+        {# Usando 'modulo.slug' que é injetado pelo Flask para garantir a rota correta #}
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome=modulo.slug) }}">
+            <button type="submit" class="btn-finish">
+                <i class="fas fa-check-double mr-2"></i> Concluir Módulo 3: Reconhecimento de Padrões
             </button>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // As variáveis globais 'dbClient' (Firestore) e 'currentUserId' (UID do usuário) 
-    // devem estar disponíveis a partir do 'conteudo-base.html' para esta lógica funcionar.
-
-    // 1. Função para carregar os dados do Módulo 1 e Módulo 3
-    async function loadProjectDataMod3() {
-        // Verifica se o UID do usuário está disponível
-        if (!window.currentUserId) {
-            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
-            document.getElementById('save-feedback-mod3').textContent = 'Erro de autenticação. Recarregue a página.';
-            return;
-        }
-
-        const feedback = document.getElementById('save-feedback-mod3');
-        const saveButton = document.getElementById('save-button-mod3');
-        const projectNameDisplay = document.getElementById('project-name-display-mod3');
-
-        saveButton.disabled = true;
-        feedback.textContent = 'Carregando dados do projeto...';
-
-        try {
-            // Busca o documento único do usuário (dados_projeto/UID_DO_USUARIO)
-            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                const data = doc.data();
-                
-                // 1. CARREGA DADOS DO MÓDULO 1 (para UX)
-                const project_name = data.modulo_1?.project_name || 'Projeto Sem Nome (Módulo 1 Pendente)';
-                projectNameDisplay.textContent = `Projeto Atual: "${project_name}"`;
-
-                // 2. CARREGA DADOS ESPECÍFICOS DO MÓDULO 3 (NOVO CAMPO: project_pattern_optimization)
-                document.getElementById('project_pattern_optimization').value = data.modulo_3?.project_pattern_optimization || '';
-                
-                feedback.textContent = data.modulo_3?.project_pattern_optimization ? 'Dados do Módulo 3 carregados com sucesso.' : 'Pronto para otimizar por padrões.';
-
-                saveButton.disabled = false;
-            } else {
-                feedback.textContent = 'Atenção: Projeto não encontrado. Certifique-se de salvar o Módulo 1 primeiro.';
-                projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
-            }
-        } catch (error) {
-            console.error("Erro ao carregar dados do projeto (Módulo 3):", error);
-            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
-        }
-    }
-
-    // 2. Função para salvar/atualizar os dados do Módulo 3
-    async function saveProjectDataMod3(event) {
-        event.preventDefault(); 
-        
-        if (!window.currentUserId) {
-            alert("Erro: Usuário não autenticado. Não é possível salvar.");
-            return;
-        }
-
-        const saveButton = document.getElementById('save-button-mod3');
-        const feedback = document.getElementById('save-feedback-mod3');
-        saveButton.disabled = true;
-        feedback.textContent = 'Salvando...';
-
-        // Estrutura os dados DENTRO da chave 'modulo_3' com o novo campo
-        const dataToSave = {
-            modulo_3: {
-                project_pattern_optimization: document.getElementById('project_pattern_optimization').value,
-                data_ultima_atualizacao_mod3: firebase.firestore.FieldValue.serverTimestamp()
-            }
-        };
-
-        try {
-            // Usa .set com { merge: true } no documento do UID, garantindo que apenas modulo_3 seja atualizado.
-            await dbClient.collection("dados_projeto").doc(currentUserId)
-                .set(dataToSave, { merge: true });
-                
-            feedback.textContent = '✅ Otimização por padrões salva e projeto atualizado!';
-        } catch (error) {
-            console.error("Erro ao salvar dados do projeto (Módulo 3):", error);
-            feedback.textContent = '❌ Erro ao salvar. Tente novamente.';
-        } finally {
-            saveButton.disabled = false;
-        }
-    }
-
-    // 3. Chamada Inicial: Carregar dados ao carregar a página
-    window.addEventListener('load', loadProjectDataMod3);
-</script>
 {% endblock %}
