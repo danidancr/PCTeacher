@@ -160,7 +160,7 @@
             </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+<div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
         </h2>
@@ -169,8 +169,6 @@
         <form id="project-idea-form" onsubmit="saveProjectData(event)">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
-            
-            <input type="hidden" id="project_id" name="project_id" value=""> 
             
             <div class="mb-4">
                 <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
@@ -207,86 +205,77 @@
 
 {% block scripts %}
 <script>
-    // 1. Variáveis Globais (Configuração do Firebase deve estar em um arquivo separado e importado)
-    // Assumindo que você já tem o `db` (instância do Firestore) e `auth` (instância do Auth) configurados.
-    const db = firebase.firestore(); // Exemplo: Se estiver usando o Firestore
+    // ----------------------------------------------------------------------
+    // Variáveis globais dbClient e currentUserId estão no conteudo-base.html
+    // ----------------------------------------------------------------------
 
-    // 2. Chave de armazenamento local para o ID do projeto (para persistir entre os módulos)
-    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
-
-    // 3. Função para carregar os dados do projeto (se existirem) ao abrir o Módulo 1
+    // 1. Função para carregar os dados do projeto (se existirem) ao abrir o Módulo 1
     async function loadProjectData() {
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
-        const projectForm = document.getElementById('project-idea-form');
-        
-        if (projectId) {
-            document.getElementById('project_id').value = projectId;
-            
-            try {
-                // Tenta buscar o documento no Firebase
-                const docRef = db.collection("projetos").doc(projectId);
-                const doc = await docRef.get();
+        if (!currentUserId) {
+            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
+            document.getElementById('save-feedback').textContent = 'Erro de autenticação. Recarregue a página.';
+            return;
+        }
 
-                if (doc.exists) {
-                    const data = doc.data();
-                    // Preenche os campos do formulário com os dados existentes do Módulo 1
-                    document.getElementById('project_name').value = data.project_name || '';
-                    document.getElementById('project_objective').value = data.project_objective || '';
-                    document.getElementById('project_target').value = data.project_target || '';
-                    
-                    document.getElementById('save-feedback').textContent = 'Dados carregados do projeto existente.';
-                } else {
-                    // O ID existe localmente, mas não no Firebase (algo deu errado), então limpa o ID
-                    localStorage.removeItem(PROJECT_ID_STORAGE_KEY);
-                    document.getElementById('project_id').value = '';
-                    document.getElementById('save-feedback').textContent = 'Pronto para iniciar um novo projeto.';
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dados do projeto:", error);
-                document.getElementById('save-feedback').textContent = 'Erro ao carregar dados.';
+        const feedback = document.getElementById('save-feedback');
+        feedback.textContent = 'Carregando dados...';
+        
+        try {
+            // Tenta buscar o documento do projeto, usando o UID como ID do documento
+            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // Carrega DADOS ESPECÍFICOS DO MÓDULO 1 (Escopo)
+                document.getElementById('project_name').value = data.modulo_1?.project_name || '';
+                document.getElementById('project_objective').value = data.modulo_1?.project_objective || '';
+                document.getElementById('project_target').value = data.modulo_1?.project_target || '';
+                
+                feedback.textContent = 'Dados do projeto carregados.';
+            } else {
+                feedback.textContent = 'Inicie seu projeto preenchendo os campos.';
             }
-        } else {
-            document.getElementById('save-feedback').textContent = 'Inicie seu projeto preenchendo os campos.';
+        } catch (error) {
+            console.error("Erro ao carregar dados do projeto:", error);
+            feedback.textContent = 'Erro ao carregar dados.';
         }
     }
 
-    // 4. Função para salvar/atualizar os dados do projeto
+    // 2. Função para salvar/atualizar os dados do projeto (APENAS MÓDULO 1)
     async function saveProjectData(event) {
-        event.preventDefault(); // Impede o envio tradicional do formulário
+        event.preventDefault(); 
         
+        if (!currentUserId) {
+            alert("Erro: Usuário não autenticado. Não é possível salvar.");
+            return;
+        }
+
         const saveButton = document.getElementById('save-button');
         const feedback = document.getElementById('save-feedback');
         saveButton.disabled = true;
         feedback.textContent = 'Salvando...';
 
-        const userId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'anon'; // Adapte para sua lógica de autenticação
-        let projectId = document.getElementById('project_id').value;
-
-        const formData = {
-            project_name: document.getElementById('project_name').value,
-            project_objective: document.getElementById('project_objective').value,
-            project_target: document.getElementById('project_target').value,
-            usuarioId: userId,
-            modulo_1_completado: true,
-            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        // Estrutura os dados dentro da chave 'modulo_1'
+        const dataToSave = {
+            modulo_1: {
+                project_name: document.getElementById('project_name').value,
+                project_objective: document.getElementById('project_objective').value,
+                project_target: document.getElementById('project_target').value,
+                data_ultima_atualizacao_mod1: firebase.firestore.FieldValue.serverTimestamp()
+            },
+            // Este campo é útil para o Dashboard e Progresso geral do Flask
+            usuarioId: currentUserId 
         };
 
         try {
-            if (!projectId) {
-                // PRIMEIRA VEZ: CRIAR NOVO DOCUMENTO
-                const docRef = await db.collection("projetos").add(formData);
-                projectId = docRef.id;
+            // Usa .set com { merge: true } no documento do UID.
+            // Se o documento não existir, ele é criado. Se existir, ele apenas adiciona/atualiza o 'modulo_1'.
+            await dbClient.collection("dados_projeto").doc(currentUserId)
+                .set(dataToSave, { merge: true });
                 
-                // SALVA O ID LOCALMENTE E NO CAMPO OCULTO
-                localStorage.setItem(PROJECT_ID_STORAGE_KEY, projectId);
-                document.getElementById('project_id').value = projectId;
-
-                feedback.textContent = '✅ Projeto criado e salvo com sucesso!';
-            } else {
-                // PRÓXIMAS VEZES (Módulos 2-5): ATUALIZAR O DOCUMENTO EXISTENTE
-                await db.collection("projetos").doc(projectId).update(formData);
-                feedback.textContent = '✅ Projeto atualizado com sucesso!';
-            }
+            feedback.textContent = '✅ Definição Inicial salva com sucesso!';
         } catch (error) {
             console.error("Erro ao salvar dados do projeto:", error);
             feedback.textContent = '❌ Erro ao salvar o projeto. Tente novamente.';
@@ -295,8 +284,7 @@
         }
     }
 
-    // 5. Chamada Inicial: Carregar dados ao carregar a página
-    window.onload = loadProjectData;
-
+    // 3. Chamada Inicial: Carregar dados ao carregar a página
+    window.addEventListener('load', loadProjectData); 
 </script>
 {% endblock %}
