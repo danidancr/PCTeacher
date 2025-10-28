@@ -338,6 +338,34 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('index'))
 
+
+# =========================================================
+# 4.1 INFORMAÇÃO
+# =========================================================
+
+@app.route('/infor-curso-decomposicao')
+def infor_curso_decomposicao():
+    usuario = usuario_logado()
+    return render_template('infor-curso-decomposicao.html', user=usuario)
+
+@app.route('/infor-curso-rec-padrao')
+def infor_curso_rec_padrao():
+    usuario = usuario_logado()
+    return render_template('infor-curso-rec-padrao.html', user=usuario)
+
+@app.route('/infor-curso-abstracao')
+def infor_curso_abstracao():
+    usuario = usuario_logado()
+    return render_template('infor-curso-abstracao.html', user=usuario)
+
+@app.route('/infor-curso-algoritmo')
+def infor_curso_algoritmo():
+    usuario = usuario_logado()
+    return render_template('infor-curso-algoritmo.html', user=usuario)
+
+
+
+
 # =========================================================
 # 5. ROTAS DE ÁREA RESTRITA E PERFIL
 # =========================================================
