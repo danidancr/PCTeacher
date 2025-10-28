@@ -141,28 +141,37 @@ def get_firestore_doc(collection_name, doc_id):
     return None
 
 def get_projeto_usuario(user_id):
-    """Busca o documento de projeto do usuário. Retorna um dict ou um dict vazio."""
+    """
+    Busca o documento de projeto do usuário. 
+    Retorna um dict com as chaves padronizadas (nome_projeto, objetivo, etc.) ou um dict vazio.
+    """
     projeto_data = get_firestore_doc('projetos', user_id)
     
-    # Ajustei as chaves para corresponder às usadas nos templates (sem caracteres especiais)
+    # Chaves de projeto de acordo com a solicitação do usuário
     default_data = {
-        'id': user_id, # Adicionado ID para garantir que ele exista
+        'id': user_id, 
         'nome_projeto': '',
-        'objetivo': '', # Ajustado para 'problema' (mais comum do que 'objetivo' nos templates)
-        'publico_alvo': '',  # Ajustado de 'publico-alvo' para 'publico_alvo' (melhor em Python/Jinja)
-        'decomposicao': '', # Ajustado de 'decomposição'
-        'padroes': '', # Ajustado de 'rec-padrão'
+        'objetivo': '',
+        'publico_alvo': '', 
+        'decomposicao': '',
+        'rec_padrao': '', # Ajustado: 'rec_padrao'
         'abstracao': '',
         'algoritmo': ''
     }
 
     if projeto_data:
-        # Mescla com os dados padrão para garantir que todas as chaves estejam presentes
-        # Mapeamento de chaves antigas para novas (se necessário):
-        if 'objetivo' in projeto_data: projeto_data['problema'] = projeto_data.pop('objetivo')
-        if 'publico-alvo' in projeto_data: projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
-        if 'decomposição' in projeto_data: projeto_data['decomposicao'] = projeto_data.pop('decomposição')
-        if 'rec-padrão' in projeto_data: projeto_data['padroes'] = projeto_data.pop('rec-padrão')
+        # Apenas mescla os dados existentes com os defaults para garantir a presença de todas as chaves
+        # Nota: Se o Firestore estiver usando chaves antigas ('otimizacao_padrao', 'publico-alvo', etc.),
+        # você deve mapeá-las aqui. A lógica de compatibilidade abaixo foi ajustada para os novos nomes:
+        
+        # Mapeamento de chaves antigas para novas (se necessário, baseado em como você as nomeou antes):
+        # Ex: Se antes usava 'otimizacao_padrao' e agora quer 'rec_padrao':
+        if 'otimizacao_padrao' in projeto_data: 
+             projeto_data['rec_padrao'] = projeto_data.pop('otimizacao_padrao')
+        # Ex: Se antes usava 'publico-alvo' e agora quer 'publico_alvo':
+        if 'publico-alvo' in projeto_data: 
+             projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
+        # ... Adicione outros mapeamentos conforme necessário ...
 
         default_data.update(projeto_data)
         return default_data
@@ -182,7 +191,7 @@ def usuario_logado():
             user_data['progresso'] = progresso_data if progresso_data else {}
             
             # 2. Carrega os dados do Projeto
-            user_data['projeto'] = get_projeto_usuario(user_id) 
+            user_data['projeto'] = get_projeto_usuario(user_id)  
 
             return user_data
     return None
@@ -371,13 +380,13 @@ def cadastro():
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
 
             # === AJUSTE DE PROJETOS: CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
-            # (Usando as chaves padronizadas: problema, publico_alvo, decomposicao, etc.)
+            # USANDO AS NOVAS CHAVES DE VARIÁVEIS DE PROJETO
             novo_projeto_data = {
                 'nome_projeto': '',
-                'objetivo': '', # Ajustado
-                'publico_alvo': '', # Ajustado
+                'objetivo': '', 
+                'publico_alvo': '', 
                 'decomposicao': '',
-                'otimizacao_padrao': '',
+                'rec_padrao': '', # CHAVE AJUSTADA
                 'abstracao': '',
                 'algoritmo': ''
             }
@@ -613,25 +622,27 @@ def gerar_certificado():
 
 
 # =========================================================
-# 7. ROTAS DE GERENCIAMENTO DE PROJETOS (NOVAS/REVISADAS)
+# 7. ROTAS DE GERENCIAMENTO DE PROJETOS (REVISADAS)
 # =========================================================
 
 @app.route('/projeto/salvar', methods=['POST'])
 @requires_auth
 def salvar_projeto():
     """
-    Recebe os dados do projeto (parciais ou totais) e salva no Firestore.
-    Esta rota deve ser usada pelos formulários em 'conteudo-<modulo>.html'.
+    Recebe os dados do projeto (parciais ou totais) e salva no Firestore,
+    usando os nomes de variáveis de projeto fornecidos.
     """
     usuario = usuario_logado()
     user_id = usuario['id']
     
     data = request.form.to_dict() # Captura todos os dados do formulário
     
-    # Padroniza as chaves do formulário (Ex: 'decomposicao' para 'decomposicao')
+    # Padroniza e filtra as chaves válidas (ajustado para os nomes fornecidos)
     update_data = {}
+    valid_keys = ['nome_projeto', 'objetivo', 'publico_alvo', 'decomposicao', 'rec_padrao', 'abstracao', 'algoritmo']
+    
     for key, value in data.items():
-        if key in ['nome_projeto', 'objetivo', 'publico_alvo', 'decomposicao', 'otimizacao_padrao', 'abstracao', 'algoritmo']:
+        if key in valid_keys:
             update_data[key] = value.strip()
     
     if not update_data:
@@ -654,7 +665,7 @@ def salvar_projeto():
         
     except Exception as e:
         if request.is_json or request.accept_mimetypes.accept_json:
-             return jsonify({'success': False, 'message': f'Erro ao salvar: {str(e)}'}), 500
+              return jsonify({'success': False, 'message': f'Erro ao salvar: {str(e)}'}), 500
         flash(f'Erro ao salvar os dados do projeto: {str(e)}', 'danger')
         return redirect(request.referrer or url_for('dashboard'))
 
