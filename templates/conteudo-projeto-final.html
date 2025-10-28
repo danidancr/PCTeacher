@@ -27,7 +27,7 @@
         <div class="space-y-4 text-sm" id="project-summary-container">
             
             <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-file-alt mr-1"></i> Nome do Projeto:</strong>
+                <strong class="text-primary-indigo"><i class="fas fa-file-alt mr-1"></i> Nome do Projeto e Desafio:</strong>
                 <p class="mt-1 text-gray-700 italic font-medium" id="proj-name">N/A</p>
             </div>
             
@@ -66,7 +66,7 @@
 
 {% block finish_button %}
     <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
+        <form method="POST" action="{{ url_for('concluir_curso', modulo_nome='projeto-final') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-trophy mr-2"></i> Finalizar Curso e Gerar Certificado!
             </button>
@@ -76,67 +76,79 @@
 
 {% block scripts %}
 <script>
-    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
-    const db = firebase.firestore(); 
-    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
-
-    // Mapeamento das chaves de dados para as IDs dos elementos HTML
+    // Variáveis globais dbClient e currentUserId devem estar disponíveis
+    
+    // Mapeamento das chaves de dados no Firebase (novo padrão aninhado) para as IDs dos elementos HTML
+    // NOTA: Os IDs do HTML (proj-mod1 a proj-mod4) foram ajustados para a ordem correta dos pilares (D-P-A-A).
     const DATA_MAP = {
-        'project_name': 'proj-name',
-        'project_decomposition': 'proj-mod1', // Módulo 1: Decomposição
-        'project_pattern_optimization': 'proj-mod2', // Módulo 2: Padrões (corrigido M2 e M3)
-        'project_abstraction': 'proj-mod3', // Módulo 3: Abstração
-        'project_algorithm': 'proj-mod4', // Módulo 4: Algoritmos
+        'modulo_1.project_name': 'proj-name',
+        'modulo_1.project_decomposition': 'proj-mod1', // Decomposição
+        'modulo_2.project_patterns': 'proj-mod2', // Reconhecimento de Padrões
+        'modulo_4.project_abstraction': 'proj-mod3', // Abstração (Módulo 4 do curso)
+        'modulo_5.project_algorithm': 'proj-mod4', // Algoritmos (Módulo 5 do curso)
     };
+
+    // Função para obter o valor aninhado
+    function getNestedValue(data, path) {
+        return path.split('.').reduce((obj, key) => (obj && obj[key] !== 'undefined') ? obj[key] : null, data);
+    }
 
     // Função para carregar e exibir todos os dados do projeto
     async function loadProjectDataFinal() {
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
-        const feedback = document.getElementById('load-feedback-mod6');
-        const projectNameDisplay = document.getElementById('project-name-display-mod6');
-
-        if (!projectId) {
-            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
-            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
+        if (!window.currentUserId) {
+            document.getElementById('load-feedback-mod6').textContent = '❌ Erro: Usuário não autenticado.';
+            document.getElementById('project-name-display-mod6').textContent = 'Projeto não encontrado.';
             return;
         }
+
+        const feedback = document.getElementById('load-feedback-mod6');
+        const projectNameDisplay = document.getElementById('project-name-display-mod6');
 
         feedback.textContent = 'Carregando todos os dados do projeto...';
 
         try {
-            const docRef = db.collection("projetos").doc(projectId);
+            // Busca o documento único do usuário
+            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
             const doc = await docRef.get();
 
             if (doc.exists) {
                 const data = doc.data();
+                let allComplete = true; // Flag para verificar se todos os módulos foram preenchidos
                 
                 // 1. Exibir nome do projeto
-                const projectName = data.project_name || 'Projeto Sem Nome';
+                const projectName = getNestedValue(data, 'modulo_1.project_name') || 'Projeto Sem Nome';
                 projectNameDisplay.textContent = `Seu Projeto Final: "${projectName}"`;
 
                 // 2. Preencher todos os campos do resumo
-                for (const key in DATA_MAP) {
-                    const elementId = DATA_MAP[key];
+                for (const path in DATA_MAP) {
+                    const elementId = DATA_MAP[path];
                     const element = document.getElementById(elementId);
                     
                     if (element) {
-                        // Verifica se o dado existe, senão exibe uma mensagem padrão
-                        const content = data[key] || 'Não preenchido. Por favor, revise o módulo correspondente.';
-                        element.textContent = content;
-
-                        // Se o dado não foi preenchido, marca visualmente o texto
-                        if (!data[key]) {
-                            element.classList.add('text-red-500');
-                        } else {
+                        const content = getNestedValue(data, path);
+                        
+                        if (content) {
+                            element.textContent = content;
                             element.classList.remove('text-red-500');
+                        } else {
+                            // Se o dado não foi preenchido, marca visualmente e seta a flag
+                            element.textContent = 'Não preenchido. Por favor, revise o módulo correspondente.';
+                            element.classList.add('text-red-500');
+                            allComplete = false;
                         }
                     }
                 }
                 
-                feedback.textContent = '✅ Todos os dados do projeto foram carregados com sucesso. Revise seu plano.';
+                if (allComplete) {
+                    feedback.textContent = '✅ Todos os dados do projeto foram carregados com sucesso. Seu plano está completo!';
+                } else {
+                    feedback.textContent = '⚠️ Revise as seções em vermelho. Seu projeto final tem módulos não preenchidos.';
+                    feedback.classList.remove('text-red-600');
+                    feedback.classList.add('text-orange-600');
+                }
 
             } else {
-                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
+                feedback.textContent = '❌ Erro: Projeto não encontrado. Retorne ao Módulo 1.';
             }
         } catch (error) {
             console.error("Erro ao carregar dados do projeto (Módulo Final):", error);
@@ -146,34 +158,28 @@
 
     // Função para exportar os dados para um arquivo de texto (para o usuário)
     function exportProjectData() {
-        const projectName = document.getElementById('proj-name').textContent;
-        const decomposition = document.getElementById('proj-mod1').textContent;
-        const patterns = document.getElementById('proj-mod2').textContent;
-        const abstraction = document.getElementById('proj-mod3').textContent;
-        const algorithm = document.getElementById('proj-mod4').textContent;
+        // Mapeamento simplificado para a exportação
+        const EXPORT_MAP = [
+            { title: 'Nome do Projeto e Desafio', id: 'proj-name' },
+            { title: '1. DECOMPOSIÇÃO (Divisão do Problema)', id: 'proj-mod1' },
+            { title: '2. RECONHECIMENTO DE PADRÕES (Otimização de Similaridades)', id: 'proj-mod2' },
+            { title: '3. ABSTRAÇÃO (O Modelo Essencial)', id: 'proj-mod3' },
+            { title: '4. ALGORITMOS (O Passo a Passo Lógico)', id: 'proj-mod4' },
+        ];
 
-        const content = `
---- PROJETO FINAL DE PENSAMENTO COMPUTACIONAL ---
-Nome do Projeto: ${projectName}
-Data de Exportação: ${new Date().toLocaleString()}
----------------------------------------------------
+        let content = `--- PROJETO FINAL DE PENSAMENTO COMPUTACIONAL ---\n`;
+        content += `Data de Exportação: ${new Date().toLocaleString()}\n`;
+        content += `---------------------------------------------------\n\n`;
 
-1. DECOMPOSIÇÃO (Módulo 1: Divisão do Problema):
-${decomposition}
+        EXPORT_MAP.forEach(item => {
+            const element = document.getElementById(item.id);
+            const value = element ? element.textContent.trim() : 'N/A';
+            content += `${item.title}:\n${value}\n\n`;
+        });
 
-2. RECONHECIMENTO DE PADRÕES (Módulo 2: Otimização de Similaridades):
-${patterns}
+        content += `---------------------------------------------------\nParabéns pela conclusão!`;
 
-3. ABSTRAÇÃO (Módulo 3: O Modelo Essencial):
-${abstraction}
-
-4. ALGORITMOS (Módulo 4: O Passo a Passo Lógico):
-${algorithm}
-
----------------------------------------------------
-Parabéns pela conclusão!
-        `.trim();
-
+        const projectName = document.getElementById('proj-name').textContent.replace(/[^\w\s]/gi, '').trim() || 'Projeto_PC';
         const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
         const filename = `Projeto_Final_${projectName.replace(/\s/g, '_')}.txt`;
         
@@ -187,7 +193,7 @@ Parabéns pela conclusão!
     }
 
     // Chamada Inicial: Carregar dados ao carregar a página
-    window.onload = loadProjectDataFinal;
+    window.addEventListener('load', loadProjectDataFinal);
 
 </script>
 {% endblock %}
