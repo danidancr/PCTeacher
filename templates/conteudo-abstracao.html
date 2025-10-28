@@ -44,7 +44,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod4-2" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">IADES - Adaptada</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo os pilares do Pensamento Computacional (Decomposição, Padrões, Abstração e Algoritmos), a Abstração é a ferramenta mental que permite:</p>
@@ -68,7 +67,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod4-3" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Modelo Mental</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">3. A criação de um mapa conceitual que representa as interconexões entre ideias-chave em uma disciplina, ignorando exemplos práticos específicos, é um ato de:</p>
@@ -92,7 +90,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod4-4" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Relação entre Pilares</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">4. A Abstração no Pensamento Computacional atua como uma ponte direta entre qual dos pilares?</p>
@@ -116,7 +113,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod4-5" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Utilidade da Abstração</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">5. A Abstração é essencial para a criação de:</p>
@@ -140,31 +136,19 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-
-        </div>
+            </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50 p-6 rounded-xl">
-        <h2 class="text-2xl font-bold text-primary-indigo mb-4 flex items-center">
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Modelo Essencial
         </h2>
-        <p class="text-gray-700 mb-6">Esta é a etapa de abstração do seu projeto. Vamos criar um modelo que represente a essência do seu trabalho.</p>
-        
-        <form id="project-questions-form-mod4" onsubmit="saveProjectAnswersMod4(event)">
+        <p class="text-gray-700 mb-4">Esta é a etapa de abstração do seu projeto. Vamos criar um modelo que represente a essência do seu trabalho.</p>
+        <form id="project-idea-form-mod4">
+            <label for="project_abstraction" class="block text-gray-800 font-medium mb-2">Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
+            <textarea id="project_abstraction" name="project_abstraction" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)."></textarea>
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2 border-indigo-300">Modelo Essencial (Módulo 4)</h3>
-
-            <div class="mb-6">
-                <label for="p6_abstracao_projeto" class="block text-gray-800 font-medium mb-2">1. Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
-                <textarea id="p6_abstracao_projeto" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)." required></textarea>
-            </div>
-            
-            <button type="submit" id="save-button-mod4" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
-                <i class="fas fa-save mr-2"></i> Salvar Abstração
-            </button>
-
-            <div id="save-feedback-mod4" class="mt-4 p-3 rounded-lg text-sm hidden" role="alert"></div>
-
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Abstração</button>
         </form>
     </div>
 {% endblock %}
@@ -177,96 +161,4 @@
             </button>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-        // Assumindo que o Firebase SDK e sua inicialização já estão carregados (db)
-        // const db = firebase.firestore(); 
-        
-        // **IMPORTANTE**: Garanta que o UID do usuário seja a mesma variável usada nos módulos anteriores.
-        const CURRENT_USER_ID = '{{ g.user.uid if g.user else "teste-user-id" }}'; 
-        const PROJECT_DOC_ID = 'user_project_' + CURRENT_USER_ID; 
-        const formMod4 = document.getElementById('project-questions-form-mod4');
-
-        // ----------------------------------------------------
-        // Lógica de Salvamento Módulo 4 (Firebase/Firestore)
-        // ----------------------------------------------------
-        async function saveProjectAnswersMod4(event) {
-            event.preventDefault(); 
-            
-            const feedbackDiv = document.getElementById('save-feedback-mod4');
-            const saveButton = document.getElementById('save-button-mod4');
-
-            // 1. Coletar o dado do formulário
-            const respostaAbstracao = document.getElementById('p6_abstracao_projeto').value.trim();
-            
-            // 2. Criar o Array de Respostas
-            const newAnswers = [
-                {
-                    id: "mod4_p6_abstracao_projeto",
-                    ordem: 6, // Continua a contagem de ordem (Pergunta 6 do Projeto)
-                    secao: "Modelo Essencial (Módulo 4)",
-                    pergunta: formMod4.querySelector('label[for="p6_abstracao_projeto"]').textContent,
-                    resposta: respostaAbstracao
-                }
-            ];
-
-            // 3. Validação
-            if (!respostaAbstracao) {
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
-                feedbackDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Por favor, preencha o campo da abstração antes de salvar.';
-                return;
-            }
-
-            try {
-                // Desabilitar o botão e mostrar feedback
-                saveButton.disabled = true;
-                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Salvando...';
-
-                // **Chave:** Salvar no campo 'perguntasM4' usando merge: true
-                await db.collection("projetos").doc(PROJECT_DOC_ID).set({
-                    perguntasM4: newAnswers, // Novo campo para o Módulo 4
-                    ultimaAtualizacaoM4: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                // Feedback de sucesso
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-green-100 text-green-700 block';
-                feedbackDiv.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Abstração do Projeto salva com sucesso!';
-            } catch (error) {
-                console.error("Erro ao salvar no Firebase: ", error);
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
-                feedbackDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> Erro ao salvar. Tente novamente. (${error.message})`;
-            } finally {
-                saveButton.disabled = false;
-                saveButton.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar Abstração';
-            }
-        }
-
-        // ----------------------------------------------------
-        // Lógica de Carregamento (Pré-preenchimento)
-        // ----------------------------------------------------
-        async function loadProjectAnswersMod4() {
-            try {
-                const doc = await db.collection("projetos").doc(PROJECT_DOC_ID).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    const answersM4 = data.perguntasM4 || [];
-                    
-                    const abstracaoData = answersM4.find(item => item.id === 'mod4_p6_abstracao_projeto');
-                    const inputElement = document.getElementById('p6_abstracao_projeto');
-
-                    if (abstracaoData && inputElement) {
-                        inputElement.value = abstracaoData.resposta;
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dados do projeto:", error);
-            }
-        }
-        
-        // Chamada para carregar os dados ao carregar a página
-        // loadProjectAnswersMod4(); // Descomente quando o Firebase SDK estiver configurado
-    </script>
 {% endblock %}

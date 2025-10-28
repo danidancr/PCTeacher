@@ -44,7 +44,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod5-2" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Estrutura Algorítmica</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">2. Em um sistema de correção de provas, qual estrutura algorítmica é essencial para determinar se um aluno é aprovado ou reprovado?</p>
@@ -68,7 +67,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod5-3" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Aplicação no Cotidiano</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">3. Qual dos seguintes exemplos do cotidiano representa um Algoritmo?</p>
@@ -92,7 +90,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod5-4" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Fase do PC</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">4. Em relação aos pilares do Pensamento Computacional, o Algoritmo é a fase que:</p>
@@ -116,7 +113,6 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
             <div id="q-mod5-5" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Características</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">5. A principal característica que garante a REPLICABILIDADE e a previsibilidade de um algoritmo é:</p>
@@ -140,31 +136,19 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            
-        </div>
+            </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50 p-6 rounded-xl">
-        <h2 class="text-2xl font-bold text-primary-indigo mb-4 flex items-center">
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
         </h2>
-        <p class="text-gray-700 mb-6">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
-        
-        <form id="project-questions-form-mod5" onsubmit="saveProjectAnswersMod5(event)">
+        <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
+        <form id="project-idea-form-mod5">
+            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2 border-indigo-300">Fluxo de Ações (Módulo 5)</h3>
-
-            <div class="mb-6">
-                <label for="p7_algoritmo_projeto" class="block text-gray-800 font-medium mb-2">1. Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
-                <textarea id="p7_algoritmo_projeto" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM." required></textarea>
-            </div>
-            
-            <button type="submit" id="save-button-mod5" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
-                <i class="fas fa-save mr-2"></i> Salvar Algoritmo
-            </button>
-
-            <div id="save-feedback-mod5" class="mt-4 p-3 rounded-lg text-sm hidden" role="alert"></div>
-
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
         </form>
     </div>
 {% endblock %}
@@ -177,96 +161,4 @@
             </button>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-        // Assumindo que o Firebase SDK e sua inicialização já estão carregados (db)
-        // const db = firebase.firestore(); 
-        
-        // **IMPORTANTE**: Garanta que o UID do usuário seja a mesma variável usada nos módulos anteriores.
-        const CURRENT_USER_ID = '{{ g.user.uid if g.user else "teste-user-id" }}'; 
-        const PROJECT_DOC_ID = 'user_project_' + CURRENT_USER_ID; 
-        const formMod5 = document.getElementById('project-questions-form-mod5');
-
-        // ----------------------------------------------------
-        // Lógica de Salvamento Módulo 5 (Firebase/Firestore)
-        // ----------------------------------------------------
-        async function saveProjectAnswersMod5(event) {
-            event.preventDefault(); 
-            
-            const feedbackDiv = document.getElementById('save-feedback-mod5');
-            const saveButton = document.getElementById('save-button-mod5');
-
-            // 1. Coletar o dado do formulário
-            const respostaAlgoritmo = document.getElementById('p7_algoritmo_projeto').value.trim();
-            
-            // 2. Criar o Array de Respostas
-            const newAnswers = [
-                {
-                    id: "mod5_p7_algoritmo_projeto",
-                    ordem: 7, // Pergunta 7 do Projeto
-                    secao: "Fluxo de Ações (Módulo 5)",
-                    pergunta: formMod5.querySelector('label[for="p7_algoritmo_projeto"]').textContent,
-                    resposta: respostaAlgoritmo
-                }
-            ];
-
-            // 3. Validação
-            if (!respostaAlgoritmo) {
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
-                feedbackDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Por favor, preencha o campo do algoritmo antes de salvar.';
-                return;
-            }
-
-            try {
-                // Desabilitar o botão e mostrar feedback
-                saveButton.disabled = true;
-                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Salvando...';
-
-                // **Chave:** Salvar no campo 'perguntasM5' usando merge: true
-                await db.collection("projetos").doc(PROJECT_DOC_ID).set({
-                    perguntasM5: newAnswers, // Novo campo para o Módulo 5
-                    ultimaAtualizacaoM5: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                // Feedback de sucesso
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-green-100 text-green-700 block';
-                feedbackDiv.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Algoritmo do Projeto salvo com sucesso!';
-            } catch (error) {
-                console.error("Erro ao salvar no Firebase: ", error);
-                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
-                feedbackDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> Erro ao salvar. Tente novamente. (${error.message})`;
-            } finally {
-                saveButton.disabled = false;
-                saveButton.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar Algoritmo';
-            }
-        }
-
-        // ----------------------------------------------------
-        // Lógica de Carregamento (Pré-preenchimento)
-        // ----------------------------------------------------
-        async function loadProjectAnswersMod5() {
-            try {
-                const doc = await db.collection("projetos").doc(PROJECT_DOC_ID).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    const answersM5 = data.perguntasM5 || [];
-                    
-                    const algoritmoData = answersM5.find(item => item.id === 'mod5_p7_algoritmo_projeto');
-                    const inputElement = document.getElementById('p7_algoritmo_projeto');
-
-                    if (algoritmoData && inputElement) {
-                        inputElement.value = algoritmoData.resposta;
-                    }
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dados do projeto:", error);
-            }
-        }
-        
-        // Chamada para carregar os dados ao carregar a página
-        // loadProjectAnswersMod5(); // Descomente quando o Firebase SDK estiver configurado
-    </script>
 {% endblock %}

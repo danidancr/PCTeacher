@@ -1,62 +1,53 @@
 {% extends "conteudo-base.html" %}
 
-{% block title %}Módulo 6: Projeto Final{% endblock %}
+{% block title %}Módulo 5: Projeto Final{% endblock %}
 
-{% block content_title %}Módulo 6: Projeto Final - Aplicando o PC{% endblock %}
+{% block content_title %}Módulo 5: Projeto Final - Aplicando o PC{% endblock %}
 
 {% block content %}
+    <!-- 1. Video Aula -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
         </h2>
         <div class="video-container">
+            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
     </div>
 
-    <div class="content-section border-4 border-primary-indigo bg-indigo-50 p-6 rounded-xl">
-        <h2 class="text-2xl font-bold text-primary-indigo mb-4 flex items-center">
+    <!-- 2. Reúne as Respostas do Projeto -->
+    <div class="content-section border-4 border-primary-indigo bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-cogs mr-3"></i> Seu Plano de Projeto Integrado
         </h2>
-        <p class="text-gray-700 mb-6 font-medium">Aqui você pode revisar as respostas que forneceu em cada etapa do Pensamento Computacional, formando o seu plano de solução:</p>
+        <p class="text-gray-700 mb-4 font-semibold">Aqui você verá as respostas que forneceu em cada módulo, formando o seu plano de ação:</p>
         
-        <div class="space-y-6">
-            <div class="p-4 border border-indigo-300 rounded-lg bg-white shadow-sm">
-                <strong class="block text-lg text-primary-indigo mb-1"><i class="fas fa-hand-point-right mr-2"></i> 1. Problema Inicial (Módulo 1)</strong> 
-                <p class="text-sm text-gray-500 mb-2">Qual problema você está tentando resolver?</p>
-                <p class="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap" id="proj-mod1-p1">[Carregando...]</p>
+        <div class="space-y-4 text-sm">
+            <div class="p-3 border rounded-lg bg-white">
+                <strong class="text-primary-indigo">Módulo 0 - Problema Inicial:</strong> 
+                <p class="mt-1 text-gray-700 italic" id="proj-mod0">[Carregue a resposta aqui: Exemplo de problema]</p>
             </div>
-            
-            <div class="p-4 border border-indigo-300 rounded-lg bg-white shadow-sm">
-                <strong class="block text-lg text-primary-indigo mb-1"><i class="fas fa-cubes mr-2"></i> 2. Decomposição (Módulo 1)</strong> 
-                <p class="text-sm text-gray-500 mb-2">Como o problema foi dividido em partes menores?</p>
-                <p class="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap" id="proj-mod1-p2">[Carregando...]</p>
+            <div class="p-3 border rounded-lg bg-white">
+                <strong class="text-primary-indigo">Módulo 1 - Decomposição:</strong> 
+                <p class="mt-1 text-gray-700 italic" id="proj-mod1">[Carregue a resposta aqui: Exemplo de decomposição]</p>
             </div>
-
-            <div class="p-4 border border-indigo-300 rounded-lg bg-white shadow-sm">
-                <strong class="block text-lg text-primary-indigo mb-1"><i class="fas fa-braille mr-2"></i> 3. Reconhecimento de Padrões (Módulo 2)</strong> 
-                <p class="text-sm text-gray-500 mb-2">Quais similaridades ou repetições você identificou nas partes?</p>
-                <p class="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap" id="proj-mod2-p3">[Carregando...]</p>
+            <div class="p-3 border rounded-lg bg-white">
+                <strong class="text-primary-indigo">Módulo 2 - Padrões:</strong> 
+                <p class="mt-1 text-gray-700 italic" id="proj-mod2">[Carregue a resposta aqui: Exemplo de padrões]</p>
             </div>
-
-            <div class="p-4 border border-indigo-300 rounded-lg bg-white shadow-sm">
-                <strong class="block text-lg text-primary-indigo mb-1"><i class="fas fa-cloud mr-2"></i> 4. Abstração (Módulo 3)</strong> 
-                <p class="text-sm text-gray-500 mb-2">Qual é o modelo essencial ou a regra central que define sua solução, ignorando detalhes irrelevantes?</p>
-                <p class="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap" id="proj-mod3-p5">[Carregando...]</p>
+            <div class="p-3 border rounded-lg bg-white">
+                <strong class="text-primary-indigo">Módulo 3 - Abstração:</strong> 
+                <p class="mt-1 text-gray-700 italic" id="proj-mod3">[Carregue a resposta aqui: Exemplo de abstração]</p>
             </div>
-
-            <div class="p-4 border border-indigo-300 rounded-lg bg-white shadow-sm">
-                <strong class="block text-lg text-primary-indigo mb-1"><i class="fas fa-list-ol mr-2"></i> 5. Algoritmo (Módulo 5)</strong> 
-                <p class="text-sm text-gray-500 mb-2">Qual é o passo a passo lógico e não ambíguo para implementar o modelo e resolver o problema?</p>
-                <p class="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap" id="proj-mod5-p7">[Carregando...]</p>
+            <div class="p-3 border rounded-lg bg-white">
+                <strong class="text-primary-indigo">Módulo 4 - Algoritmo (Solução):</strong> 
+                <p class="mt-1 text-gray-700 italic" id="proj-mod4">[Carregue a resposta aqui: Exemplo de algoritmo]</p>
             </div>
-
         </div>
 
-        <p class="mt-6 text-gray-800 font-semibold text-center bg-indigo-100 p-4 rounded-lg">
-            Ao clicar em 'Finalizar Curso', você confirma que este é o seu Projeto Final.
-        </p>
+        <p class="mt-6 text-gray-800">Seu desafio final é revisar e consolidar este plano. Salve-o como seu Projeto Final. (A lógica de carregamento e salvamento deve ser implementada com Firestore).</p>
     </div>
 
 {% endblock %}
@@ -64,99 +55,9 @@
 {% block finish_button %}
     <div class="mt-8 text-center">
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg bg-green-600 hover:bg-green-700 text-white p-4 rounded-full text-xl font-bold shadow-lg">
+            <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-trophy mr-2"></i> Finalizar Curso e Gerar Certificado!
             </button>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-        // Assumindo que o Firebase SDK e sua inicialização já estão carregados (db)
-        // const db = firebase.firestore(); 
-        
-        const CURRENT_USER_ID = '{{ g.user.uid if g.user else "teste-user-id" }}'; 
-        const PROJECT_DOC_ID = 'user_project_' + CURRENT_USER_ID; 
-
-        // Função utilitária para buscar a resposta no array
-        function getAnswer(answersArray, answerId) {
-            const item = answersArray.find(item => item.id === answerId);
-            return item ? item.resposta : 'Nenhuma resposta salva para esta etapa.';
-        }
-
-        // ----------------------------------------------------
-        // Lógica de Carregamento de Todas as Respostas
-        // ----------------------------------------------------
-        async function loadFinalProject() {
-            try {
-                const doc = await db.collection("projetos").doc(PROJECT_DOC_ID).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    
-                    // Módulo 1 (Problema Inicial e Decomposição)
-                    const answersM1 = data.perguntasM1 || [];
-                    document.getElementById('proj-mod1-p1').textContent = getAnswer(answersM1, 'mod1_p1_problema_inicial');
-                    document.getElementById('proj-mod1-p2').textContent = getAnswer(answersM1, 'mod1_p2_decomposicao');
-                    
-                    // Módulo 2 (Padrões)
-                    const answersM2 = data.perguntasM2 || [];
-                    document.getElementById('proj-mod2-p3').textContent = getAnswer(answersM2, 'mod2_p3_padroes_identificados');
-                    
-                    // Módulo 3 (Abstração - Dados Essenciais)
-                    // Nota: O módulo 3 tinha duas perguntas, mas o campo essencial do projeto é P5 (dados essenciais)
-                    const answersM3 = data.perguntasM3 || [];
-                    document.getElementById('proj-mod3-p5').textContent = getAnswer(answersM3, 'mod3_p5_dados_essenciais');
-
-                    // Módulo 4 (Abstração - Modelo Essencial)
-                    // Nota: O P6 era a abstração do Módulo 4. Mudança de nome para M4 na tela, mas P6 no código.
-                    const answersM4 = data.perguntasM4 || [];
-                    // Como a pergunta 6 é a Abstração do projeto, vamos usá-la.
-                    // Se você usou o M4 para Abstração e M5 para Algoritmo, o mapeamento do P6 para Abstração aqui está incorreto,
-                    // mas o ID do Firestore (mod4_p6_abstracao_projeto) é o que importa.
-                    // Vou assumir que o P6 (Abstração do Módulo 4) é a Abstração final.
-                    document.getElementById('proj-mod3-p5').textContent = getAnswer(answersM4, 'mod4_p6_abstracao_projeto');
-
-                    // Módulo 5 (Algoritmo)
-                    const answersM5 = data.perguntasM5 || [];
-                    document.getElementById('proj-mod5-p7').textContent = getAnswer(answersM5, 'mod5_p7_algoritmo_projeto');
-
-
-                } else {
-                    document.querySelectorAll('[id^="proj-mod"]').forEach(el => {
-                        el.textContent = 'Projeto não encontrado. Certifique-se de que está logado e salvou todas as etapas.';
-                    });
-                }
-            } catch (error) {
-                console.error("Erro ao carregar o Projeto Final:", error);
-                document.querySelectorAll('[id^="proj-mod"]').forEach(el => {
-                    el.textContent = `Erro ao carregar: ${error.message}`;
-                });
-            }
-        }
-        
-        // Chamada para carregar os dados ao carregar a página
-        // loadFinalProject(); // Descomente quando o Firebase SDK estiver configurado
-        
-        // Nota: Para fins de demonstração, o mapeamento de IDs foi simplificado.
-        // O mapeamento mais preciso com base nos módulos anteriores seria:
-        /*
-        // Módulo 1: Decomposição (P1: Problema, P2: Decomposição)
-        document.getElementById('proj-mod1-p1').textContent = getAnswer(data.perguntasM1 || [], 'mod1_p1_problema_inicial');
-        document.getElementById('proj-mod1-p2').textContent = getAnswer(data.perguntasM1 || [], 'mod1_p2_decomposicao');
-        
-        // Módulo 2: Padrões (P3: Padrões)
-        document.getElementById('proj-mod2-p3').textContent = getAnswer(data.perguntasM2 || [], 'mod2_p3_padroes_identificados');
-        
-        // Módulo 4 (Abstração): P6 (Modelo Essencial) - Usando este para a Abstração final.
-        document.getElementById('proj-mod3-p5').textContent = getAnswer(data.perguntasM4 || [], 'mod4_p6_abstracao_projeto'); 
-
-        // Módulo 5: Algoritmo (P7: Algoritmo)
-        document.getElementById('proj-mod5-p7').textContent = getAnswer(data.perguntasM5 || [], 'mod5_p7_algoritmo_projeto');
-        */
-        
-        // Vou manter a chamada da função loadFinalProject, pois ela implementa o mapeamento correto.
-        loadFinalProject();
-    </script>
 {% endblock %}
