@@ -160,38 +160,37 @@
             </div>
     </div>
 
-<div class="content-section border-4 border-indigo-200 bg-indigo-50">
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: Definição Inicial
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
         </h2>
-        <p class="text-gray-700 mb-4">Para começar, defina o escopo do seu projeto educacional ou profissional a ser desenvolvido durante o curso, usando os pilares do PC.</p>
-        
-        {# ALTERAÇÃO: Adicionado method="POST" para envio dos dados para o Flask #}
-        <form id="project-idea-form-mod1" method="POST">
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
+        <form id="project-idea-form">
             
-            <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto (Ex: Sistema de Acompanhamento de Alunos)</label>
-            <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo mb-4" placeholder="Dê um título ao seu projeto." 
-                   {# ALTERAÇÃO: Preenchimento com dados salvos #}
-                   value="{{ project_data.project_name if project_data.project_name else '' }}">
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
+
+            <div class="mb-4">
+                <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
+                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental">
+            </div>
+
+            <div class="mb-4">
+                <label for="project_objective" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que se espera que os alunos aprendam/alcancem):</label>
+                <textarea id="project_objective" name="project_objective" rows="2" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="project_target" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Nível de ensino, idade ou tipo de aluno):</label>
+                <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)">
+            </div>
             
-            <label for="project_objective" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que o projeto deve resolver?)</label>
-            <textarea id="project_objective" name="project_objective" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo mb-4" placeholder="Ex: Automatizar o cálculo de média final e identificar alunos em risco.">
-                   {# ALTERAÇÃO: Preenchimento com dados salvos #}
-                   {{ project_data.project_objective if project_data.project_objective else '' }}</textarea>
-            
-            <label for="project_target" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Quem usará ou será beneficiado?)</label>
-            <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo mb-4" placeholder="Ex: Professores do Ensino Médio."
-                   {# ALTERAÇÃO: Preenchimento com dados salvos #}
-                   value="{{ project_data.project_target if project_data.project_target else '' }}">
-            
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Definição</button>
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Definição Inicial</button>
         </form>
     </div>
 {% endblock %}
 
 {% block finish_button %}
     <div class="mt-8 text-center">
-        {# ALTERAÇÃO: Rota atualizada para a função 'concluir_modulo' no app.py #}
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='introducao') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-check-double mr-2"></i>Próximo Módulo
