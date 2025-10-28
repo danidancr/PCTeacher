@@ -148,7 +148,7 @@ def get_projeto_usuario(user_id):
     default_data = {
         'id': user_id, # Adicionado ID para garantir que ele exista
         'nome_projeto': '',
-        'problema': '', # Ajustado para 'problema' (mais comum do que 'objetivo' nos templates)
+        'objetivo': '', # Ajustado para 'problema' (mais comum do que 'objetivo' nos templates)
         'publico_alvo': '',  # Ajustado de 'publico-alvo' para 'publico_alvo' (melhor em Python/Jinja)
         'decomposicao': '', # Ajustado de 'decomposição'
         'padroes': '', # Ajustado de 'rec-padrão'
