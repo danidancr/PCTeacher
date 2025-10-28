@@ -159,129 +159,61 @@
             </div>
     </div>
 
- <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-puzzle-piece mr-3"></i> Questão de Projeto: Decomposição em Subproblemas
-        </h2>
-        <p class="text-gray-700 mb-4">A decomposição transforma um projeto grande em subproblemas gerenciáveis. Nesta etapa, você irá dividir o seu projeto (definido no Módulo 1) nas suas partes constituintes.</p>
+{# ========================================================= #}
+    {# SEÇÃO DE PROJETO (USO DO ESCOPO) - AJUSTADA PARA A LÓGICA FLASK/AJAX #}
+    {# ========================================================= #}
+    <div class="content-section bg-indigo-50 border-indigo-300">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold text-primary-indigo">📝 Meu Projeto: Definição de Escopo</h2>
+            <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
+        </div>
         
-        <form id="project-idea-form-mod2" onsubmit="saveProjectDataMod2(event)"> 
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final. Neste módulo, vamos definir o **"o quê"** e o **"para quem"**.</p>
+        
+        {# Formulário de salvamento automático que chama a função saveProjectData() da base #}
+        <form id="project-form-introducao" method="POST" onchange="saveProjectData(this)">
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Decomponha o Projeto</h3>
-            
-            <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">Carregando dados do Módulo 1...</p>
-
             <div class="mb-4">
-                <label for="project_subproblems" class="block text-gray-800 font-medium mb-2">Liste de 3 a 5 subproblemas/etapas principais que precisam ser resolvidos para que o seu projeto seja implementado.</label>
-                <textarea id="project_subproblems" name="project_subproblems" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex:
-1. Definir os conceitos-chave de Pensamento Computacional a serem ensinados (Base Teórica).
-2. Criar o material didático e atividades lúdicas (Desenvolvimento de Recursos).
-3. Aplicar as atividades e coletar feedbacks dos alunos (Implementação e Teste)." required></textarea>
+                <label for="nome_projeto" class="block text-sm font-medium text-gray-700">Nome do Projeto:</label>
+                <input type="text" id="nome_projeto" name="nome_projeto" 
+                       value="{{ projeto_data.nome_projeto | default('') }}" 
+                       placeholder="Ex: Horta Automatizada na Escola"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>
             </div>
             
-            <button type="submit" id="save-button-mod2" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
-                Salvar Decomposição
+            <div class="mb-4">
+                <label for="objetivo" class="block text-sm font-medium text-gray-700">Qual o principal problema/objetivo que você quer resolver?</label>
+                <textarea id="objetivo" name="objetivo" rows="3"
+                          placeholder="Ex: Aumentar o interesse dos alunos em ciências, resolvendo o problema de desperdício de água."
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>{{ projeto_data.objetivo | default('') }}</textarea>
+            </div>
+            
+            <div class="mb-4">
+                <label for="publico_alvo" class="block text-sm font-medium text-gray-700">Qual é o seu público-alvo (alunos, série, disciplina)?</label>
+                <input type="text" id="publico_alvo" name="publico_alvo" 
+                       value="{{ projeto_data.publico_alvo | default('') }}" 
+                       placeholder="Ex: Alunos do 7º ano da disciplina de Ciências."
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>
+                <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente.</p>
+            </div>
+            
+            <button type="submit" class="hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-indigo hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo">
+                Salvar Agora
             </button>
-            <span id="save-feedback-mod2" class="ml-4 text-sm font-semibold text-red-600"></span> 
+            
         </form>
     </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='decomposicao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+    <div class="flex justify-end pt-4">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome=modulo.slug) }}">
+            <button type="submit" class="btn-finish">
+                <i class="fas fa-check-double mr-2"></i> Concluir Módulo 1: Introdução
             </button>
         </form>
     </div>
 {% endblock %}
 
-{% block scripts %}
-<script>
-    // As variáveis globais 'dbClient' (Firestore) e 'currentUserId' (UID do usuário) 
-    // devem estar disponíveis a partir do 'conteudo-base.html' para esta lógica funcionar.
-
-    // 1. Função para carregar os dados do Módulo 1 e Módulo 2
-    async function loadProjectDataMod2() {
-        if (!window.currentUserId) {
-            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
-            document.getElementById('save-feedback-mod2').textContent = 'Erro de autenticação. Recarregue a página.';
-            return;
-        }
-
-        const feedback = document.getElementById('save-feedback-mod2');
-        const saveButton = document.getElementById('save-button-mod2');
-        const projectNameDisplay = document.getElementById('project-name-display');
-
-        saveButton.disabled = true;
-        feedback.textContent = 'Carregando dados do projeto...';
-
-        try {
-            // Busca o documento único do usuário (dados_projeto/UID_DO_USUARIO)
-            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                const data = doc.data();
-                
-                // 1. CARREGA DADOS DO MÓDULO 1 (para UX)
-                const project_name = data.modulo_1?.project_name || 'Projeto Sem Nome (Módulo 1 Pendente)';
-                projectNameDisplay.textContent = `Projeto Atual: "${project_name}"`;
-
-                // 2. CARREGA DADOS ESPECÍFICOS DO MÓDULO 2 (NOVO CAMPO: project_subproblems)
-                document.getElementById('project_subproblems').value = data.modulo_2?.project_subproblems || '';
-                
-                feedback.textContent = data.modulo_2?.project_subproblems ? 'Decomposição do Módulo 2 carregada com sucesso.' : 'Pronto para decompor seu projeto.';
-
-                saveButton.disabled = false;
-            } else {
-                feedback.textContent = 'Atenção: Projeto não encontrado. Certifique-se de salvar o Módulo 1 primeiro.';
-                projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
-            }
-        } catch (error) {
-            console.error("Erro ao carregar dados do projeto (Módulo 2):", error);
-            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
-        }
-    }
-
-    // 2. Função para salvar/atualizar os dados do Módulo 2
-    async function saveProjectDataMod2(event) {
-        event.preventDefault(); 
-        
-        if (!window.currentUserId) {
-            alert("Erro: Usuário não autenticado. Não é possível salvar.");
-            return;
-        }
-
-        const saveButton = document.getElementById('save-button-mod2');
-        const feedback = document.getElementById('save-feedback-mod2');
-        saveButton.disabled = true;
-        feedback.textContent = 'Salvando...';
-
-        // Estrutura os dados DENTRO da chave 'modulo_2' com o novo campo
-        const dataToSave = {
-            modulo_2: {
-                project_subproblems: document.getElementById('project_subproblems').value,
-                data_ultima_atualizacao_mod2: firebase.firestore.FieldValue.serverTimestamp()
-            }
-        };
-
-        try {
-            // Usa .set com { merge: true } no documento do UID.
-            await dbClient.collection("dados_projeto").doc(currentUserId)
-                .set(dataToSave, { merge: true });
-                
-            feedback.textContent = '✅ Decomposição salva e projeto atualizado!';
-        } catch (error) {
-            console.error("Erro ao salvar dados do projeto (Módulo 2):", error);
-            feedback.textContent = '❌ Erro ao salvar. Tente novamente.';
-        } finally {
-            saveButton.disabled = false;
-        }
-    }
-
-    // 3. Chamada Inicial: Carregar dados ao carregar a página
-    window.addEventListener('load', loadProjectDataMod2);
-</script>
-{% endblock %}
+{# REMOVIDO: O bloco 'scripts' com a lógica de salvamento e carregamento do Firebase Client foi removido.
+   A lógica de salvamento agora está em 'base_dashboard.html' e é chamada por onchange="saveProjectData(this)". #}
