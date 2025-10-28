@@ -634,6 +634,32 @@ def conteudo_dinamico(modulo_slug):
     return render_template(template_name, user=usuario, progresso=progresso, modulo=modulo_config)
 
 
+#==========================================================
+# add algo
+#==========================================================
+
+def get_firebase_client_config():
+    """Retorna as configurações do Firebase Client SDK.
+       As chaves públicas devem ser armazenadas em variáveis de ambiente.
+    """
+    return {
+        "apiKey": os.environ.get("FIREBASE_API_KEY", "SUA_API_KEY_AQUI"),
+        "authDomain": os.environ.get("FIREBASE_AUTH_DOMAIN", "pc-teacher-6c75f.firebaseapp.com"),
+        "projectId": os.environ.get("FIREBASE_PROJECT_ID", "pc-teacher-6c75f"),
+        "storageBucket": os.environ.get("FIREBASE_STORAGE_BUCKET", "pc-teacher-6c75f.appspot.com"),
+        "messagingSenderId": os.environ.get("FIREBASE_MESSAGING_SENDER_ID", "SEU_SENDER_ID"),
+        "appId": os.environ.get("FIREBASE_APP_ID", "SEU_APP_ID")
+    }
+
+# 2. Use `@app.context_processor` para disponibilizar a config em todos os templates:
+
+@app.context_processor
+def inject_globals():
+    """Injeta variáveis que devem estar disponíveis em todos os templates."""
+    return dict(firebase_config=get_firebase_client_config())
+
+
+
 # =========================================================
 # 9. EXECUÇÃO
 # =========================================================
