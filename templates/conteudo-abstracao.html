@@ -5,100 +5,170 @@
 {% block content_title %}Módulo 4: Abstração - Foco no Essencial{% endblock %}
 
 {% block content %}
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-video mr-3"></i> Vídeo Aula: Ignorando o Irrelevante
-        </h2>
-        <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-500 mt-4">Aprenda a criar modelos mentais e representações, focando apenas nas características cruciais.</p>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Ignorando o Irrelevante
+        </h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Aprenda a criar modelos mentais e representações, focando apenas nas características cruciais.</p>
+    </div>
 
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
-        </h2>
-        <p class="text-gray-700 mb-4">Ebook sobre como usar a abstração para desenvolver currículos modulares e focados.</p>
-        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-download mr-2"></i> Baixar Guia de Modelagem
-        </a>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
+        </h2>
+        <p class="text-gray-700 mb-4">Ebook sobre como usar a abstração para desenvolver currículos modulares e focados.</p>
+        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-download mr-2"></i> Baixar Guia de Modelagem
+        </a>
+    </div>
 
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
-        </h2>
-        <div class="space-y-6">
-            
-                        <div id="q-mod4-1" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-lg mb-4 text-gray-800">1. Qual das ações a seguir é o exemplo mais claro de Abstração?</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Decomposição, que é a quebra do problema.')" data-correct="false">
-                        Dividir a avaliação em quatro sub-tópicos menores.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Reconhecimento de Padrões, que foca nas similaridades.')" data-correct="false">
-                        Usar o mesmo template de feedback para todas as turmas.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-1', this, 'true', '✅ Correto! Abstração envolve criar um modelo genérico (O ALUNO) que representa o essencial, ignorando detalhes irrelevantes (cor, idade, etc.).')" data-correct="true">
-                        Criar um "Perfil Padrão do Aluno" com notas médias e objetivos de aprendizagem, ignorando sua cor, idade ou hobbies.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Pensamento Algorítmico (criação de passos) ou Decomposição.')" data-correct="false">
-                        Listar passo a passo como um aluno deve enviar uma tarefa no LMS (Sistema de Gestão de Aprendizagem).
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-            
-                        <div id="q-mod4-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - Adaptada</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo os pilares do Pensamento Computacional (Decomposição, Padrões, Abstração e Algoritmos), a Abstração é a ferramenta mental que permite:</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Decomposição, que é a primeira etapa.')" data-correct="false">
-                        A reformulação do problema original em sub-problemas menores e mais tratáveis.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-2', this, 'true', '✅ Correto! Abstração foca no essencial e ignora os detalhes, criando um modelo (a essência) da solução.')" data-correct="true">
-                        Focar nas informações relevantes e desconsiderar detalhes irrelevantes ou específicos do contexto.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Pensamento Algorítmico, que é o último passo.')" data-correct="false">
-                        Criar uma sequência lógica e ordenada de passos para resolver o problema.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Reconhecimento de Padrões, que é a identificação de similaridades.')" data-correct="false">
-                        Utilizar soluções prévias para resolver novos problemas similares.
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-        </div>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            
+            <div id="q-mod4-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Conceitual</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. Qual das ações a seguir é o exemplo mais claro de Abstração?</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Decomposição, que é a quebra do problema.')" data-correct="false">
+                        A) Dividir a avaliação em quatro sub-tópicos menores.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Reconhecimento de Padrões, que foca nas similaridades.')" data-correct="false">
+                        B) Usar o mesmo template de feedback para todas as turmas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-1', this, 'true', '✅ Correto! Abstração envolve criar um modelo genérico (O ALUNO) que representa o essencial, ignorando detalhes irrelevantes (cor, idade, etc.).')" data-correct="true">
+                        C) Criar um "Perfil Padrão do Aluno" com notas médias e objetivos de aprendizagem, ignorando sua cor, idade ou hobbies.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-1', this, 'false', '❌ Incorreto. Isso é Pensamento Algorítmico (criação de passos) ou Decomposição.')" data-correct="false">
+                        D) Listar passo a passo como um aluno deve enviar uma tarefa no LMS (Sistema de Gestão de Aprendizagem).
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod4-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - Adaptada</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo os pilares do Pensamento Computacional (Decomposição, Padrões, Abstração e Algoritmos), a Abstração é a ferramenta mental que permite:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Decomposição, que é a primeira etapa.')" data-correct="false">
+                        A) A reformulação do problema original em sub-problemas menores e mais tratáveis.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-2', this, 'true', '✅ Correto! Abstração foca no essencial e ignora os detalhes, criando um modelo (a essência) da solução.')" data-correct="true">
+                        B) Focar nas informações relevantes e desconsiderar detalhes irrelevantes ou específicos do contexto.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Pensamento Algorítmico, que é o último passo.')" data-correct="false">
+                        C) Criar uma sequência lógica e ordenada de passos para resolver o problema.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-2', this, 'false', '❌ Incorreto. Isso é Reconhecimento de Padrões, que é a identificação de similaridades.')" data-correct="false">
+                        D) Utilizar soluções prévias para resolver novos problemas similares.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod4-3" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Modelo Mental</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">3. A criação de um mapa conceitual que representa as interconexões entre ideias-chave em uma disciplina, ignorando exemplos práticos específicos, é um ato de:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-3', this, 'false', '❌ Incorreto. O foco não é na sequência de passos (Algoritmo).')" data-correct="false">
+                        A) Pensamento Algorítmico.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-3', this, 'true', '✅ Correto! Ao focar apenas nas interconexões e nos conceitos centrais (o essencial) e ignorar os exemplos (o irrelevante), você está abstraindo.')" data-correct="true">
+                        B) Abstração.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-3', this, 'false', '❌ Incorreto. Embora haja decomposição na escolha dos conceitos, o ato de *ignorar os exemplos* e criar o mapa é a Abstração.')" data-correct="false">
+                        C) Decomposição.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-3', this, 'false', '❌ Incorreto. O Reconhecimento de Padrões é a etapa que precede, identificando as similaridades.')" data-correct="false">
+                        D) Reconhecimento de Padrões.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod4-4" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Relação entre Pilares</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">4. A Abstração no Pensamento Computacional atua como uma ponte direta entre qual dos pilares?</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-4', this, 'false', '❌ Incorreto. Decomposição é a primeira etapa, muito antes da Abstração.')" data-correct="false">
+                        A) Decomposição e Reconhecimento de Padrões.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-4', this, 'true', '✅ Exato! O Reconhecimento de Padrões fornece as similaridades, a Abstração usa essas similaridades para criar um modelo único, que, por sua vez, será usado no Algoritmo.')" data-correct="true">
+                        B) Reconhecimento de Padrões e Algoritmos.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-4', this, 'false', '❌ Incorreto. Abstração e Decomposição não têm essa conexão direta.')" data-correct="false">
+                        C) Abstração e Decomposição.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-4', this, 'false', '❌ Incorreto. Decomposição e Algoritmos são os extremos, com os outros dois pilares entre eles.')" data-correct="false">
+                        D) Decomposição e Algoritmos.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod4-5" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Utilidade da Abstração</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">5. A Abstração é essencial para a criação de:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-5', this, 'true', '✅ Correto! Funções e Módulos são a concretização da Abstração, permitindo que o mesmo código/estrutura seja reutilizado em diferentes contextos.')" data-correct="true">
+                        A) Funções e Módulos reutilizáveis.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-5', this, 'false', '❌ Incorreto. Isso é o papel da Decomposição.')" data-correct="false">
+                        B) Listas detalhadas de tarefas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-5', this, 'false', '❌ Incorreto. A Abstração foca no essencial e ignora os detalhes, portanto, não serve para criar detalhamento.')" data-correct="false">
+                        C) Detalhamentos técnicos completos.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod4-5', this, 'false', '❌ Incorreto. Embora a Abstração ajude, o foco principal é na generalização e reutilização.')" data-correct="false">
+                        D) Exceções e regras específicas.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            </div>
+    </div>
 
-        <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Modelo Essencial
-        </h2>
-        <p class="text-gray-700 mb-4">Esta é a etapa de abstração do seu projeto. Vamos criar um modelo que represente a essência do seu trabalho.</p>
-        <form id="project-idea-form-mod4">
-            <label for="project_abstraction" class="block text-gray-800 font-medium mb-2">Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
-            <textarea id="project_abstraction" name="project_abstraction" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)."></textarea>
-                        <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Abstração</button>
-        </form>
-    </div>
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Modelo Essencial
+        </h2>
+        <p class="text-gray-700 mb-4">Esta é a etapa de abstração do seu projeto. Vamos criar um modelo que represente a essência do seu trabalho.</p>
+        <form id="project-idea-form-mod4">
+            <label for="project_abstraction" class="block text-gray-800 font-medium mb-2">Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
+            <textarea id="project_abstraction" name="project_abstraction" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)."></textarea>
+            
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Abstração</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='abstracao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
-    </div>
+    <div class="mt-8 text-center">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='abstracao') }}">
+            <button type="submit" class="btn-finish hover:shadow-lg">
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+            </button>
+        </form>
+    </div>
 {% endblock %}
