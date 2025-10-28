@@ -162,6 +162,8 @@
             }
         }
     </style>
+    {# Este script é crucial para ser usado com o salvamento do projeto #}
+    {% block head_script %}{% endblock %}
 </head>
 <body class="bg-light-bg">
 
@@ -175,8 +177,7 @@
             
             {# ========================================================= #}
             {# NOVO INDICADOR DE PROGRESSO GERAL NA SIDEBAR #}
-            {# A variável 'progresso' era buscada aqui, mas agora usamos 'progresso_data' #}
-            {# O {% if progresso_data %} garante que não haverá erro UndefinedError #}
+            {# progresso_data foi injetado pela rota conteudo-dinamico #}
             {% if progresso_data and user %}
             <div class="sidebar-progress-indicator p-4 text-white">
                 <p class="text-sm font-semibold mb-1">Olá, {{ user.nome.split(' ')[0] }}!</p>
@@ -241,8 +242,7 @@
     </div>
     
     {# ==================================================================== #}
-    {# 🚀 INICIALIZAÇÃO DO FIREBASE (CLIENT SDK) E FUNÇÕES GLOBAIS - CORRIGIDO! #}
-    {# Este bloco DEVE vir antes de qualquer script que utilize dbClient ou currentUserId. #}
+    {# 🚀 INICIALIZAÇÃO DO FIREBASE (CLIENT SDK) E FUNÇÕES GLOBAIS - MANTIDO #}
     {# ==================================================================== #}
 
     <script>
@@ -251,8 +251,9 @@
         const currentUserId = "{{ user.id if user else '' }}";
 
         // Função para mostrar feedback no console (útil para debug do JS)
+        // OBS: Isso é só para o quiz/debug. O salvamento do projeto usa o sistema de flash do Flask.
         function showFlash(message, category) {
-             // Você pode substituir esta linha para exibir a mensagem em uma div de alerta no seu HTML
+            // Você pode substituir esta linha para exibir a mensagem em uma div de alerta no seu HTML
             console.log(`[JS FLASH - ${category.toUpperCase()}]: ${message}`);
         }
     </script>
@@ -266,24 +267,85 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // Variáveis globais ESSENCIAIS para o salvamento/carregamento do projeto
+        // Variáveis globais ESSENCIAIS para o salvamento/carregamento do projeto (via Admin SDK/Flask)
         const authClient = firebase.auth();
-        const dbClient = firebase.firestore();
+        const dbClient = firebase.firestore(); // Mantido se precisar do JS Client
+        
+        // Verifica se o formulário está sendo injetado. Se sim, injeta as funções de projeto.
+        {% if user %}
+        // Variável contendo os dados do projeto atual, injetada pelo Flask
+        const projetoData = {{ user.projeto | tojson }}; 
+        {% else %}
+        const projetoData = {};
+        {% endif %}
 
-        // Verificação rápida de login no console
         if (!currentUserId) {
-            console.warn("ATENÇÃO: currentUserId está vazio. O salvamento do projeto falhará se o usuário não estiver logado.");
+            console.warn("ATENÇÃO: currentUserId está vazio. O salvamento do projeto pode falhar se o usuário não estiver logado.");
         }
     </script>
 
-    {# O seu script de quiz (checkAnswer) pode permanecer abaixo, mas agora ele tem acesso ao dbClient e currentUserId, se precisar. #}
+    {# ==================================================================== #}
+    {# 💡 FUNÇÃO DE SALVAMENTO DE PROJETO (FLASK ENDPOINT) #}
+    {# O bloco project_script será usado nos templates de projeto #}
+    {# ==================================================================== #}
+    <script>
+        /**
+         * Envia os dados do formulário de projeto para o endpoint do Flask.
+         * @param {HTMLFormElement} formElement - O formulário HTML a ser enviado.
+         */
+        async function saveProjectData(formElement) {
+            const formData = new FormData(formElement);
+            
+            // Adiciona o campo de feedback visual
+            const feedbackElement = document.getElementById('project-save-feedback');
+            if(feedbackElement) {
+                feedbackElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Salvando...';
+                feedbackElement.classList.remove('text-secondary-green', 'text-red-500', 'opacity-0');
+                feedbackElement.classList.add('text-primary-indigo', 'opacity-100');
+            }
+
+            try {
+                const response = await fetch("{{ url_for('salvar_projeto') }}", {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                // Redireciona para o próprio formulário ou para o referrer.
+                // O Flask já trata o flash message de sucesso/erro.
+                if (response.ok || response.status === 302) { 
+                    if(feedbackElement) {
+                        feedbackElement.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Salvo automaticamente!';
+                        feedbackElement.classList.remove('text-primary-indigo');
+                        feedbackElement.classList.add('text-secondary-green');
+                        // Esconde a mensagem de sucesso depois de um tempo
+                        setTimeout(() => {
+                            feedbackElement.classList.remove('opacity-100');
+                            feedbackElement.classList.add('opacity-0');
+                        }, 3000);
+                    }
+                    return true;
+                } else {
+                    throw new Error(`Erro de rede ou servidor: Status ${response.status}`);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar dados do projeto via fetch:", error);
+                if(feedbackElement) {
+                    feedbackElement.innerHTML = '<i class="fas fa-times-circle mr-2"></i> Erro ao salvar. Tente novamente.';
+                    feedbackElement.classList.remove('text-primary-indigo');
+                    feedbackElement.classList.add('text-red-500');
+                }
+                return false;
+            }
+        }
+    </script>
+    
+    {% block project_script %}{% endblock %}
+
+    {# O seu script de quiz (checkAnswer) pode permanecer abaixo #}
     <script>
         /**
          * Verifica a resposta do quiz, aplica estilos e exibe o feedback.
-         * @param {string} questionId - ID da div que contém a pergunta (ex: 'q-mod0-1').
-         * @param {HTMLElement} selectedOption - O elemento de opção clicado.
-         * @param {string} isCorrectStr - 'true' ou 'false' indicando se a opção clicada é correta.
-         * @param {string} rationale - A explicação para a resposta.
+         * (O restante do código do checkAnswer permanece o mesmo)
          */
         function checkAnswer(questionId, selectedOption, isCorrectStr, rationale) {
             const questionElement = document.getElementById(questionId);
