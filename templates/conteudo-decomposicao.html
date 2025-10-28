@@ -159,25 +159,28 @@
             </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+ <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
+            <i class="fas fa-puzzle-piece mr-3"></i> Questão de Projeto: Decomposição em Subproblemas
         </h2>
-        <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
+        <p class="text-gray-700 mb-4">A decomposição transforma um projeto grande em subproblemas gerenciáveis. Nesta etapa, você irá dividir o seu projeto (definido no Módulo 1) nas suas partes constituintes.</p>
         
         <form id="project-idea-form-mod2" onsubmit="saveProjectDataMod2(event)"> 
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Decomponha o Projeto</h3>
             
             <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">Carregando dados do Módulo 1...</p>
 
             <div class="mb-4">
-                <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro." required></textarea>
+                <label for="project_subproblems" class="block text-gray-800 font-medium mb-2">Liste de 3 a 5 subproblemas/etapas principais que precisam ser resolvidos para que o seu projeto seja implementado.</label>
+                <textarea id="project_subproblems" name="project_subproblems" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex:
+1. Definir os conceitos-chave de Pensamento Computacional a serem ensinados (Base Teórica).
+2. Criar o material didático e atividades lúdicas (Desenvolvimento de Recursos).
+3. Aplicar as atividades e coletar feedbacks dos alunos (Implementação e Teste)." required></textarea>
             </div>
             
             <button type="submit" id="save-button-mod2" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
-                Salvar Justificativa
+                Salvar Decomposição
             </button>
             <span id="save-feedback-mod2" class="ml-4 text-sm font-semibold text-red-600"></span> 
         </form>
@@ -196,94 +199,89 @@
 
 {% block scripts %}
 <script>
-    // Variáveis Globais (Assumindo que estão definidas no `conteudo-base.html` ou em um arquivo importado)
-    // const db = firebase.firestore(); 
-    // const PROJECT_ID_STORAGE_KEY = 'current_project_id';
-    
-    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
-    const db = firebase.firestore(); 
-    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+    // As variáveis globais 'dbClient' (Firestore) e 'currentUserId' (UID do usuário) 
+    // devem estar disponíveis a partir do 'conteudo-base.html' para esta lógica funcionar.
 
-    // 1. Função para carregar os dados do projeto E os dados do Módulo 2 (se existirem)
+    // 1. Função para carregar os dados do Módulo 1 e Módulo 2
     async function loadProjectDataMod2() {
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        if (!window.currentUserId) {
+            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
+            document.getElementById('save-feedback-mod2').textContent = 'Erro de autenticação. Recarregue a página.';
+            return;
+        }
+
         const feedback = document.getElementById('save-feedback-mod2');
         const saveButton = document.getElementById('save-button-mod2');
         const projectNameDisplay = document.getElementById('project-name-display');
 
-        if (!projectId) {
-            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
-            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
-            return;
-        }
-
-        saveButton.disabled = false; // Habilita o botão se o ID for encontrado
-        feedback.textContent = 'Carregando dados...';
+        saveButton.disabled = true;
+        feedback.textContent = 'Carregando dados do projeto...';
 
         try {
-            const docRef = db.collection("projetos").doc(projectId);
+            // Busca o documento único do usuário (dados_projeto/UID_DO_USUARIO)
+            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
             const doc = await docRef.get();
 
             if (doc.exists) {
                 const data = doc.data();
                 
-                // Exibe o nome do projeto do Módulo 1 (Boa Prática de UX)
-                const projectName = data.project_name || 'Projeto Sem Nome';
-                projectNameDisplay.textContent = `Projeto Atual: "${projectName}"`;
+                // 1. CARREGA DADOS DO MÓDULO 1 (para UX)
+                const project_name = data.modulo_1?.project_name || 'Projeto Sem Nome (Módulo 1 Pendente)';
+                projectNameDisplay.textContent = `Projeto Atual: "${project_name}"`;
 
-                // Preenche o campo de justificativa se já foi salvo
-                document.getElementById('project_justification').value = data.project_justification || '';
+                // 2. CARREGA DADOS ESPECÍFICOS DO MÓDULO 2 (NOVO CAMPO: project_subproblems)
+                document.getElementById('project_subproblems').value = data.modulo_2?.project_subproblems || '';
                 
-                feedback.textContent = data.project_justification ? 'Dados do Módulo 2 carregados.' : 'Pronto para preencher a justificativa.';
+                feedback.textContent = data.modulo_2?.project_subproblems ? 'Decomposição do Módulo 2 carregada com sucesso.' : 'Pronto para decompor seu projeto.';
 
+                saveButton.disabled = false;
             } else {
-                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
-                saveButton.disabled = true;
+                feedback.textContent = 'Atenção: Projeto não encontrado. Certifique-se de salvar o Módulo 1 primeiro.';
+                projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
             }
         } catch (error) {
-            console.error("Erro ao carregar dados do projeto:", error);
+            console.error("Erro ao carregar dados do projeto (Módulo 2):", error);
             feedback.textContent = '❌ Erro de conexão ao carregar dados.';
-            saveButton.disabled = true;
         }
     }
 
-    // 2. Função para atualizar os dados do projeto no Firebase (Update)
+    // 2. Função para salvar/atualizar os dados do Módulo 2
     async function saveProjectDataMod2(event) {
         event.preventDefault(); 
         
+        if (!window.currentUserId) {
+            alert("Erro: Usuário não autenticado. Não é possível salvar.");
+            return;
+        }
+
         const saveButton = document.getElementById('save-button-mod2');
         const feedback = document.getElementById('save-feedback-mod2');
         saveButton.disabled = true;
         feedback.textContent = 'Salvando...';
 
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
-
-        if (!projectId) {
-            feedback.textContent = '❌ Erro: ID do projeto não encontrado. Volte ao Módulo 1.';
-            saveButton.disabled = false;
-            return;
-        }
-
-        const formData = {
-            project_justification: document.getElementById('project_justification').value,
-            modulo_2_completado: true, // Adiciona um flag de conclusão
-            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        // Estrutura os dados DENTRO da chave 'modulo_2' com o novo campo
+        const dataToSave = {
+            modulo_2: {
+                project_subproblems: document.getElementById('project_subproblems').value,
+                data_ultima_atualizacao_mod2: firebase.firestore.FieldValue.serverTimestamp()
+            }
         };
 
         try {
-            // Usa o método .doc().update() para atualizar apenas os campos deste módulo
-            await db.collection("projetos").doc(projectId).update(formData);
-            feedback.textContent = '✅ Justificativa salva e projeto atualizado!';
+            // Usa .set com { merge: true } no documento do UID.
+            await dbClient.collection("dados_projeto").doc(currentUserId)
+                .set(dataToSave, { merge: true });
+                
+            feedback.textContent = '✅ Decomposição salva e projeto atualizado!';
         } catch (error) {
             console.error("Erro ao salvar dados do projeto (Módulo 2):", error);
-            feedback.textContent = '❌ Erro ao salvar. Verifique se o Módulo 1 foi salvo corretamente.';
+            feedback.textContent = '❌ Erro ao salvar. Tente novamente.';
         } finally {
             saveButton.disabled = false;
         }
     }
 
-    // Chamada Inicial: Carregar dados ao carregar a página
-    window.onload = loadProjectDataMod2;
-
+    // 3. Chamada Inicial: Carregar dados ao carregar a página
+    window.addEventListener('load', loadProjectDataMod2);
 </script>
 {% endblock %}
