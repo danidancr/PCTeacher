@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
 from datetime import datetime
-import json # Importa json para manipular a chave de serviço
+import json
 
 import firebase_admin 
 from firebase_admin import credentials, firestore, auth
@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sua_chave_secreta_padra
 
 
 # =========================================================
-# 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK (MODIFICADO)
+# 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK
 # =========================================================
 try:
     # 1. Tenta carregar da variável de ambiente (USO EM PRODUÇÃO)
@@ -56,7 +56,6 @@ if not firebase_admin._apps and cred:
     print("INFO: Firebase Admin SDK inicializado com sucesso.")
 elif not firebase_admin._apps:
     print("ERRO CRÍTICO: Firebase Admin SDK não foi inicializado. Verifique as credenciais.")
-    # Adicione uma verificação de segurança:
     if not cred:
         print("Erro: A variável 'cred' está vazia.")
 
@@ -65,7 +64,7 @@ elif not firebase_admin._apps:
 # 3. HELPERS E DECORATORS
 # =========================================================
 
-# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS (AJUSTADO: Adicionado 'problema-inicial') ---
+# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS ---
 MODULO_CONFIG = [
     {
         'title': 'Módulo 0: Problema Inicial',
@@ -83,12 +82,12 @@ MODULO_CONFIG = [
         'template': 'conteudo-decomposicao.html', 
         'order': 1,
         'description': 'Aprenda a quebrar problemas complexos em partes menores e gerenciáveis.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'problema-inicial_concluido' # Usar field do Problema Inicial se existir. Se não, manter introducao_concluido.
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido' # CORRIGIDO: Deve depender do field real.
     },
     {
         'title': 'Módulo 2: Reconhecimento de Padrões',
         'field': 'reconhecimento_padroes_concluido',
-        'slug': 'padroes', # Slug ajustado para 'padroes'
+        'slug': 'padroes', 
         'template': 'conteudo-rec-padrao.html', 
         'order': 2,
         'description': 'Identifique similaridades e tendências para simplificar a resolução de problemas.',
@@ -182,7 +181,7 @@ def calculate_progress(progresso_db):
     for module_config in MODULO_CONFIG:
         db_field = module_config['field']
         
-        # O módulo introdução é o único com campo de progresso diferente do slug
+        # O módulo problema-inicial usa o campo introducao_concluido para compatibilidade.
         if module_config['slug'] == 'problema-inicial':
             is_completed = progresso_db.get('introducao_concluido', False)
         else:
@@ -191,6 +190,7 @@ def calculate_progress(progresso_db):
         # Lógica de Desbloqueio
         dependency_field = module_config.get('dependency_field')
         
+        # A dependência sempre checa o campo do DB, que é o 'field' do módulo anterior.
         if dependency_field is None:
             is_unlocked_for_current_module = True
         else:
@@ -228,7 +228,7 @@ def calculate_progress(progresso_db):
     }
 
 # =========================================================
-# 4. ROTAS DE AUTENTICAÇÃO (Não modificadas)
+# 4. ROTAS DE AUTENTICAÇÃO
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -332,7 +332,7 @@ def logout():
     return redirect(url_for('index'))
 
 # =========================================================
-# 4.1 INFORMAÇÃO (Não modificadas)
+# 4.1 INFORMAÇÃO
 # =========================================================
 
 @app.route('/infor-curso-decomposicao')
@@ -356,9 +356,8 @@ def infor_curso_algoritmo():
     return render_template('infor-curso-algoritmo.html', user=usuario)
 
 
-
 # =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL (Não modificadas)
+# 5. ROTAS DE ÁREA RESTRITA E PERFIL
 # =========================================================
 
 @app.route('/')
@@ -455,7 +454,7 @@ def progresso():
 
 
 # =========================================================
-# 6. ROTAS DE CERTIFICADO (Não modificadas)
+# 6. ROTAS DE CERTIFICADO
 # =========================================================
 
 @app.route('/certificado')
@@ -478,7 +477,6 @@ def certificado():
     }
     return render_template('certificado.html', **context)
 
-# A função generate_latex_certificate deve existir no seu app.py, vou mantê-la como placeholder
 def generate_latex_certificate(nome, data, carga):
     # Conteúdo placeholder, substitua pela sua lógica de geração real
     return f"""\\documentclass{{article}}\n\\usepackage[utf8]{{inputenc}}\n\\title{{Certificado de Conclusão}}\n\\author{{{nome}}}\n\\date{{{data}}}\n\\begin{{document}}\n\\maketitle\nEste certificado atesta a conclusão do curso com carga horária de {carga} horas.\n\\end{{document}}"""
@@ -495,7 +493,8 @@ def gerar_certificado():
         return redirect(url_for('certificado'))
 
     nome_completo = usuario['nome'].upper()
-    data_conclusao_str = datetime.now().strftime('%d de \%B de \%Y')
+    # CORREÇÃO: Removido o escape '\' desnecessário
+    data_conclusao_str = datetime.now().strftime('%d de %B de %Y') 
     carga_horaria = 24 
     
     latex_content = generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
@@ -508,7 +507,7 @@ def gerar_certificado():
 
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO (AJUSTADO)
+# 8. ROTAS DE CONTEÚDO DE CURSO
 # =========================================================
 
 @app.route('/modulos')
@@ -528,27 +527,32 @@ def modulos():
 def salvar_projeto_modulo(modulo_slug):
     """
     Recebe uma submissão de projeto de um módulo e salva na coleção 'respostas_projeto'.
-    Espera uma requisição JSON.
+    Ajustado para aceitar dados de formulário tradicional (POST).
     """
     usuario = usuario_logado()
     user_id = usuario['id'] # UID do Firestore
     
     if not db:
-        return jsonify({'success': False, 'message': 'Banco de dados indisponível.'}), 503
+        flash('Erro: Banco de dados indisponível.', 'danger')
+        return redirect(url_for('conteudo_dinamico', modulo_slug=modulo_slug))
 
-    if not request.is_json:
-        return jsonify({'success': False, 'message': 'Requisição deve ser JSON (application/json).'}), 400
-        
-    data = request.get_json() 
+    # Tenta pegar a ideia de projeto do corpo do formulário (o método mais comum)
+    project_idea = request.form.get('project_idea') 
     
+    # Se não for encontrado e for uma requisição JSON (fallback para AJAX, etc)
+    if not project_idea and request.is_json:
+        data = request.get_json()
+        project_idea = data.get('project_idea')
+
     modulo_config = MODULO_BY_SLUG.get(modulo_slug)
     if not modulo_config:
-        return jsonify({'success': False, 'message': 'Módulo inválido.'}), 400
+        flash('Módulo inválido.', 'danger')
+        return redirect(url_for('modulos'))
         
-    project_idea = data.get('project_idea') # O conteúdo RAW (JSON string para modulos 1-4, ou string simples para mod 0)
-
+    # Verifica a validade do conteúdo
     if not project_idea or len(project_idea.strip()) < 10:
-        return jsonify({'success': False, 'message': 'Resposta muito curta ou ausente (mínimo 10 caracteres).'}), 400
+        flash('Resposta muito curta ou ausente (mínimo 10 caracteres).', 'danger')
+        return redirect(url_for('conteudo_dinamico', modulo_slug=modulo_slug))
 
     # Chave única: UID_slugdomodulo 
     doc_id = f"{user_id}_{modulo_slug}"
@@ -567,21 +571,22 @@ def salvar_projeto_modulo(modulo_slug):
         # Cria se não existir ou atualiza se existir
         resposta_ref.set(resposta_data, merge=True)
         
-        # Opcional: Se a conclusão do módulo depende de salvar o projeto
-        # Para fins de demonstração, definiremos o campo de progresso como True
+        # Define o campo de progresso como True
         db_field_to_update = modulo_config['field']
         
         # Exceção para o slug 'problema-inicial', que usa o campo 'introducao_concluido'
         if modulo_slug == 'problema-inicial':
-             db_field_to_update = 'introducao_concluido'
-             
+              db_field_to_update = 'introducao_concluido'
+              
         db.collection('progresso').document(user_id).update({db_field_to_update: True})
         
-        return jsonify({'success': True, 'message': 'Ideia de projeto salva com sucesso!', 'redirect_url': url_for('conteudo_dinamico', modulo_slug=modulo_slug)})
+        flash(f'Projeto do Módulo {modulo_config["order"]} salvo e concluído com sucesso!', 'success')
+        return redirect(url_for('modulos'))
     
     except Exception as e:
         print(f"Erro ao salvar projeto do módulo {modulo_slug}: {e}") 
-        return jsonify({'success': False, 'message': f'Erro interno ao salvar no DB: {str(e)}'}), 500
+        flash(f'Erro interno ao salvar no DB: {str(e)}', 'danger')
+        return redirect(url_for('conteudo_dinamico', modulo_slug=modulo_slug))
 
 
 @app.route('/concluir-modulo/<string:modulo_nome>', methods=['POST'])
@@ -591,7 +596,8 @@ def concluir_modulo(modulo_nome):
     user_id = usuario['id']
     progresso = usuario.get('progresso', {}) 
     
-    slug_normalizado = modulo_nome.replace('_', '-')
+    # O slug_normalizado é introducao, decomposicao, etc. (O nome que vem no form/URL)
+    slug_normalizado = modulo_nome.replace('_', '-') 
     modulo_config = MODULO_BY_SLUG.get(slug_normalizado)
     
     if not modulo_config:
@@ -603,7 +609,7 @@ def concluir_modulo(modulo_nome):
     if slug_normalizado == 'problema-inicial':
         db_field = 'introducao_concluido'
 
-    # 1. VERIFICA DEPENDÊNCIA (Lógica mantida)
+    # 1. VERIFICA DEPENDÊNCIA 
     dependency_field = modulo_config.get('dependency_field')
     if dependency_field and not progresso.get(dependency_field, False):
         flash('Você deve completar o módulo anterior primeiro para registrar a conclusão deste.', 'warning')
@@ -616,7 +622,7 @@ def concluir_modulo(modulo_nome):
             db_field: True
         })
         
-        # Lógica de redirecionamento para o próximo módulo (mantida)
+        # Lógica de redirecionamento para o próximo módulo
         proximo_modulo_order = modulo_config['order'] + 1
         proximo_modulo = next((m for m in MODULO_CONFIG if m['order'] == proximo_modulo_order), None)
         
@@ -656,7 +662,8 @@ def conteudo_dinamico(modulo_slug):
     if modulo_slug == 'projeto-final':
         # Buscando TODAS as respostas do projeto para o relatório final
         respostas_projeto_map = {}
-        respostas_query = db.collection('respostas_projeto').where('usuario_id', '==', user_id).stream()
+        # Uso de 'where' com filtro posicional, que gera o UserWarning no log, mas é funcional.
+        respostas_query = db.collection('respostas_projeto').where('usuario_id', '==', user_id).stream() 
         
         for r_doc in respostas_query:
             r = r_doc.to_dict()
