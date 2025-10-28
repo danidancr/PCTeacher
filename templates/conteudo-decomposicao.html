@@ -3,7 +3,7 @@
 {% block title %}Módulo 2: Decomposição{% endblock %}
 
 {% block content_title %}
-    <i class="fas fa-puzzle-piece text-primary-indigo mr-2"></i> Módulo 2: A Arte da Decomposição
+    <i class="fas fa-puzzle-piece text-primary-indigo mr-2"></i> Módulo 2: Decomposição - A Arte de Simplificar
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,6 @@
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Quebrando o Problema em Partes
         </h2>
         <div class="video-container">
-            {# O vídeo permanece o mesmo placeholder, apenas para a estrutura do layout #}
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a simplificar qualquer desafio dividindo-o em subtarefas gerenciáveis.</p>
@@ -145,7 +144,7 @@
                         B) Organização de sequências didáticas coerentes.
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. A decomposição foca em como resolver o problema, e não em eliminar etapas.')" data-correct="false">
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. O foco é em como resolver o problema, e não em eliminar etapas.')" data-correct="false">
                         C) Eliminação de conteúdos secundários.
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
@@ -163,38 +162,38 @@
     </div>
 
     {# ========================================================= #}
-    {# SEÇÃO DE PROJETO (JUSTIFICATIVA) - AJUSTADA PARA A LÓGICA FLASK/AJAX #}
+    {# SEÇÃO DE PROJETO (DECOMPOSIÇÃO) - CORRIGIDA #}
     {# ========================================================= #}
-    <div class="content-section bg-indigo-50 border-indigo-300">
+    <div class="content-section border-4 border-red-200 bg-red-50">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-semibold text-primary-indigo">📝 Meu Projeto: Justificativa</h2>
-            {# Este span será atualizado pela função JavaScript saveProjectData na base_dashboard.html #}
+            <h2 class="text-2xl font-semibold text-red-700">🧩 Meu Projeto: Decomposição</h2>
+            {# Este span será atualizado pela função JavaScript saveProjectData na conteudo-base.html #}
             <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
         </div>
         
-        <p class="text-gray-700 mb-4">Com base no conceito de **Decomposição de Problemas**, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
+        <p class="text-gray-700 mb-4">A Decomposição transforma seu problema complexo em partes menores e gerenciáveis.</p>
         
-        {# O ID do formulário é usado para o JavaScript, mas o 'onchange' garante o salvamento assíncrono. #}
-        <form id="project-form-decomposicao" method="POST" onchange="saveProjectData(this)">
+        {# Usando project-form-modulo-2 para o ID, nomeando o campo como 'decomposicao' #}
+        <form id="project-form-modulo-2" method="POST" onchange="saveProjectData(this)">
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição dos Subproblemas</h3>
+
+            {# Informação de contexto do projeto (Nome do Projeto do Módulo 1) #}
+            <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">
+                Projeto Atual: {{ projeto_data.nome_projeto | default('Projeto Sem Nome') }}
+            </p>
 
             <div class="mb-4">
-                <label for="justificativa" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="justificativa" name="justificativa" rows="6" 
-                          class="w-full p-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-primary-indigo focus:border-primary-indigo" 
-                          placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro.">
+                <label for="decomposicao" class="block text-gray-800 font-medium mb-2">Com base no problema do seu projeto, liste os subproblemas (3 a 5 subproblemas) que precisam ser resolvidos separadamente para que a Objetivo Principal funcione.</label>
+                <textarea id="decomposicao" name="decomposicao" rows="6" 
+                          class="w-full p-3 border border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500" 
+                          placeholder="Ex: 1. Pesquisar recursos digitais adequados. 2. Desenvolver o material didático. 3. Aplicar o material em sala. 4. Avaliar o aprendizado dos alunos." required>
                     {# Carrega o valor salvo do banco de dados, se existir #}
-                    {{ projeto_data.justificativa | default('') }}
+                    {{ projeto_data.decomposicao | default('') }}
                 </textarea>
                 <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente.</p>
             </div>
-            
-            {# Botão de salvamento visível, mas o salvamento principal é por onchange. #}
-            <button type="submit" class="mt-4 hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-indigo hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo">
-                Salvar Justificativa
-            </button>
-            
+        
         </form>
     </div>
 {% endblock %}
