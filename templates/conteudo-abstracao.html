@@ -144,11 +144,18 @@
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Modelo Essencial
         </h2>
         <p class="text-gray-700 mb-4">Esta é a etapa de abstração do seu projeto. Vamos criar um modelo que represente a essência do seu trabalho.</p>
-        <form id="project-idea-form-mod4">
-            <label for="project_abstraction" class="block text-gray-800 font-medium mb-2">Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
-            <textarea id="project_abstraction" name="project_abstraction" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)."></textarea>
+        
+        <form id="project-idea-form-mod4" onsubmit="saveProjectDataMod4(event)">
             
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Abstração</button>
+            <p id="project-name-display-mod4" class="text-sm italic text-gray-600 mb-4">Carregando dados do projeto...</p>
+            
+            <label for="project_abstraction" class="block text-gray-800 font-medium mb-2">Considerando os padrões identificados no Módulo 3, crie uma **Abstração** para o seu projeto. Qual é o **modelo ou a regra essencial** que define a sua solução? Quais são os detalhes que podem ser **ignorados** neste momento para criar uma representação simples e poderosa?</label>
+            <textarea id="project_abstraction" name="project_abstraction" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O modelo essencial é: 'Se a tarefa A for concluída e o tempo X for excedido, acione o feedback B.' Ignoramos a cor do botão, o nome exato do aluno, e focamos apenas nas variáveis lógicas (Tarefa, Tempo, Feedback)." required></textarea>
+            
+            <button type="submit" id="save-button-mod4" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
+                Salvar Abstração
+            </button>
+            <span id="save-feedback-mod4" class="ml-4 text-sm font-semibold text-red-600"></span>
         </form>
     </div>
 {% endblock %}
@@ -161,4 +168,94 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
+    const db = firebase.firestore(); 
+    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+
+    // 1. Função para carregar os dados do projeto E os dados do Módulo 4 (se existirem)
+    async function loadProjectDataMod4() {
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        const feedback = document.getElementById('save-feedback-mod4');
+        const saveButton = document.getElementById('save-button-mod4');
+        const projectNameDisplay = document.getElementById('project-name-display-mod4');
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
+            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
+            return;
+        }
+
+        saveButton.disabled = false; // Habilita o botão se o ID for encontrado
+        feedback.textContent = 'Carregando dados...';
+
+        try {
+            const docRef = db.collection("projetos").doc(projectId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // Exibe o nome do projeto (Boa Prática de UX)
+                const projectName = data.project_name || 'Projeto Sem Nome';
+                projectNameDisplay.textContent = `Projeto Atual: "${projectName}"`;
+
+                // Preenche o campo de abstração se já foi salvo
+                document.getElementById('project_abstraction').value = data.project_abstraction || '';
+                
+                feedback.textContent = data.project_abstraction ? 'Dados do Módulo 4 carregados.' : 'Pronto para preencher a abstração.';
+
+            } else {
+                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
+                saveButton.disabled = true;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados do projeto (Módulo 4):", error);
+            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
+            saveButton.disabled = true;
+        }
+    }
+
+    // 2. Função para atualizar os dados do projeto no Firebase (Update)
+    async function saveProjectDataMod4(event) {
+        event.preventDefault(); 
+        
+        const saveButton = document.getElementById('save-button-mod4');
+        const feedback = document.getElementById('save-feedback-mod4');
+        saveButton.disabled = true;
+        feedback.textContent = 'Salvando...';
+
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: ID do projeto não encontrado. Volte ao Módulo 1.';
+            saveButton.disabled = false;
+            return;
+        }
+
+        const formData = {
+            project_abstraction: document.getElementById('project_abstraction').value,
+            modulo_4_completado: true, // Adiciona um flag de conclusão
+            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            // Usa o método .doc().update() para atualizar apenas os campos deste módulo
+            await db.collection("projetos").doc(projectId).update(formData);
+            feedback.textContent = '✅ Abstração salva e projeto atualizado!';
+        } catch (error) {
+            console.error("Erro ao salvar dados do projeto (Módulo 4):", error);
+            feedback.textContent = '❌ Erro ao salvar. Verifique se o Módulo 1 foi salvo corretamente.';
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    // Chamada Inicial: Carregar dados ao carregar a página
+    window.onload = loadProjectDataMod4;
+
+</script>
 {% endblock %}
