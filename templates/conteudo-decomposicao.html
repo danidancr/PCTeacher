@@ -142,7 +142,7 @@
                         B) Organização de sequências didáticas coerentes.
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. A decomposição foca em como resolver o problema, e não em eliminar etapas.')" data-correct="false">
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. O foco é em como resolver o problema, e não em eliminar etapas.')" data-correct="false">
                         C) Eliminação de conteúdos secundários.
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
@@ -164,16 +164,18 @@
             <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
         </h2>
         <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
-        <form id="project-idea-form-mod2">
+        
+        <form id="project-idea-form-mod2" data-slug="{{ modulo.slug }}">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
 
             <div class="mb-4">
-                <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro."></textarea>
+                <label for="project_justification_input" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
+                <textarea id="project_justification_input" name="project_justification_input" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro.">{{ resposta_anterior | default('', true) }}</textarea>
             </div>
             
             <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Justificativa</button>
+            <div id="save-status" class="mt-3 text-sm font-medium"></div>
         </form>
     </div>
 {% endblock %}
@@ -186,4 +188,95 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    
+    <script>
+        // Função para simular o flash do Flask
+        function showStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('save-status');
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('text-green-600', 'text-red-600');
+            statusDiv.classList.add(isSuccess ? 'text-green-600' : 'text-red-600');
+            
+            // Limpa a mensagem após 5 segundos
+            setTimeout(() => {
+                statusDiv.textContent = '';
+            }, 5000);
+        }
+
+        // Função para pré-preencher a textarea se houver JSON salvo
+        // (Aqui mantemos a lógica JSON, mesmo sendo um campo simples, para consistência)
+        function loadProjectIdea() {
+            const textarea = document.getElementById('project_justification_input');
+            const previousData = textarea.value.trim();
+            
+            if (previousData) {
+                try {
+                    // O app.py está enviando a resposta bruta (JSON string) salva no Firestore
+                    const data = JSON.parse(previousData);
+                    // Pré-preenche apenas o campo que nos interessa
+                    textarea.value = data.project_justification || previousData; // Usa o valor JSON ou o valor raw, se o JSON falhar
+                } catch (e) {
+                    // Se o valor não for JSON, ele já estará na textarea, então não faz nada
+                }
+            }
+        }
+        
+        loadProjectIdea();
+
+        // Lógica de envio do formulário (AJAX)
+        document.getElementById('project-idea-form-mod2').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const moduleSlug = form.getAttribute('data-slug');
+            const saveUrl = `{{ url_for('salvar_projeto_modulo', modulo_slug=modulo.slug) }}`;
+            const justificationInput = document.getElementById('project_justification_input');
+            
+            // 1. Coleta e consolida os dados dos campos em um objeto
+            const dataToSave = {
+                project_justification: justificationInput.value.trim()
+            };
+            
+            // 2. Transforma o objeto consolidado em uma string JSON (Formato que o app.py espera na collection)
+            const consolidatedResponse = JSON.stringify(dataToSave);
+            
+            // 3. Validação básica de comprimento (mínimo de 10 caracteres no app.py)
+            if (dataToSave.project_justification.length < 10) {
+                 showStatus("Sua justificativa é muito curta (mínimo 10 caracteres).", false);
+                 return;
+            }
+
+            // 4. Cria o payload JSON para o Flask (o Flask espera {project_idea: "..."})
+            const payload = {
+                project_idea: consolidatedResponse
+            };
+
+            // 5. Envia via Fetch API (AJAX)
+            fetch(saveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus(data.message, true);
+                    // Opcional: Atualiza o conteúdo da textarea para refletir o JSON salvo
+                    justificationInput.value = dataToSave.project_justification; 
+                } else {
+                    showStatus(data.message || 'Erro desconhecido ao salvar.', false);
+                }
+            })
+            .catch(error => {
+                console.error('Erro de rede:', error);
+                showStatus('Erro de conexão ao servidor.', false);
+            });
+        });
+    </script>
 {% endblock %}
