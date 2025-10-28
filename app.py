@@ -62,7 +62,7 @@ elif not firebase_admin._apps:
 MODULO_CONFIG = [
     # ... (Seu MODULO_CONFIG permanece o mesmo) ...
     {
-        'title': '1. Introdução ao Pensamento Computacional',
+        'title': 'Introdução ao Pensamento Computacional',
         'field': 'introducao_concluido',
         'slug': 'introducao',
         'template': 'conteudo-introducao.html', 
@@ -71,7 +71,7 @@ MODULO_CONFIG = [
         'lessons': 1, 'exercises': 5, 'dependency_field': None
     },
     {
-        'title': '2. Decomposição',
+        'title': 'Decomposição',
         'field': 'decomposicao_concluido',
         'slug': 'decomposicao',
         'template': 'conteudo-decomposicao.html', 
@@ -80,7 +80,7 @@ MODULO_CONFIG = [
         'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido'
     },
     {
-        'title': '3. Reconhecimento de Padrões',
+        'title': 'Reconhecimento de Padrões',
         'field': 'reconhecimento_padroes_concluido',
         'slug': 'rec-padrao',
         'template': 'conteudo-rec-padrao.html', 
@@ -89,7 +89,7 @@ MODULO_CONFIG = [
         'lessons': 1, 'exercises': 5, 'dependency_field': 'decomposicao_concluido'
     },
     {
-        'title': '4. Abstração',
+        'title': 'Abstração',
         'field': 'abstracao_concluido',
         'slug': 'abstracao',
         'template': 'conteudo-abstracao.html', 
@@ -98,7 +98,7 @@ MODULO_CONFIG = [
         'lessons': 1, 'exercises': 5, 'dependency_field': 'reconhecimento_padroes_concluido'
     },
     {
-        'title': '5. Algoritmos',
+        'title': 'Algoritmos',
         'field': 'algoritmo_concluido',
         'slug': 'algoritmo',
         'template': 'conteudo-algoritmo.html', 
@@ -107,7 +107,7 @@ MODULO_CONFIG = [
         'lessons': 1, 'exercises': 5, 'dependency_field': 'abstracao_concluido'
     },
     {
-        'title': '6. Projeto Final',
+        'title': 'Projeto Final',
         'field': 'projeto_final_concluido',
         'slug': 'projeto-final',
         'template': 'conteudo-projeto-final.html', 
