@@ -5,120 +5,185 @@
 {% block content_title %}Módulo 2: A Arte da Decomposição{% endblock %}
 
 {% block content %}
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-video mr-3"></i> Vídeo Aula: Quebrando o Problema em Partes
-        </h2>
-        <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-500 mt-4">Aprenda a simplificar qualquer desafio dividindo-o em subtarefas gerenciáveis.</p>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Quebrando o Problema em Partes
+        </h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Aprenda a simplificar qualquer desafio dividindo-o em subtarefas gerenciáveis.</p>
+    </div>
+    
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            
+            <div id="q-mod1-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Conceitual</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. A decomposição é válida no âmbito educacional porque permite:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-1', this, 'false', '❌ Incorreto. A decomposição mantém as relações entre as partes para que a solução final seja coerente.')" data-correct="false">
+                        A) Tratar partes de um problema isoladamente, sem relação entre si.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-1', this, 'true', '✅ Excelente! Decompor é compreender a estrutura de um sistema complexo a partir da análise das suas partes interconectadas, tornando o problema gerenciável.')" data-correct="true">
+                        B) Entender o todo a partir da análise de suas partes interconectadas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-1', this, 'false', '❌ Incorreto. O objetivo é simplificar, mas mantendo todas as etapas críticas.')" data-correct="false">
+                        C) Reduzir a complexidade eliminando etapas críticas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-1', this, 'false', '❌ Incorreto. A decomposição é, fundamentalmente, uma ferramenta de planejamento.')" data-correct="false">
+                        D) Resolver problemas sem planejamento prévio.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-1', this, 'false', '❌ Incorreto. O PC exige reflexão constante sobre o processo.')" data-correct="false">
+                        E) Repetir processos automáticos sem reflexão.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod1-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Aplicação Pedagógica</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Em contextos educacionais, decompor um problema significa:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-2', this, 'false', '❌ Incorreto. A decomposição é o oposto da memorização, pois foca na compreensão estrutural do conteúdo.')" data-correct="false">
+                        A) Reduzir o conteúdo a tópicos de memorização.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-2', this, 'true', '✅ Correto! Decomposição, no ensino, transforma grandes objetivos em pequenas etapas de aprendizagem sequenciais e interligadas.')" data-correct="true">
+                        B) Planejar etapas didáticas coerentes e complementares.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-2', this, 'false', '❌ Incorreto. O foco é na conexão, e não na fragmentação do conhecimento.')" data-correct="false">
+                        C) Fragmentar o conhecimento sem conexão.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-2', this, 'false', '❌ Incorreto. A decomposição é uma habilidade de raciocínio, não um método de cálculo.')" data-correct="false">
+                        D) Aplicar fórmulas matemáticas a problemas sociais.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-2', this, 'false', '❌ Incorreto. A decomposição exige que se foque tanto no processo quanto no produto final.')" data-correct="false">
+                        E) Focar apenas no produto final.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod1-3" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Desafios</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">3. Um desafio da decomposição é:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-3', this, 'false', '❌ Incorreto. A decomposição deve ser revisada e ajustada conforme o andamento do processo.')" data-correct="false">
+                        A) Não permitir revisão dos subproblemas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-3', this, 'true', '✅ Perfeito! O maior desafio é garantir que as relações entre as partes funcionem corretamente para alcançar o objetivo geral.')" data-correct="true">
+                        B) Requerer análise constante das relações entre partes.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-3', this, 'false', '❌ Incorreto. Pelo contrário, ela facilita o trabalho colaborativo ao atribuir subtarefas.')" data-correct="false">
+                        C) Impedir o trabalho colaborativo.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-3', this, 'false', '❌ Incorreto. A decomposição busca entender as interdependências para garantir a solução final.')" data-correct="false">
+                        D) Eliminar as interdependências.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-3', this, 'false', '❌ Incorreto. É aplicável a todos os contextos da vida e do ensino.')" data-correct="false">
+                        E) Ser aplicável apenas em contextos tecnológicos.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod1-4" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Falha na Aplicação</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">4. Quando a decomposição falha, o problema costuma estar em:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-4', this, 'false', '❌ Incorreto. O trabalho em equipe costuma ser positivo para a decomposição.')" data-correct="false">
+                        A) Excesso de colaboração.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-4', this, 'true', '✅ Exato! A falta de clareza nas partes (subproblemas) impede que o processo de montagem final funcione.')" data-correct="true">
+                        B) Falta de clareza na definição dos subproblemas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-4', this, 'false', '❌ Incorreto. A divisão é necessária; o problema é a fragmentação sem propósito.')" data-correct="false">
+                        C) Divisão excessiva do conteúdo.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-4', this, 'false', '❌ Incorreto. Revisões são benéficas.')" data-correct="false">
+                        D) Número elevado de revisões.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-4', this, 'false', '❌ Incorreto. A decomposição é um processo mental, não dependente de tecnologia.')" data-correct="false">
+                        E) Falta de recursos tecnológicos.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod1-5" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Metodologia</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">5. Em um planejamento didático, a decomposição pode auxiliar na:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. O termo "fragmentação" sugere divisão sem sentido; a decomposição busca conexões.')" data-correct="false">
+                        A) Fragmentação do conhecimento.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-5', this, 'true', '✅ Exato! A decomposição é a base para criar um fluxo de ensino progressivo e interligado, ou seja, sequências didáticas coerentes.')" data-correct="true">
+                        B) Organização de sequências didáticas coerentes.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. A decomposição foca em como resolver o problema, e não em eliminar etapas.')" data-correct="false">
+                        C) Eliminação de conteúdos secundários.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. As etapas avaliativas são subproblemas importantes que precisam ser decompostos.')" data-correct="false">
+                        D) Exclusão de etapas avaliativas.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod1-5', this, 'false', '❌ Incorreto. O objetivo é dar ao aluno autonomia sobre as partes do processo.')" data-correct="false">
+                        E) Redução da autonomia discente.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            </div>
+    </div>
 
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
-        </h2>
-        <p class="text-gray-700 mb-4">Estudos de caso sobre decomposição de projetos educacionais complexos.</p>
-        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-download mr-2"></i> Baixar Ferramentas de Decomposição
-        </a>
-    </div>
-   
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
-        </h2>
-        <div class="space-y-6">
-                                    <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>
-                <p class="font-semibold text-lg mb-4 text-gray-800">1. Um dos desafios enfrentados pelas organizações no século XXI é a crescente complexidade dos problemas que lhes são apresentados. Uma opção para que as organizações possam ser eficientes e eficazes é a utilização do pensamento computacional, por suas características peculiares. O pensamento computacional caracteriza-se pela(o)</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'true', '✅ Correto! O PC é uma forma de pensar, que utiliza o raciocínio recursivo e heurístico na resolução de problemas complexos, e não se limita a linguagens de programação ou a passos mecânicos.')" data-correct="true">
-                        pensamento recursivo, pelo pensamento orientado à mitigação de problemas e pelo uso do raciocínio heurístico na busca de uma solução.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. Essa alternativa reduz ou distorce o conceito; o PC é mais amplo e abrange habilidades aplicáveis além da programação, além de usar múltiplos níveis de abstração.')" data-correct="false">
-                        conceitualização, ou seja, por adotar as especificações utilizadas na codificação de um programa de computador, com base em apenas um nível de abstração, para a resolução do problema apresentado.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é um conjunto de habilidades de pensamento e não se resume à capacidade de seguir instruções de forma mecanizada.')" data-correct="false">
-                        habilidade para seguir, de forma mecanizada, as especificações explicitadas nas rotas e nos protocolos de solução para o problema apresentado.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é mais amplo do que o tratamento puramente matemático e é aplicado em diversos contextos, não apenas em questões isoladas.')" data-correct="false">
-                        isolamento das questões referentes ao problema apresentado e tratamento puramente matemático dessas questões.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é uma forma de pensar, e não envolve diretamente a utilização da forma binária de tratamento de dados pelo ser humano.')" data-correct="false">
-                        promoção, no ser humano, de um modo de pensamento similar ao de computadores, pela utilização da forma binária de tratamento de dados na resolução do problema apresentado.
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-            
-                        <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
-                                
-                <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
+        </h2>
+        <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
+        <form id="project-idea-form-mod2">
+            
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
 
-                                <div class="mb-4 p-2 border rounded-lg bg-gray-50">
-                    <img src="{{ url_for('static', filename='img/IADES-2022.png') }}" alt="Texto de suporte para a Questão 2 (IADES) sobre as ferramentas mentais de Jeannette Wing." class="w-full h-auto max-h-96 object-contain mx-auto rounded-lg">
-                </div>
-
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Embora úteis, estas são habilidades acadêmicas, não as ferramentas mentais centrais do Pensamento Computacional.')" data-correct="false">
-                        Conhecimento algébrico e estatístico
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'true', '✅ Correto! A Abstração é um dos pilares de Wing, e a Reformulação do Problema (Decomposição) é o primeiro passo para o Pensamento Computacional.')" data-correct="true">
-                        Reformulação do problema e abstração
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Estas são habilidades de desenvolvimento de software (codificação), não as ferramentas conceituais de pensamento.')" data-correct="false">
-                        Depuração e habilidade com compiladores
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. O PC abrange o pensamento matemático, mas é mais focado em decomposição, padrões e abstração.')" data-correct="false">
-                        Habilidade com programação e pensamento matemático
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod0-2', this, 'false', '❌ Incorreto. Topologia não é uma ferramenta central do Pensamento Computacional; os pilares são Decomposição, Reconhecimento de Padrões, Abstração e Algoritmos.')" data-correct="false">
-                        Decomposição e topologia
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-                    </div>
-    </div>
-
-        <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
-        </h2>
-        <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
-        <form id="project-idea-form-mod2">
-            
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
-
-                        <div class="mb-4">
-                <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro."></textarea>
-            </div>
-            
-                        <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Justificativa</button>
-        </form>
-    </div>
+            <div class="mb-4">
+                <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
+                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro."></textarea>
+            </div>
+            
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Justificativa</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='decomposicao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
-    </div>
+    <div class="mt-8 text-center">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='decomposicao') }}">
+            <button type="submit" class="btn-finish hover:shadow-lg">
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+            </button>
+        </form>
+    </div>
 {% endblock %}
