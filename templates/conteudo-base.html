@@ -292,6 +292,31 @@
             feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     </script>
+
+    <script>
+    // Se a variável 'firebase_config' for injetada pelo Flask (como sugerido acima)
+    // O {{ firebase_config | tojson }} a converte em um objeto JavaScript.
+    const firebaseConfig = {{ firebase_config | tojson }};
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+    // Inicializa o Firebase Client SDK
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    // Exporta as instâncias de Auth e Firestore para uso nos scripts dos módulos
+    const authClient = firebase.auth();
+    const dbClient = firebase.firestore();
+
+    // Se você estiver usando a variável 'user' injetada pelo Flask, 
+    // certifique-se de que o JS use o UID correto para o Firestore
+    const currentUserId = "{{ user.id if user else '' }}";
+</script>
     
 </body>
 </html>
