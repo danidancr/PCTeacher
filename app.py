@@ -374,10 +374,10 @@ def cadastro():
             # (Usando as chaves padronizadas: problema, publico_alvo, decomposicao, etc.)
             novo_projeto_data = {
                 'nome_projeto': '',
-                'problema': '', # Ajustado
+                'objetivo': '', # Ajustado
                 'publico_alvo': '', # Ajustado
                 'decomposicao': '',
-                'padroes': '',
+                'otimizacao_padrao': '',
                 'abstracao': '',
                 'algoritmo': ''
             }
@@ -631,7 +631,7 @@ def salvar_projeto():
     # Padroniza as chaves do formulário (Ex: 'decomposicao' para 'decomposicao')
     update_data = {}
     for key, value in data.items():
-        if key in ['nome_projeto', 'problema', 'publico_alvo', 'decomposicao', 'padroes', 'abstracao', 'algoritmo']:
+        if key in ['nome_projeto', 'objetivo', 'publico_alvo', 'decomposicao', 'otimizacao_padrao', 'abstracao', 'algoritmo']:
             update_data[key] = value.strip()
     
     if not update_data:
