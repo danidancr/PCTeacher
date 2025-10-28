@@ -224,7 +224,7 @@ def calculate_progress(progresso_db):
     }
 
 def load_all_project_data(user_id):
-    """Busca todas as respostas do projeto do usuário e consolida em um dict."""
+    """Busca todas as respostas do projeto do usuário e consolida em um dict (simulando JSON)."""
     if not db: return {}
     
     # O documento de respostas de projeto é indexado pelo UID do usuário
@@ -235,12 +235,64 @@ def load_all_project_data(user_id):
     # Remove o 'usuario_id' e o 'id' do documento final, se existir
     all_data.pop('usuario_id', None)
     all_data.pop('id', None)
+    all_data.pop('data_atualizacao', None) # Removido para simplificar
     
     return all_data
 
+# =========================================================
+# NOVO HELPER: ORGANIZA DADOS PARA EXIBIÇÃO NO PROJETO FINAL
+# =========================================================
+def organize_project_data_for_display(all_data):
+    """
+    Organiza as respostas do projeto carregadas (all_data) em uma estrutura 
+    ordenada e formatada para exibição no template 'projeto-final'.
+    """
+    respostas_projeto_ordenadas = []
+    
+    # Itera sobre os módulos na ordem definida em MODULO_CONFIG
+    for mod in MODULO_CONFIG:
+        # Pula o próprio módulo final
+        if mod['slug'] == 'projeto-final': 
+            continue 
+
+        # Obtém os nomes dos campos que deveriam vir deste módulo
+        field_names = PROJETO_FIELD_MAP.get(mod['slug'])
+        
+        if not field_names:
+            continue
+
+        resposta_formatada = {}
+        is_saved = False
+        
+        # Itera sobre cada campo esperado no módulo
+        for field_name in field_names:
+            # Obtém o valor do dicionário total carregado
+            value = all_data.get(field_name)
+            
+            # Formata o título da chave para exibição (Ex: 'project_name' -> 'Nome')
+            # Garante que não apareça 'project' e substitui '_' por espaço.
+            display_name = field_name.replace('project_', '').replace('_', ' ').capitalize()
+            
+            # Adiciona o valor encontrado
+            # O valor pode ser None se não foi salvo, o template cuidará da exibição.
+            resposta_formatada[display_name] = value
+
+            # Se qualquer campo tiver valor (não for None), consideramos que a seção foi salva
+            if value:
+                is_saved = True
+
+        respostas_projeto_ordenadas.append({
+            'title': mod['title'],
+            'slug': mod['slug'],
+            'respostas': resposta_formatada, # É sempre um dicionário
+            'is_saved': is_saved
+        })
+    
+    return respostas_projeto_ordenadas
 
 # =========================================================
 # 4. ROTAS DE AUTENTICAÇÃO
+# ... (ROTAS DE AUTENTICAÇÃO, INFORMAÇÃO, PERFIL, PROGRESSO e CERTIFICADO - MANTIDAS) ...
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -336,9 +388,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-# =========================================================
-# 4.1 ROTAS DE INFORMAÇÃO
-# =========================================================
+# ROTAS DE INFORMAÇÃO
 
 @app.route('/infor-curso-decomposicao')
 def infor_curso_decomposicao():
@@ -361,9 +411,7 @@ def infor_curso_algoritmo():
     return render_template('infor-curso-algoritmo.html', user=usuario)
 
 
-# =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL
-# =========================================================
+# ROTAS DE ÁREA RESTRITA E PERFIL
 
 @app.route('/')
 def index():
@@ -459,9 +507,7 @@ def progresso():
     return render_template('progresso.html', **context)
 
 
-# =========================================================
-# 6. ROTAS DE CERTIFICADO
-# =========================================================
+# ROTAS DE CERTIFICADO
 
 @app.route('/certificado')
 @requires_auth
@@ -526,7 +572,7 @@ concluiu com sucesso o curso "Pensamento Computacional para Professores", com ca
 
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO (CORRIGIDO)
+# 8. ROTAS DE CONTEÚDO DE CURSO (ATUALIZADO)
 # =========================================================
 
 @app.route('/modulos')
@@ -559,7 +605,7 @@ def salvar_projeto_modulo(modulo_slug):
 
     # 2. Prepara os dados a serem salvos
     resposta_data = {'usuario_id': user_id, 'data_atualizacao': firestore.SERVER_TIMESTAMP}
-    # === CORREÇÃO: Usar request.form para receber dados de formulário HTML ===
+    # Usa request.form para receber dados de formulário HTML
     form_data = request.form
 
     for field_name in project_fields:
@@ -579,6 +625,7 @@ def salvar_projeto_modulo(modulo_slug):
 
     try:
         # Usa SET com merge=True para criar ou atualizar os campos no documento do usuário
+        # Isso garante que todas as respostas (de todos os módulos) fiquem no mesmo "JSON"
         resposta_ref.set(resposta_data, merge=True)
         
         # Lógica de redirecionamento para o próximo módulo
@@ -620,31 +667,12 @@ def conteudo_dinamico(modulo_slug):
     # 2. CARREGA TODOS OS DADOS DO PROJETO SALVOS (para preencher campos/exibir resumo)
     all_project_data = load_all_project_data(user_id)
     
-    # 3. LÓGICA ESPECÍFICA PARA O MÓDULO FINAL (carregar respostas)
+    # 3. LÓGICA ESPECÍFICA PARA O MÓDULO FINAL (carregar e organizar respostas)
     respostas_projeto_ordenadas = []
     if modulo_slug == 'projeto-final':
-        for mod in MODULO_CONFIG:
-            if mod['slug'] != 'projeto-final': 
-                field_names = PROJETO_FIELD_MAP.get(mod['slug'])
-                
-                if field_names and len(field_names) > 1:
-                     resposta_texto = {name: all_project_data.get(name, 'Não respondido.') for name in field_names}
-                     is_saved = any(all_project_data.get(name) for name in field_names)
-                elif field_names:
-                    field_name = field_names[0]
-                    resposta_texto = all_project_data.get(field_name, 'Não respondido.')
-                    is_saved = all_project_data.get(field_name) is not None
-                else:
-                    resposta_texto = 'Não aplicável ou sem campos definidos.'
-                    is_saved = False
-
-                respostas_projeto_ordenadas.append({
-                    'title': mod['title'],
-                    'slug': mod['slug'],
-                    'resposta': resposta_texto,
-                    'is_saved': is_saved
-                })
-            
+        # === USANDO O NOVO HELPER SIMPLIFICADO ===
+        respostas_projeto_ordenadas = organize_project_data_for_display(all_project_data)
+        
     
     # 4. Renderiza o template do módulo
     template_name = modulo_config['template']
@@ -654,7 +682,7 @@ def conteudo_dinamico(modulo_slug):
         progresso=progresso, 
         modulo=modulo_config, 
         project_data=all_project_data,
-        respostas_projeto_ordenadas=respostas_projeto_ordenadas
+        respostas_projeto_ordenadas=respostas_projeto_ordenadas # Variável usada no projeto final
     )
 
 
