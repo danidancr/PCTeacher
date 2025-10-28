@@ -22,7 +22,7 @@
             <h2 class="text-3xl font-bold text-gray-800">✍️ Revisão e Edição Final: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
                     </div>
         
-                <form method="POST" action="{{ url_for('salvar_projeto_final_edicao') }}"> 
+                <form method="POST" action="{{ url_for('salvar_projeto') }}"> 
             <div id="project-review-final">
         
                 {# Seção 0: Definição do Projeto (Módulo 1) - ADICIONADO PÚBLICO-ALVO #}
