@@ -144,11 +144,14 @@
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
         </h2>
         <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
-        <form id="project-idea-form-mod5">
-            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
-            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
+        
+        <form id="project-idea-form-mod5" data-slug="{{ modulo.slug }}">
+            
+            <label for="project_algorithm_input" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+            <textarea id="project_algorithm_input" name="project_algorithm_input" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM.">{{ resposta_anterior | default('', true) }}</textarea>
             
             <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
+            <div id="save-status" class="mt-3 text-sm font-medium"></div>
         </form>
     </div>
 {% endblock %}
@@ -161,4 +164,96 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    
+    <script>
+        // Função para simular o flash do Flask
+        function showStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('save-status');
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('text-green-600', 'text-red-600');
+            statusDiv.classList.add(isSuccess ? 'text-green-600' : 'text-red-600');
+            
+            // Limpa a mensagem após 5 segundos
+            setTimeout(() => {
+                statusDiv.textContent = '';
+            }, 5000);
+        }
+
+        // Função para pré-preencher a textarea se houver JSON salvo
+        function loadProjectIdea() {
+            const textarea = document.getElementById('project_algorithm_input');
+            const previousData = textarea.value.trim();
+            
+            if (previousData) {
+                try {
+                    // O app.py está enviando a resposta bruta (JSON string) salva no Firestore
+                    const data = JSON.parse(previousData);
+                    // Pré-preenche apenas o campo que nos interessa
+                    textarea.value = data.project_algorithm || previousData; 
+                } catch (e) {
+                    // Se o valor não for JSON, ele já estará na textarea, então não faz nada
+                }
+            }
+        }
+        
+        loadProjectIdea();
+
+        // Lógica de envio do formulário (AJAX)
+        document.getElementById('project-idea-form-mod5').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const moduleSlug = form.getAttribute('data-slug');
+            // A URL deve usar o slug do módulo (disponível na variável Jinja 'modulo.slug')
+            const saveUrl = `{{ url_for('salvar_projeto_modulo', modulo_slug=modulo.slug) }}`;
+            const algorithmInput = document.getElementById('project_algorithm_input');
+            
+            // 1. Coleta e consolida os dados dos campos em um objeto
+            const dataToSave = {
+                // Chave a ser salva no JSON
+                project_algorithm: algorithmInput.value.trim()
+            };
+            
+            // 2. Transforma o objeto consolidado em uma string JSON
+            const consolidatedResponse = JSON.stringify(dataToSave);
+            
+            // 3. Validação básica de comprimento
+            if (dataToSave.project_algorithm.length < 10) {
+                 showStatus("Seu algoritmo é muito curto (mínimo 10 caracteres).", false);
+                 return;
+            }
+
+            // 4. Cria o payload JSON para o Flask (o Flask espera {project_idea: "..."})
+            const payload = {
+                project_idea: consolidatedResponse
+            };
+
+            // 5. Envia via Fetch API (AJAX)
+            fetch(saveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus(data.message, true);
+                    // Opcional: Atualiza o conteúdo da textarea para refletir o valor salvo (útil para consistência)
+                    algorithmInput.value = dataToSave.project_algorithm; 
+                } else {
+                    showStatus(data.message || 'Erro desconhecido ao salvar.', false);
+                }
+            })
+            .catch(error => {
+                console.error('Erro de rede:', error);
+                showStatus('Erro de conexão ao servidor.', false);
+            });
+        });
+    </script>
 {% endblock %}
