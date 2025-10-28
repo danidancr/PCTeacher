@@ -94,8 +94,7 @@
 
 {% block finish_button %}
     <div class="flex justify-end pt-8">
-        {# O botão de conclusão do Módulo 6 geralmente é o fim do curso e pode redirecionar para uma página de Certificado/Conclusão #}
-        <form method="POST" action="{{ url_for('concluir_curso') }}">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
             <button type="submit" class="btn-finish-big">
                 <i class="fas fa-award mr-2"></i> Finalizar Projeto e Gerar Certificado
             </button>
