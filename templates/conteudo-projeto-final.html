@@ -10,69 +10,71 @@
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
         </h2>
         <div class="video-container">
+            {# Vídeo Placeholder #}
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
     </div>
 
     <div class="content-section border-4 border-primary-indigo bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-6 flex items-center">
             <i class="fas fa-cogs mr-3"></i> Seu Plano de Projeto Integrado
         </h2>
-        <p class="text-gray-700 mb-4 font-semibold">Aqui você verá as respostas que forneceu em cada módulo, formando o seu plano de ação:</p>
+        <p class="text-gray-700 mb-6 font-semibold">
+            Confira abaixo as respostas que você forneceu em cada módulo, formando o seu plano de ação completo.
+        </p>
         
-        <div class="space-y-4 text-sm">
-            {# ALTERAÇÃO: Dados do Módulo 1 (Introdução) #}
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 1 - Introdução:</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod0">
-                    <span class="font-bold">Nome:</span> {{ project_data.project_name if project_data.project_name else 'Não definido.' }}<br>
-                    <span class="font-bold">Objetivo:</span> {{ project_data.project_objective if project_data.project_objective else 'Não definido.' }}<br>
-                    <span class="font-bold">Público-Alvo:</span> {{ project_data.project_target if project_data.project_target else 'Não definido.' }}
+        <div class="space-y-6">
+            {# ======================================================= #}
+            {# NOVO BLOCO: Itera sobre a lista organizada do app.py     #}
+            {# Usa 'respostas_projeto_ordenadas' que foi padronizada   #}
+            {# ======================================================= #}
+            {% if respostas_projeto_ordenadas %}
+                {% for item in respostas_projeto_ordenadas %}
+                    <div class="card border rounded-lg shadow-sm">
+                        <div class="card-header p-3 flex justify-between items-center 
+                                    {% if item.is_saved %} bg-primary-indigo text-white {% else %} bg-yellow-200 text-gray-800 {% endif %}">
+                            <strong class="text-lg">{{ item.title }}</strong>
+                            <small class="text-sm font-semibold">
+                                Status: 
+                                {% if item.is_saved %}
+                                    <span class="badge bg-green-500 text-white p-1 rounded-sm">Salvo</span>
+                                {% else %}
+                                    <span class="badge bg-yellow-500 text-gray-900 p-1 rounded-sm">Pendente</span>
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="card-body p-4 bg-white space-y-3">
+                            {% for display_name, valor_salvo in item.respostas.items() %}
+                                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                                    <h6 class="font-bold text-gray-700 text-sm mb-1">{{ display_name }}:</h6>
+                                    <p class="text-gray-600 whitespace-pre-wrap">
+                                        {# Exibe o valor salvo ou uma mensagem padrão se for None #}
+                                        {{ valor_salvo|default('<i>Não respondido neste módulo.</i>'|safe, true) }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="alert alert-warning p-4 bg-yellow-100 rounded border border-yellow-300">
+                    Nenhuma resposta de projeto encontrada. Por favor, complete os módulos anteriores (Introdução, Decomposição, Padrões, Abstração e Algoritmos).
                 </p>
-            </div>
-            
-            {# ALTERAÇÃO: Dados do Módulo 2 (Decomposição/Justificativa) #}
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 2 - Decomposição (Justificativa):</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod1">
-                    {{ project_data.project_justification if project_data.project_justification else 'Nenhum dado salvo no Módulo 2.' }}
-                </p>
-            </div>
-            
-            {# ALTERAÇÃO: Dados do Módulo 3 (Padrões/Otimização) #}
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 3 - Padrões (Otimização):</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod2">
-                    {{ project_data.project_pattern_optimization if project_data.project_pattern_optimization else 'Nenhum dado salvo no Módulo 3.' }}
-                </p>
-            </div>
-            
-            {# ALTERAÇÃO: Dados do Módulo 4 (Abstração) #}
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 4 - Abstração (Modelo Essencial):</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod3">
-                    {{ project_data.project_abstraction if project_data.project_abstraction else 'Nenhum dado salvo no Módulo 4.' }}
-                </p>
-            </div>
-            
-            {# ALTERAÇÃO: Dados do Módulo 5 (Algoritmo) #}
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 5 - Algoritmo (Solução/Fluxo de Ações):</strong> 
-                <p class="mt-1 text-gray-700 italic whitespace-pre-wrap" id="proj-mod4">
-                    {{ project_data.project_algorithm if project_data.project_algorithm else 'Nenhum dado salvo no Módulo 5.' }}
-                </p>
-            </div>
+            {% endif %}
+            {# ======================================================= #}
+            {# FIM DO NOVO BLOCO                                       #}
+            {# ======================================================= #}
         </div>
 
-        <p class="mt-6 text-gray-800">Seu desafio final é revisar e consolidar este plano. Salve-o como seu Projeto Final. (A lógica de carregamento e salvamento deve ser implementada com Firestore).</p>
+        <p class="mt-6 text-gray-800">Seu desafio final é revisar e consolidar este plano. Salve-o como seu Projeto Final. (A lógica de carregamento e salvamento está integrada).</p>
     </div>
 
-    {% endblock %}
+{% endblock %}
 
 {% block finish_button %}
     <div class="mt-8 text-center">
-        {# ALTERAÇÃO: Rota atualizada para a função 'concluir_modulo' no app.py #}
+        {# Rota atualizada para a função 'concluir_modulo' no app.py #}
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-trophy mr-2"></i> Finalizar Curso e Gerar Certificado!
