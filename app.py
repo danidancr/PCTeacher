@@ -1,9 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, Response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Response, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
 from datetime import datetime
 import json
+import io # Necessário para gerar o PDF na memória
+
+# Importação para geração de PDF (WeasyPrint)
+try:
+    from weasyprint import HTML, CSS
+    print("INFO: WeasyPrint importado com sucesso.")
+    WEASYPRINT_AVAILABLE = True
+except ImportError:
+    print("AVISO: WeasyPrint não está instalado. A rota de PDF não funcionará.")
+    WEASYPRINT_AVAILABLE = False
+except Exception as e:
+    print(f"AVISO: WeasyPrint falhou ao carregar: {e}. A rota de PDF não funcionará.")
+    WEASYPRINT_AVAILABLE = False
+
 
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
@@ -61,7 +75,7 @@ MODULO_CONFIG = [
         'title': 'Introdução ao Pensamento Computacional',
         'field': 'introducao_concluido',
         'slug': 'introducao',
-        'template': 'conteudo-introducao.html', 
+        'template': 'conteudo-introducao.html',  
         'order': 1,
         'description': 'Entenda o que é o Pensamento Computacional, seus pilares e por que ele é crucial para o futuro.',
         'lessons': 1, 'exercises': 5, 'dependency_field': None
@@ -70,7 +84,7 @@ MODULO_CONFIG = [
         'title': 'Decomposição',
         'field': 'decomposicao_concluido',
         'slug': 'decomposicao',
-        'template': 'conteudo-decomposicao.html', 
+        'template': 'conteudo-decomposicao.html',  
         'order': 2,
         'description': 'Aprenda a quebrar problemas complexos em partes menores e gerenciáveis.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido'
@@ -79,7 +93,7 @@ MODULO_CONFIG = [
         'title': 'Reconhecimento de Padrões',
         'field': 'reconhecimento_padroes_concluido',
         'slug': 'rec-padrao',
-        'template': 'conteudo-rec-padrao.html', 
+        'template': 'conteudo-rec-padrao.html',  
         'order': 3,
         'description': 'Identifique similaridades e tendências para simplificar a resolução de problemas.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'decomposicao_concluido'
@@ -88,7 +102,7 @@ MODULO_CONFIG = [
         'title': 'Abstração',
         'field': 'abstracao_concluido',
         'slug': 'abstracao',
-        'template': 'conteudo-abstracao.html', 
+        'template': 'conteudo-abstracao.html',  
         'order': 4,
         'description': 'Foque apenas nas informações importantes, ignorando detalhes irrelevantes.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'reconhecimento_padroes_concluido'
@@ -97,7 +111,7 @@ MODULO_CONFIG = [
         'title': 'Algoritmos',
         'field': 'algoritmo_concluido',
         'slug': 'algoritmo',
-        'template': 'conteudo-algoritmo.html', 
+        'template': 'conteudo-algoritmo.html',  
         'order': 5,
         'description': 'Desenvolva sequências lógicas e organizadas para resolver problemas de forma eficaz.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'abstracao_concluido'
@@ -106,7 +120,7 @@ MODULO_CONFIG = [
         'title': 'Projeto Final',
         'field': 'projeto_final_concluido',
         'slug': 'projeto-final',
-        'template': 'conteudo-projeto-final.html', 
+        'template': 'conteudo-projeto-final.html',  
         'order': 6,
         'description': 'Aplique todos os pilares do PC para solucionar um desafio prático de sala de aula.',
         'lessons': 1, 'exercises': 0, 'dependency_field': 'algoritmo_concluido'
@@ -130,19 +144,26 @@ def get_projeto_usuario(user_id):
     """Busca o documento de projeto do usuário. Retorna um dict ou um dict vazio."""
     projeto_data = get_firestore_doc('projetos', user_id)
     
-    # Garante que, se o documento existir mas estiver vazio, ou se não existir, retorne um dict básico.
+    # Ajustei as chaves para corresponder às usadas nos templates (sem caracteres especiais)
     default_data = {
+        'id': user_id, # Adicionado ID para garantir que ele exista
         'nome_projeto': '',
-        'objetivo': '',
-        'publico-alvo': '', 
-        'decomposição': '',
-        'rec-padrão': '',
-        'abstração': '',
+        'problema': '', # Ajustado para 'problema' (mais comum do que 'objetivo' nos templates)
+        'publico_alvo': '',  # Ajustado de 'publico-alvo' para 'publico_alvo' (melhor em Python/Jinja)
+        'decomposicao': '', # Ajustado de 'decomposição'
+        'padroes': '', # Ajustado de 'rec-padrão'
+        'abstracao': '',
         'algoritmo': ''
     }
 
     if projeto_data:
         # Mescla com os dados padrão para garantir que todas as chaves estejam presentes
+        # Mapeamento de chaves antigas para novas (se necessário):
+        if 'objetivo' in projeto_data: projeto_data['problema'] = projeto_data.pop('objetivo')
+        if 'publico-alvo' in projeto_data: projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
+        if 'decomposição' in projeto_data: projeto_data['decomposicao'] = projeto_data.pop('decomposição')
+        if 'rec-padrão' in projeto_data: projeto_data['padroes'] = projeto_data.pop('rec-padrão')
+
         default_data.update(projeto_data)
         return default_data
         
@@ -161,7 +182,6 @@ def usuario_logado():
             user_data['progresso'] = progresso_data if progresso_data else {}
             
             # 2. Carrega os dados do Projeto
-            # Isso é crucial para que o frontend possa pré-preencher formulários
             user_data['projeto'] = get_projeto_usuario(user_id) 
 
             return user_data
@@ -177,6 +197,7 @@ def requires_auth(func):
         return func(*args, **kwargs)
     return wrapper
 
+# ... (A função calculate_progress permanece a mesma) ...
 def calculate_progress(progresso_db):
     """Calcula todas as métricas de progresso do curso."""
     # (A lógica de cálculo de progresso permanece a mesma)
@@ -231,6 +252,7 @@ def calculate_progress(progresso_db):
         'total_exercises': total_exercises,
         'modules': dynamic_modules 
     }
+# ... (Fim da função calculate_progress) ...
 
 # Lógica para gerar o certificado (permanece a mesma)
 def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria):
@@ -309,6 +331,7 @@ def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
 
 # =========================================================
 # 4. ROTAS DE AUTENTICAÇÃO
+# (Mantidas as rotas de autenticação)
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -347,14 +370,15 @@ def cadastro():
             }
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
 
-            # === AJUSTE DE PROJETOS: RESTAURADO A CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
+            # === AJUSTE DE PROJETOS: CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
+            # (Usando as chaves padronizadas: problema, publico_alvo, decomposicao, etc.)
             novo_projeto_data = {
                 'nome_projeto': '',
-                'objetivo': '',
-                'publico-alvo': '', 
-                'decomposição': '',
-                'rec-padrão': '',
-                'abstração': '',
+                'problema': '', # Ajustado
+                'publico_alvo': '', # Ajustado
+                'decomposicao': '',
+                'padroes': '',
+                'abstracao': '',
                 'algoritmo': ''
             }
             db.collection('projetos').document(user_id).set(novo_projeto_data)
@@ -604,27 +628,90 @@ def salvar_projeto():
     
     data = request.form.to_dict() # Captura todos os dados do formulário
     
-    # Remove chaves que não queremos salvar na coleção 'projetos', se houverem
-    data.pop('csrf_token', None) # Se você usar tokens
+    # Padroniza as chaves do formulário (Ex: 'decomposicao' para 'decomposicao')
+    update_data = {}
+    for key, value in data.items():
+        if key in ['nome_projeto', 'problema', 'publico_alvo', 'decomposicao', 'padroes', 'abstracao', 'algoritmo']:
+            update_data[key] = value.strip()
     
-    if not data:
-        flash('Nenhum dado enviado para salvar o projeto.', 'warning')
-        return redirect(url_for('dashboard')) # Redireciona para onde for adequado
+    if not update_data:
+        # Retorna um JSON de erro se for uma chamada AJAX, se não, faz o flash.
+        if request.is_json or request.accept_mimetypes.accept_json:
+            return jsonify({'success': False, 'message': 'Nenhum dado válido para salvar.'}), 400
+        flash('Nenhum dado válido enviado para salvar o projeto.', 'warning')
+        return redirect(request.referrer or url_for('dashboard')) 
 
     try:
-        # Atualiza o documento de projeto. Se algum campo for omitido no POST, ele não é alterado.
-        db.collection('projetos').document(user_id).update(data)
+        # Atualiza o documento de projeto.
+        db.collection('projetos').document(user_id).update(update_data)
         
-        # O módulo é inferido pelo conteúdo, mas como é um salvamento dinâmico,
-        # uma mensagem genérica de sucesso é suficiente.
+        # Resposta otimizada para chamadas AJAX (salvamento automático)
+        if request.is_json or request.accept_mimetypes.accept_json:
+            return jsonify({'success': True, 'message': 'Salvo automaticamente.'})
+        
         flash('Dados do projeto salvos com sucesso!', 'success')
-        
-        # Redireciona de volta para a rota anterior ou para o dashboard
         return redirect(request.referrer or url_for('dashboard'))
         
     except Exception as e:
+        if request.is_json or request.accept_mimetypes.accept_json:
+             return jsonify({'success': False, 'message': f'Erro ao salvar: {str(e)}'}), 500
         flash(f'Erro ao salvar os dados do projeto: {str(e)}', 'danger')
         return redirect(request.referrer or url_for('dashboard'))
+
+
+# =========================================================
+# 7.1. ROTA DE DOWNLOAD PDF (NOVA)
+# =========================================================
+@app.route('/download-projeto-pdf/<string:projeto_id>')
+@requires_auth
+def download_projeto_pdf(projeto_id):
+    """Gera o projeto final do usuário como um arquivo PDF."""
+    
+    if not WEASYPRINT_AVAILABLE:
+        flash('A função de geração de PDF não está disponível no servidor.', 'danger')
+        return redirect(url_for('conteudo_dinamico', modulo_slug='projeto-final'))
+        
+    # Verifica se o ID corresponde ao usuário logado (segurança)
+    usuario = usuario_logado()
+    if usuario['id'] != projeto_id:
+        flash('Acesso negado ao projeto solicitado.', 'danger')
+        return redirect(url_for('dashboard'))
+        
+    # Carrega os dados do projeto
+    projeto_data = usuario.get('projeto', {})
+    
+    if not projeto_data:
+        flash('Nenhum dado de projeto encontrado para download.', 'warning')
+        return redirect(url_for('conteudo_dinamico', modulo_slug='projeto-final'))
+
+    try:
+        # 1. Renderiza o HTML limpo para o PDF
+        # *Você precisará criar o template 'pdf_template.html' para um layout otimizado*
+        html_content = render_template(
+            'pdf_template.html', 
+            projeto_data=projeto_data, 
+            user=usuario
+        )
+
+        # 2. Gera o PDF na memória
+        pdf_file = HTML(string=html_content).write_pdf()
+        
+        # 3. Nome do arquivo
+        nome_projeto_limpo = projeto_data.get('nome_projeto', 'Projeto_Final').replace(' ', '_').replace('.', '')
+        filename = f"{nome_projeto_limpo}_PC_Completo.pdf"
+
+        # 4. Retorna o arquivo como anexo
+        return send_file(
+            io.BytesIO(pdf_file), 
+            mimetype='application/pdf', 
+            as_attachment=True, 
+            download_name=filename
+        )
+        
+    except Exception as e:
+        print(f"ERRO DE GERAÇÃO DE PDF: {e}")
+        flash(f'Erro ao gerar o PDF. Verifique a configuração do WeasyPrint ou o template: {str(e)}', 'danger')
+        return redirect(url_for('conteudo_dinamico', modulo_slug='projeto-final'))
 
 
 # =========================================================
@@ -716,7 +803,7 @@ def conteudo_dinamico(modulo_slug):
         user=usuario, 
         progresso=progresso, 
         modulo=modulo_config,
-        projeto_data=projeto_data # <--- Adicionado
+        projeto_data=projeto_data 
     )
 
 
