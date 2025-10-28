@@ -240,6 +240,43 @@
         </main>
     </div>
     
+    {# ==================================================================== #}
+    {# 🚀 INICIALIZAÇÃO DO FIREBASE (CLIENT SDK) E FUNÇÕES GLOBAIS - CORRIGIDO! #}
+    {# Este bloco DEVE vir antes de qualquer script que utilize dbClient ou currentUserId. #}
+    {# ==================================================================== #}
+
+    <script>
+        // O Flask injeta as configurações públicas (firebase_config) e o UID do usuário (user.id).
+        const firebaseConfig = {{ firebase_config | tojson }};
+        const currentUserId = "{{ user.id if user else '' }}";
+
+        // Função para mostrar feedback no console (útil para debug do JS)
+        function showFlash(message, category) {
+             // Você pode substituir esta linha para exibir a mensagem em uma div de alerta no seu HTML
+            console.log(`[JS FLASH - ${category.toUpperCase()}]: ${message}`);
+        }
+    </script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Variáveis globais ESSENCIAIS para o salvamento/carregamento do projeto
+        const authClient = firebase.auth();
+        const dbClient = firebase.firestore();
+
+        // Verificação rápida de login no console
+        if (!currentUserId) {
+            console.warn("ATENÇÃO: currentUserId está vazio. O salvamento do projeto falhará se o usuário não estiver logado.");
+        }
+    </script>
+
+    {# O seu script de quiz (checkAnswer) pode permanecer abaixo, mas agora ele tem acesso ao dbClient e currentUserId, se precisar. #}
     <script>
         /**
          * Verifica a resposta do quiz, aplica estilos e exibe o feedback.
@@ -292,31 +329,6 @@
             feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     </script>
-
-    <script>
-    // Se a variável 'firebase_config' for injetada pelo Flask (como sugerido acima)
-    // O {{ firebase_config | tojson }} a converte em um objeto JavaScript.
-    const firebaseConfig = {{ firebase_config | tojson }};
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<script>
-    // Inicializa o Firebase Client SDK
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-
-    // Exporta as instâncias de Auth e Firestore para uso nos scripts dos módulos
-    const authClient = firebase.auth();
-    const dbClient = firebase.firestore();
-
-    // Se você estiver usando a variável 'user' injetada pelo Flask, 
-    // certifique-se de que o JS use o UID correto para o Firestore
-    const currentUserId = "{{ user.id if user else '' }}";
-</script>
     
 </body>
 </html>
