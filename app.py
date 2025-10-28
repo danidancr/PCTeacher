@@ -364,8 +364,6 @@ def infor_curso_algoritmo():
     return render_template('infor-curso-algoritmo.html', user=usuario)
 
 
-
-
 # =========================================================
 # 5. ROTAS DE ÁREA RESTRITA E PERFIL
 # =========================================================
@@ -528,7 +526,7 @@ def salvar_projeto_array_unificado(modulo_slug):
         'introducao': 'perguntasM1', 
         'decomposicao': 'perguntasM1', # P1 e P2 estão no M1
         'rec-padrao': 'perguntasM2', 
-        'abstracao': 'perguntasM4', # P4 e P5 (Abstração) no M3/M4
+        'abstracao': 'perguntasM4', # P4 e P5 (Abstração) no M3/M4 (Usamos M4 como campo de DB final)
         'algoritmo': 'perguntasM5', 
     }
     
@@ -627,7 +625,9 @@ def conteudo_dinamico(modulo_slug):
         
     extra_context = {}
     project_doc_id = f'user_project_{user_id}'
-    project_doc = get_firestore_doc('projetos', project_doc_id)
+    
+    # **CORREÇÃO APLICADA AQUI:** Se o documento não existir, use um dicionário vazio.
+    project_doc = get_firestore_doc('projetos', project_doc_id) or {}
 
     # 2. LÓGICA DE CARREGAMENTO DE RESPOSTAS (FRONT-END)
     if modulo_slug == 'projeto-final':
@@ -661,18 +661,20 @@ def conteudo_dinamico(modulo_slug):
             'introducao': {'array': project_doc.get('perguntasM1', []), 'id': 'mod1_p1_problema_inicial'},
             'decomposicao': {'array': project_doc.get('perguntasM1', []), 'id': 'mod1_p2_decomposicao'},
             'rec-padrao': {'array': project_doc.get('perguntasM2', []), 'id': 'mod2_p3_padroes_identificados'},
-            'abstracao': {'array': project_doc.get('perguntasM3', []), 'id': 'mod3_p5_dados_essenciais'}, # M3 usa P5 (dados essenciais)
+            'abstracao': {'array': project_doc.get('perguntasM4', []), 'id': 'mod4_p6_abstracao_projeto'}, # Usa M4/P6 (Abstração final)
             'algoritmo': {'array': project_doc.get('perguntasM5', []), 'id': 'mod5_p7_algoritmo_projeto'},
         }
-
-        # Abstração (M4) - A P6 (abstração final) é salva aqui, mas o M4 carrega o M4.
-        if modulo_slug == 'abstracao':
-            prefill_map['abstracao'] = {'array': project_doc.get('perguntasM4', []), 'id': 'mod4_p6_abstracao_projeto'}
+        
+        # A lógica original do M3/M4 foi simplificada e mantivemos M4/P6 como o ponto de carga para 'abstracao'
+        # if modulo_slug == 'abstracao':
+        #     prefill_map['abstracao'] = {'array': project_doc.get('perguntasM4', []), 'id': 'mod4_p6_abstracao_projeto'}
 
         prefill_data = prefill_map.get(modulo_slug)
 
         resposta_anterior = ''
         if prefill_data:
+            # Note que .get('perguntasM1', []) ou .get('perguntasM4', []) só funciona
+            # porque project_doc agora é {} se não for encontrado.
             resposta_anterior = get_resposta_from_array(prefill_data['array'], prefill_data['id'])
             # Se a resposta for o valor padrão de não salvo, limpa a string
             if resposta_anterior in ['Nenhuma resposta salva.', 'Resposta vazia.']:
