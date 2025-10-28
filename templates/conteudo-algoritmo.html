@@ -144,11 +144,18 @@
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
         </h2>
         <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
-        <form id="project-idea-form-mod5">
-            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
-            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
+        
+        <form id="project-idea-form-mod5" onsubmit="saveProjectDataMod5(event)">
             
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
+            <p id="project-name-display-mod5" class="text-sm italic text-gray-600 mb-4">Carregando dados do projeto...</p>
+            
+            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM." required></textarea>
+            
+            <button type="submit" id="save-button-mod5" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
+                Salvar Algoritmo
+            </button>
+            <span id="save-feedback-mod5" class="ml-4 text-sm font-semibold text-red-600"></span>
         </form>
     </div>
 {% endblock %}
@@ -157,8 +164,98 @@
     <div class="mt-8 text-center">
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+                <i class="fas fa-check-double mr-2"></i>Concluir Curso e Ver Projeto Final
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
+    const db = firebase.firestore(); 
+    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+
+    // 1. Função para carregar os dados do projeto E os dados do Módulo 5 (se existirem)
+    async function loadProjectDataMod5() {
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        const feedback = document.getElementById('save-feedback-mod5');
+        const saveButton = document.getElementById('save-button-mod5');
+        const projectNameDisplay = document.getElementById('project-name-display-mod5');
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
+            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
+            return;
+        }
+
+        saveButton.disabled = false; // Habilita o botão se o ID for encontrado
+        feedback.textContent = 'Carregando dados...';
+
+        try {
+            const docRef = db.collection("projetos").doc(projectId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // Exibe o nome do projeto (Boa Prática de UX)
+                const projectName = data.project_name || 'Projeto Sem Nome';
+                projectNameDisplay.textContent = `Projeto Atual: "${projectName}"`;
+
+                // Preenche o campo de algoritmo se já foi salvo
+                document.getElementById('project_algorithm').value = data.project_algorithm || '';
+                
+                feedback.textContent = data.project_algorithm ? 'Dados do Módulo 5 carregados.' : 'Pronto para descrever o Algoritmo.';
+
+            } else {
+                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
+                saveButton.disabled = true;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados do projeto (Módulo 5):", error);
+            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
+            saveButton.disabled = true;
+        }
+    }
+
+    // 2. Função para atualizar os dados do projeto no Firebase (Update)
+    async function saveProjectDataMod5(event) {
+        event.preventDefault(); 
+        
+        const saveButton = document.getElementById('save-button-mod5');
+        const feedback = document.getElementById('save-feedback-mod5');
+        saveButton.disabled = true;
+        feedback.textContent = 'Salvando...';
+
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: ID do projeto não encontrado. Volte ao Módulo 1.';
+            saveButton.disabled = false;
+            return;
+        }
+
+        const formData = {
+            project_algorithm: document.getElementById('project_algorithm').value,
+            modulo_5_completado: true, // Adiciona um flag de conclusão
+            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            // Usa o método .doc().update() para atualizar apenas os campos deste módulo
+            await db.collection("projetos").doc(projectId).update(formData);
+            feedback.textContent = '✅ Algoritmo salvo e projeto finalizado (fase de planejamento)!';
+        } catch (error) {
+            console.error("Erro ao salvar dados do projeto (Módulo 5):", error);
+            feedback.textContent = '❌ Erro ao salvar. Verifique se o Módulo 1 foi salvo corretamente.';
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    // Chamada Inicial: Carregar dados ao carregar a página
+    window.onload = loadProjectDataMod5;
+
+</script>
 {% endblock %}
