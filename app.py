@@ -317,6 +317,18 @@ def cadastro():
                 'created_at': firestore.SERVER_TIMESTAMP
             }
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
+
+            # Salvar dados no Firestore (Coleção 'usuarios')
+            novo_projeto_data = {
+                'nome': '',
+                'objetivo': '',
+                'publico-alvo': '', 
+                'instituicao': '',
+                'telefone': '',
+                'cargo': '',
+                'created_at': firestore.SERVER_TIMESTAMP
+            }
+            db.collection('projetos').document(user_id).set(novo_projeto_data)
             
             # Cria um registro de progresso (Coleção 'progresso')
             novo_progresso_data = {
@@ -336,6 +348,8 @@ def cadastro():
             flash(f'Erro interno ao cadastrar: {str(e)}', 'danger')
             
     return render_template('cadastro.html', user=usuario)
+
+    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
