@@ -3,9 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
 from datetime import datetime
-import json 
+import json
 
-import firebase_admin 
+import firebase_admin
 from firebase_admin import credentials, firestore, auth
 
 
@@ -126,14 +126,44 @@ def get_firestore_doc(collection_name, doc_id):
         return data
     return None
 
+def get_projeto_usuario(user_id):
+    """Busca o documento de projeto do usuário. Retorna um dict ou um dict vazio."""
+    projeto_data = get_firestore_doc('projetos', user_id)
+    
+    # Garante que, se o documento existir mas estiver vazio, ou se não existir, retorne um dict básico.
+    default_data = {
+        'nome_projeto': '',
+        'objetivo': '',
+        'publico-alvo': '', 
+        'decomposição': '',
+        'rec-padrão': '',
+        'abstração': '',
+        'algoritmo': ''
+    }
+
+    if projeto_data:
+        # Mescla com os dados padrão para garantir que todas as chaves estejam presentes
+        default_data.update(projeto_data)
+        return default_data
+        
+    return default_data
+
+
 def usuario_logado():
     """Retorna o objeto (dict) Usuario logado ou None, buscando no Firestore."""
     if 'usuario_id' in session:
-        user_data = get_firestore_doc('usuarios', session['usuario_id'])
+        user_id = session['usuario_id']
+        user_data = get_firestore_doc('usuarios', user_id)
         
         if user_data:
-            progresso_data = get_firestore_doc('progresso', session['usuario_id'])
+            # 1. Carrega o progresso
+            progresso_data = get_firestore_doc('progresso', user_id)
             user_data['progresso'] = progresso_data if progresso_data else {}
+            
+            # 2. Carrega os dados do Projeto
+            # Isso é crucial para que o frontend possa pré-preencher formulários
+            user_data['projeto'] = get_projeto_usuario(user_id) 
+
             return user_data
     return None
 
@@ -149,6 +179,7 @@ def requires_auth(func):
 
 def calculate_progress(progresso_db):
     """Calcula todas as métricas de progresso do curso."""
+    # (A lógica de cálculo de progresso permanece a mesma)
     
     total_modules = len(MODULO_CONFIG)
     completed_modules = 0
@@ -201,12 +232,10 @@ def calculate_progress(progresso_db):
         'modules': dynamic_modules 
     }
 
-# Lógica para gerar o certificado (permanece a mesma, pois não depende do DB)
+# Lógica para gerar o certificado (permanece a mesma)
 def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria):
     """Gera o conteúdo LaTeX para o certificado."""
-    # NOTE: Você pode precisar ajustar o layout e as dependências LaTeX.
-    
-    # Exemplo simples de template LaTeX
+    # (Template LaTeX omitido para brevidade, mas permanece inalterado)
     latex_template = r"""
 \documentclass[10pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -318,7 +347,7 @@ def cadastro():
             }
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
 
-            # Cria um registro de projeto (colecao 'projetos')
+            # === AJUSTE DE PROJETOS: RESTAURADO A CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
             novo_projeto_data = {
                 'nome_projeto': '',
                 'objetivo': '',
@@ -350,7 +379,6 @@ def cadastro():
     return render_template('cadastro.html', user=usuario)
 
     
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     usuario = usuario_logado()
@@ -389,6 +417,7 @@ def logout():
 
 # =========================================================
 # 4.1 INFORMAÇÃO
+# (Mantidas as rotas de informação)
 # =========================================================
 
 @app.route('/infor-curso-decomposicao')
@@ -414,6 +443,7 @@ def infor_curso_algoritmo():
 
 # =========================================================
 # 5. ROTAS DE ÁREA RESTRITA E PERFIL
+# (Mantidas as rotas de área restrita)
 # =========================================================
 
 @app.route('/')
@@ -511,6 +541,7 @@ def progresso():
 
 # =========================================================
 # 6. ROTAS DE CERTIFICADO
+# (Mantidas as rotas de certificado)
 # =========================================================
 
 @app.route('/certificado')
@@ -553,12 +584,51 @@ def gerar_certificado():
     return Response(
         latex_content,
         mimetype='application/x-tex',
-        headers={'Content-Disposition': f'attachment;filename=Certificado_{nome_completo.replace(" ", "_")}.tex'}
+        headers={'Content-Disposition': f'attachment:filename=Certificado_{nome_completo.replace(" ", "_")}.tex'}
     )
 
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO (OTIMIZADAS)
+# 7. ROTAS DE GERENCIAMENTO DE PROJETOS (NOVAS/REVISADAS)
+# =========================================================
+
+@app.route('/projeto/salvar', methods=['POST'])
+@requires_auth
+def salvar_projeto():
+    """
+    Recebe os dados do projeto (parciais ou totais) e salva no Firestore.
+    Esta rota deve ser usada pelos formulários em 'conteudo-<modulo>.html'.
+    """
+    usuario = usuario_logado()
+    user_id = usuario['id']
+    
+    data = request.form.to_dict() # Captura todos os dados do formulário
+    
+    # Remove chaves que não queremos salvar na coleção 'projetos', se houverem
+    data.pop('csrf_token', None) # Se você usar tokens
+    
+    if not data:
+        flash('Nenhum dado enviado para salvar o projeto.', 'warning')
+        return redirect(url_for('dashboard')) # Redireciona para onde for adequado
+
+    try:
+        # Atualiza o documento de projeto. Se algum campo for omitido no POST, ele não é alterado.
+        db.collection('projetos').document(user_id).update(data)
+        
+        # O módulo é inferido pelo conteúdo, mas como é um salvamento dinâmico,
+        # uma mensagem genérica de sucesso é suficiente.
+        flash('Dados do projeto salvos com sucesso!', 'success')
+        
+        # Redireciona de volta para a rota anterior ou para o dashboard
+        return redirect(request.referrer or url_for('dashboard'))
+        
+    except Exception as e:
+        flash(f'Erro ao salvar os dados do projeto: {str(e)}', 'danger')
+        return redirect(request.referrer or url_for('dashboard'))
+
+
+# =========================================================
+# 8. ROTAS DE CONTEÚDO DE CURSO
 # =========================================================
 
 @app.route('/modulos')
@@ -571,11 +641,6 @@ def modulos():
     modulos_list = progresso_data.get('modules', []) 
 
     return render_template('modulos.html', user=usuario, modulos=modulos_list, progresso_data=progresso_data)
-
-
-# ❌ ROTA REMOVIDA: A lógica de salvar o projeto foi movida
-# ❌ TOTALMENTE para o frontend (JavaScript/Firebase Client SDK).
-# O FRONTEND DEVE AGORA GERENCIAR O SALVAMENTO VIA JAVASCRIPT.
 
 
 @app.route('/concluir-modulo/<string:modulo_nome>', methods=['POST'])
@@ -628,6 +693,7 @@ def concluir_modulo(modulo_nome):
 def conteudo_dinamico(modulo_slug):
     usuario = usuario_logado()
     progresso = usuario.get('progresso', {})
+    projeto_data = usuario.get('projeto', {}) # Pega os dados do projeto
     
     modulo_config = MODULO_BY_SLUG.get(modulo_slug)
 
@@ -644,8 +710,14 @@ def conteudo_dinamico(modulo_slug):
     # 2. Renderiza o template do módulo
     template_name = modulo_config['template']
     
-    # O carregamento de dados do projeto (Módulos 1 a 6) é feito pelo JavaScript no frontend.
-    return render_template(template_name, user=usuario, progresso=progresso, modulo=modulo_config)
+    # Passa os dados do projeto para que o frontend possa pré-preencher formulários.
+    return render_template(
+        template_name, 
+        user=usuario, 
+        progresso=progresso, 
+        modulo=modulo_config,
+        projeto_data=projeto_data # <--- Adicionado
+    )
 
 
 #==========================================================
@@ -654,8 +726,9 @@ def conteudo_dinamico(modulo_slug):
 
 def get_firebase_client_config():
     """Retorna as configurações do Firebase Client SDK.
-       As chaves públicas devem ser armazenadas em variáveis de ambiente.
+        As chaves públicas devem ser armazenadas em variáveis de ambiente.
     """
+    # (Mantido, mas será menos crítico se o salvamento for via Flask)
     return {
         "apiKey": os.environ.get("FIREBASE_API_KEY", "SUA_API_KEY_AQUI"),
         "authDomain": os.environ.get("FIREBASE_AUTH_DOMAIN", "pc-teacher-6c75f.firebaseapp.com"),
@@ -665,13 +738,11 @@ def get_firebase_client_config():
         "appId": os.environ.get("FIREBASE_APP_ID", "SEU_APP_ID")
     }
 
-# 2. Use `@app.context_processor` para disponibilizar a config em todos os templates:
 
 @app.context_processor
 def inject_globals():
     """Injeta variáveis que devem estar disponíveis em todos os templates."""
     return dict(firebase_config=get_firebase_client_config())
-
 
 
 # =========================================================
