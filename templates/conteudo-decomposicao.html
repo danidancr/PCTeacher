@@ -164,16 +164,22 @@
             <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
         </h2>
         <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
-        <form id="project-idea-form-mod2">
+        
+        <form id="project-idea-form-mod2" onsubmit="saveProjectDataMod2(event)"> 
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
+            
+            <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">Carregando dados do Módulo 1...</p>
 
             <div class="mb-4">
                 <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro."></textarea>
+                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro." required></textarea>
             </div>
             
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Justificativa</button>
+            <button type="submit" id="save-button-mod2" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200" disabled>
+                Salvar Justificativa
+            </button>
+            <span id="save-feedback-mod2" class="ml-4 text-sm font-semibold text-red-600"></span> 
         </form>
     </div>
 {% endblock %}
@@ -186,4 +192,98 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Variáveis Globais (Assumindo que estão definidas no `conteudo-base.html` ou em um arquivo importado)
+    // const db = firebase.firestore(); 
+    // const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+    
+    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
+    const db = firebase.firestore(); 
+    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+
+    // 1. Função para carregar os dados do projeto E os dados do Módulo 2 (se existirem)
+    async function loadProjectDataMod2() {
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        const feedback = document.getElementById('save-feedback-mod2');
+        const saveButton = document.getElementById('save-button-mod2');
+        const projectNameDisplay = document.getElementById('project-name-display');
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
+            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
+            return;
+        }
+
+        saveButton.disabled = false; // Habilita o botão se o ID for encontrado
+        feedback.textContent = 'Carregando dados...';
+
+        try {
+            const docRef = db.collection("projetos").doc(projectId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // Exibe o nome do projeto do Módulo 1 (Boa Prática de UX)
+                const projectName = data.project_name || 'Projeto Sem Nome';
+                projectNameDisplay.textContent = `Projeto Atual: "${projectName}"`;
+
+                // Preenche o campo de justificativa se já foi salvo
+                document.getElementById('project_justification').value = data.project_justification || '';
+                
+                feedback.textContent = data.project_justification ? 'Dados do Módulo 2 carregados.' : 'Pronto para preencher a justificativa.';
+
+            } else {
+                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
+                saveButton.disabled = true;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados do projeto:", error);
+            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
+            saveButton.disabled = true;
+        }
+    }
+
+    // 2. Função para atualizar os dados do projeto no Firebase (Update)
+    async function saveProjectDataMod2(event) {
+        event.preventDefault(); 
+        
+        const saveButton = document.getElementById('save-button-mod2');
+        const feedback = document.getElementById('save-feedback-mod2');
+        saveButton.disabled = true;
+        feedback.textContent = 'Salvando...';
+
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: ID do projeto não encontrado. Volte ao Módulo 1.';
+            saveButton.disabled = false;
+            return;
+        }
+
+        const formData = {
+            project_justification: document.getElementById('project_justification').value,
+            modulo_2_completado: true, // Adiciona um flag de conclusão
+            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            // Usa o método .doc().update() para atualizar apenas os campos deste módulo
+            await db.collection("projetos").doc(projectId).update(formData);
+            feedback.textContent = '✅ Justificativa salva e projeto atualizado!';
+        } catch (error) {
+            console.error("Erro ao salvar dados do projeto (Módulo 2):", error);
+            feedback.textContent = '❌ Erro ao salvar. Verifique se o Módulo 1 foi salvo corretamente.';
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    // Chamada Inicial: Carregar dados ao carregar a página
+    window.onload = loadProjectDataMod2;
+
+</script>
 {% endblock %}
