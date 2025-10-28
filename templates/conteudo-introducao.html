@@ -20,7 +20,6 @@
             <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
         </h2>
         <div class="space-y-6">
-            
             <div id="q-mod0-1" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">CESGRANRIO - 2024</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">1. Um dos desafios enfrentados pelas organizações no século XXI é a crescente complexidade dos problemas que lhes são apresentados. Uma opção para que as organizações possam ser eficientes e eficazes é a utilização do pensamento computacional, por suas características peculiares. O pensamento computacional caracteriza-se pela(o)</p>
@@ -31,7 +30,7 @@
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
                         onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. Essa alternativa reduz ou distorce o conceito; o PC é mais amplo e abrange habilidades aplicáveis além da programação, além de usar múltiplos níveis de abstração.')" data-correct="false">
-                       B) Conceitualização, ou seja, por adotar as especificações utilizadas na codificação de um programa de computador, com base em apenas um nível de abstração, para a resolução do problema apresentado.
+                        B) Conceitualização, ou seja, por adotar as especificações utilizadas na codificação de um programa de computador, com base em apenas um nível de abstração, para a resolução do problema apresentado.
                     </div>
                     <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
                         onclick="checkAnswer('q-mod0-1', this, 'false', '❌ Incorreto. O PC é um conjunto de habilidades de pensamento e não se resume à capacidade de seguir instruções de forma mecanizada.')" data-correct="false">
@@ -48,6 +47,7 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
+
             <div id="q-mod0-2" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">IADES - 2022</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">2. Segundo o texto apresentado, Wing destacou algumas ferramentas com o objetivo de resolver problemas de forma eficiente e criativa. Assinale a alternativa que corresponde a algumas dessas ferramentas mentais.</p>
@@ -76,6 +76,7 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
+
             <div id="q-mod0-3" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Wing (2006)</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">3. Na perspectiva de Wing (2006), o Pensamento Computacional se distingue porque:</p>
@@ -103,6 +104,7 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
+
             <div id="q-mod0-4" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Pedagógico</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">4. A aplicação do Pensamento Computacional na educação contribui para:</p>
@@ -130,6 +132,7 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
+
             <div id="q-mod0-5" class="border p-4 rounded-lg bg-white shadow">
                 <p class="font-semibold text-sm mb-2 text-gray-500">Pedagógico</p>
                 <p class="font-semibold text-lg mb-4 text-gray-800">5. Na formação docente, o Pensamento Computacional deve ser entendido como:</p>
@@ -157,34 +160,41 @@
                 </div>
                 <div class="feedback-message mt-4 hidden"></div>
             </div>
-            </div>
+
+        </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50 p-6 rounded-xl">
+        <h2 class="text-2xl font-bold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
         </h2>
-        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
-        <form id="project-idea-form">
+        <p class="text-gray-700 mb-6">A sua resposta será armazenada e comporá automaticamente o seu projeto final. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
+        
+        <form id="project-questions-form" onsubmit="saveProjectAnswers(event)">
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2 border-indigo-300">Definição Inicial do Projeto (Módulo 1)</h3>
 
-            <div class="mb-4">
-                <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
-                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental">
+            <div class="mb-6">
+                <label for="p1_nome_projeto" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
+                <input type="text" id="p1_nome_projeto" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental" required>
             </div>
 
-            <div class="mb-4">
-                <label for="project_objective" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que se espera que os alunos aprendam/alcancem):</label>
-                <textarea id="project_objective" name="project_objective" rows="2" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe."></textarea>
+            <div class="mb-6">
+                <label for="p2_objetivo_geral" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que se espera que os alunos aprendam/alcancem):</label>
+                <textarea id="p2_objetivo_geral" rows="3" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe." required></textarea>
             </div>
 
-            <div class="mb-4">
-                <label for="project_target" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Nível de ensino, idade ou tipo de aluno):</label>
-                <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)">
+            <div class="mb-6">
+                <label for="p3_publico_alvo" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Nível de ensino, idade ou tipo de aluno):</label>
+                <input type="text" id="p3_publico_alvo" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)" required>
             </div>
             
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Definição Inicial</button>
+            <button type="submit" id="save-button" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                <i class="fas fa-save mr-2"></i> Salvar Definição Inicial
+            </button>
+
+            <div id="save-feedback" class="mt-4 p-3 rounded-lg text-sm hidden" role="alert"></div>
+
         </form>
     </div>
 {% endblock %}
@@ -197,4 +207,113 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        // Importante: Assumimos que o Firebase SDK e sua inicialização já estão carregados
+        // Ex: const db = firebase.firestore();
+        
+        const CURRENT_USER_ID = '{{ g.user.uid if g.user else "teste-user-id" }}'; // Adapte ao seu sistema de usuário
+        const PROJECT_DOC_ID = 'user_project_' + CURRENT_USER_ID; 
+
+        // ----------------------------------------------------
+        // Lógica de Salvamento Simplificada (Firebase/Firestore)
+        // ----------------------------------------------------
+        async function saveProjectAnswers(event) {
+            event.preventDefault(); // Impede o envio tradicional do formulário
+            
+            const form = document.getElementById('project-questions-form');
+            const feedbackDiv = document.getElementById('save-feedback');
+            const saveButton = document.getElementById('save-button');
+
+            // 1. Coletar os dados do formulário
+            const newAnswers = [
+                {
+                    id: "mod1_p1_nome",
+                    ordem: 1,
+                    secao: "Escopo Inicial (Módulo 1)",
+                    pergunta: form.querySelector('label[for="p1_nome_projeto"]').textContent,
+                    resposta: document.getElementById('p1_nome_projeto').value.trim()
+                },
+                {
+                    id: "mod1_p2_objetivo",
+                    ordem: 2,
+                    secao: "Escopo Inicial (Módulo 1)",
+                    pergunta: form.querySelector('label[for="p2_objetivo_geral"]').textContent,
+                    resposta: document.getElementById('p2_objetivo_geral').value.trim()
+                },
+                {
+                    id: "mod1_p3_publico",
+                    ordem: 3,
+                    secao: "Escopo Inicial (Módulo 1)",
+                    pergunta: form.querySelector('label[for="p3_publico_alvo"]').textContent,
+                    resposta: document.getElementById('p3_publico_alvo').value.trim()
+                }
+                // Se o Módulo 2 tiver perguntas, você adiciona no Módulo 2, 
+                // e salva o array completo do Módulo 2 lá.
+            ];
+
+            // 2. Validação e Preparação para o Firebase
+            if (newAnswers.some(a => !a.resposta)) {
+                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
+                feedbackDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Por favor, preencha todos os campos antes de salvar.';
+                return;
+            }
+
+            try {
+                // Desabilitar o botão e mostrar feedback
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Salvando...';
+
+                // Usamos o método set com merge: true.
+                // Isto permite que você salve apenas este novo conjunto de respostas 
+                // sem apagar as respostas de outros módulos (outras seções) no mesmo documento.
+                await db.collection("projetos").doc(PROJECT_DOC_ID).set({
+                    perguntasM1: newAnswers, // Agrupando por Módulo (Mais fácil de gerenciar)
+                    ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // Feedback de sucesso
+                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-green-100 text-green-700 block';
+                feedbackDiv.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Definição inicial salva com sucesso!';
+            } catch (error) {
+                console.error("Erro ao salvar no Firebase: ", error);
+                feedbackDiv.className = 'mt-4 p-3 rounded-lg bg-red-100 text-red-700 block';
+                feedbackDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> Erro ao salvar. Tente novamente. (${error.message})`;
+            } finally {
+                saveButton.disabled = false;
+                saveButton.innerHTML = '<i class="fas fa-save mr-2"></i> Salvar Definição Inicial';
+            }
+        }
+
+        // ----------------------------------------------------
+        // Lógica de Carregamento (Opcional, mas Altamente Recomendado)
+        // ----------------------------------------------------
+        // Carrega as respostas salvas do Firebase quando a página é carregada
+        async function loadProjectAnswers() {
+            try {
+                const doc = await db.collection("projetos").doc(PROJECT_DOC_ID).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const answersM1 = data.perguntasM1 || [];
+                    
+                    answersM1.forEach(item => {
+                        const inputElement = document.getElementById(item.id.replace('mod1_p1_nome', 'p1_nome_projeto')
+                                                                            .replace('mod1_p2_objetivo', 'p2_objetivo_geral')
+                                                                            .replace('mod1_p3_publico', 'p3_publico_alvo'));
+                        if (inputElement) {
+                            inputElement.value = item.resposta;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do projeto:", error);
+            }
+        }
+        
+        // Chamada para carregar os dados ao carregar a página
+        // loadProjectAnswers(); // Descomente quando o Firebase SDK estiver configurado
+    </script>
 {% endblock %}
