@@ -159,19 +159,18 @@
             </div>
     </div>
 
-    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+<div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-bullhorn mr-3"></i> Questão de Projeto: Justificativa
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: Justificativa do Projeto
         </h2>
-        <p class="text-gray-700 mb-4">Com base no conceito de Decomposição de Problemas, explique a relevância e a necessidade do seu projeto (definido no Módulo 1).</p>
-        <form id="project-idea-form-mod2">
-            
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Justificativa do Projeto</h3>
-
-            <div class="mb-4">
-                <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto, respondendo: Qual problema ele resolve e por que ele é importante para o seu público-alvo?</label>
-                <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O projeto é crucial para preencher a lacuna na alfabetização digital, preparando os alunos para o mercado futuro."></textarea>
-            </div>
+        <p class="text-gray-700 mb-4">A Decomposição começa ao entender a essência do problema. Em uma visão de alto nível, qual é a justificativa para a solução do seu projeto?</p>
+        
+        {# ALTERAÇÃO: Adicionado method="POST" para envio dos dados #}
+        <form id="project-idea-form-mod2" method="POST">
+            <label for="project_justification" class="block text-gray-800 font-medium mb-2">Descreva a relevância do seu projeto. Qual problema ele resolve e por que ele é importante para o seu público-alvo? (Isto é a 'Decomposição' do desafio de 'entender o problema').</label>
+            <textarea id="project_justification" name="project_justification" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: O problema é que o cálculo manual de médias consome 5 horas por semana do professor, levando a erros. Este projeto resolve isso automatizando o processo, liberando o tempo do professor para o ensino.">
+                {# ALTERAÇÃO: Preenchimento com dados salvos #}
+                {{ project_data.project_justification if project_data.project_justification else '' }}</textarea>
             
             <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Justificativa</button>
         </form>
@@ -180,6 +179,7 @@
 
 {% block finish_button %}
     <div class="mt-8 text-center">
+        {# ALTERAÇÃO: Rota atualizada para a função 'concluir_modulo' no app.py #}
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='decomposicao') }}">
             <button type="submit" class="btn-finish hover:shadow-lg">
                 <i class="fas fa-check-double mr-2"></i>Próximo Módulo
