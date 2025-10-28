@@ -166,29 +166,31 @@
         </h2>
         <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
         
-        <form id="project-idea-form" onsubmit="saveProjectData(event)">
+        <form action="{{ url_for('cadastro') }}" method="POST">
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
-            
-            <div class="mb-4">
-                <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
-                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental" required>
-            </div>
-
-            <div class="mb-4">
-                <label for="project_objective" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que se espera que os alunos aprendam/alcancem):</label>
-                <textarea id="project_objective" name="project_objective" rows="2" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe." required></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label for="project_target" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Nível de ensino, idade ou tipo de aluno):</label>
-                <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)" required>
+            <div class="input-group">
+                <label for="name">Nome Completo</label>
+                <input type="text" id="name" name="nome" required placeholder="Digite seu nome" 
+                    value="{{ request.form.get('nome', '') }}">
             </div>
             
-            <button type="submit" id="save-button" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                Salvar Definição Inicial
-            </button>
-            <span id="save-feedback" class="ml-4 text-sm font-semibold"></span>
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com" 
+                    value="{{ request.form.get('email', '') }}">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="senha" required placeholder="Crie uma senha">
+            </div>
+            
+            <button type="submit" class="btn-primary-register">Criar Conta</button>
+            
+            <div class="login-link-group">
+                <p>Já tem uma conta? <a href="{{ url_for('login') }}">Fazer Login</a></p>
+            </div>
+            
         </form>
     </div>
 {% endblock %}
