@@ -144,16 +144,18 @@
             <i class="fas fa-sitemap mr-3"></i> Questão de Projeto: Otimização da Metodologia por Padrões
         </h2>
         <p class="text-gray-700 mb-4">Relembre as subpartes do seu projeto (decomposição) e encontre similaridades. Use a identificação de padrões para otimizar a metodologia.</p>
-        <form id="project-idea-form-mod3">
+        
+        <form id="project-idea-form-mod3" data-slug="{{ modulo.slug }}">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Identificação e Otimização de Padrões</h3>
 
             <div class="mb-4">
-                <label for="project_pattern_optimization" class="block text-gray-800 font-medium mb-2">Identifique uma **ação ou recurso** que se repete em diferentes fases do seu projeto. Como você pode criar um **mecanismo único** para reutilizar ou simplificar essa repetição?</label>
-                <textarea id="project_pattern_optimization" name="project_pattern_optimization" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: A avaliação formativa é um padrão que se repete em 3 módulos. Podemos otimizá-la criando um único 'Template de Feedback' em vez de criar três documentos diferentes."></textarea>
+                <label for="project_pattern_optimization_input" class="block text-gray-800 font-medium mb-2">Identifique uma **ação ou recurso** que se repete em diferentes fases do seu projeto. Como você pode criar um **mecanismo único** para reutilizar ou simplificar essa repetição?</label>
+                <textarea id="project_pattern_optimization_input" name="project_pattern_optimization_input" rows="6" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: A avaliação formativa é um padrão que se repete em 3 módulos. Podemos otimizá-la criando um único 'Template de Feedback' em vez de criar três documentos diferentes.">{{ resposta_anterior | default('', true) }}</textarea>
             </div>
             
             <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Otimização de Padrão</button>
+            <div id="save-status" class="mt-3 text-sm font-medium"></div>
         </form>
     </div>
 {% endblock %}
@@ -166,4 +168,94 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    
+    <script>
+        // Função para simular o flash do Flask
+        function showStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('save-status');
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('text-green-600', 'text-red-600');
+            statusDiv.classList.add(isSuccess ? 'text-green-600' : 'text-red-600');
+            
+            // Limpa a mensagem após 5 segundos
+            setTimeout(() => {
+                statusDiv.textContent = '';
+            }, 5000);
+        }
+
+        // Função para pré-preencher a textarea se houver JSON salvo
+        function loadProjectIdea() {
+            const textarea = document.getElementById('project_pattern_optimization_input');
+            const previousData = textarea.value.trim();
+            
+            if (previousData) {
+                try {
+                    // O app.py está enviando a resposta bruta (JSON string) salva no Firestore
+                    const data = JSON.parse(previousData);
+                    // Pré-preenche apenas o campo que nos interessa
+                    textarea.value = data.project_pattern_optimization || previousData; // Usa o valor JSON ou o valor raw, se o JSON falhar
+                } catch (e) {
+                    // Se o valor não for JSON, ele já estará na textarea, então não faz nada
+                }
+            }
+        }
+        
+        loadProjectIdea();
+
+        // Lógica de envio do formulário (AJAX)
+        document.getElementById('project-idea-form-mod3').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const moduleSlug = form.getAttribute('data-slug');
+            const saveUrl = `{{ url_for('salvar_projeto_modulo', modulo_slug=modulo.slug) }}`;
+            const optimizationInput = document.getElementById('project_pattern_optimization_input');
+            
+            // 1. Coleta e consolida os dados dos campos em um objeto
+            const dataToSave = {
+                project_pattern_optimization: optimizationInput.value.trim()
+            };
+            
+            // 2. Transforma o objeto consolidado em uma string JSON (Formato que o app.py espera na collection)
+            const consolidatedResponse = JSON.stringify(dataToSave);
+            
+            // 3. Validação básica de comprimento (mínimo de 10 caracteres no app.py)
+            if (dataToSave.project_pattern_optimization.length < 10) {
+                 showStatus("Sua otimização é muito curta (mínimo 10 caracteres).", false);
+                 return;
+            }
+
+            // 4. Cria o payload JSON para o Flask (o Flask espera {project_idea: "..."})
+            const payload = {
+                project_idea: consolidatedResponse
+            };
+
+            // 5. Envia via Fetch API (AJAX)
+            fetch(saveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus(data.message, true);
+                    // Opcional: Atualiza o conteúdo da textarea para refletir o JSON salvo
+                    optimizationInput.value = dataToSave.project_pattern_optimization; 
+                } else {
+                    showStatus(data.message || 'Erro desconhecido ao salvar.', false);
+                }
+            })
+            .catch(error => {
+                console.error('Erro de rede:', error);
+                showStatus('Erro de conexão ao servidor.', false);
+            });
+        });
+    </script>
 {% endblock %}
