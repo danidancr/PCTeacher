@@ -3,7 +3,7 @@
 {% block title %}Módulo 6: Projeto Final{% endblock %}
 
 {% block content_title %}
-    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Aplicando o PC
+    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Conclusão e Download
 {% endblock %}
 
 {% block content %}
@@ -19,28 +19,48 @@
 
     <div class="content-section border-4 border-indigo-300 bg-white shadow-lg">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-3xl font-bold text-gray-800">📋 Resumo do Projeto Final: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
-            {# Feedback de salvamento será atualizado pelo JS da base_dashboard #}
-            <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
+            <h2 class="text-3xl font-bold text-gray-800">✅ Resumo Final do Projeto: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
+            {# Removido o feedback de salvamento, pois a edição não é mais o foco #}
         </div>
         
-        <p class="text-gray-700 mb-6">Revise e finalize as quatro etapas do Pensamento Computacional que você desenvolveu. Todas as edições feitas aqui são salvas automaticamente.</p>
+        <p class="text-gray-700 mb-6">Esta é a versão final do seu projeto de Pensamento Computacional. Você pode revisá-lo abaixo e fazer o download para registro.</p>
 
-        {# Formulário principal com campos de revisão #}
-        <form id="project-form-modulo-6" method="POST" onchange="saveProjectData(this)">
-            <input type="hidden" name="modulo_slug" value="{{ modulo.slug }}">
-            
+        {# Botão de Download PDF #}
+        <div class="text-center mb-10">
+            <a href="{{ url_for('download_projeto_pdf', projeto_id=projeto_data.id) }}" 
+               class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-file-pdf mr-3"></i> Baixar Projeto Completo em PDF
+            </a>
+            <p class="mt-2 text-sm text-gray-500">**(Nota: A rota `download_projeto_pdf` deve ser criada no seu `app.py`)**</p>
+        </div>
+
+        {# REVISÃO: Substituindo textareas por blocos de visualização estáticos #}
+        <div id="project-review-final">
+        
+            {# Seção 0: Definição do Projeto (Módulo 1) - ADICIONADO PÚBLICO-ALVO #}
+            <div class="mb-8 p-5 border border-gray-200 rounded-lg bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-700 mb-3 flex items-center">
+                    <i class="fas fa-bookmark mr-3"></i> 0. Definição do Projeto (Módulo 1)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Nome do Projeto:</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.nome_projeto | default('Não preenchido.') }}</div>
+                
+                <p class="text-gray-800 font-medium mt-4 mb-2">Problema Central/Objetivo:</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.problema | default('Não preenchido no Módulo 1.') }}</div>
+
+                {# NOVO CAMPO #}
+                <p class="text-gray-800 font-medium mt-4 mb-2">Público-Alvo (Alunos, Série, Disciplina):</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.publico_alvo | default('Não preenchido no Módulo 1.') }}</div>
+                
+            </div>
+
             {# Seção 1: Decomposição #}
             <div class="mb-8 p-5 border border-red-200 rounded-lg bg-red-50">
                 <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center">
                     <i class="fas fa-sitemap mr-3"></i> 1. Decomposição (Módulo 2)
                 </h3>
-                <label for="decomposicao" class="block text-gray-800 font-medium mb-2">Problema dividido em partes menores (subproblemas):</label>
-                <textarea id="decomposicao" name="decomposicao" rows="5" 
-                          class="w-full p-3 border border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500" 
-                          required>
-                    {{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}
-                </textarea>
+                <p class="text-gray-800 font-medium mb-2">Subproblemas/Etapas Principais:</p>
+                <div class="bg-white p-3 border border-red-300 rounded-md whitespace-pre-wrap">{{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}</div>
             </div>
 
             {# Seção 2: Reconhecimento de Padrões #}
@@ -48,12 +68,8 @@
                 <h3 class="text-xl font-bold text-yellow-700 mb-3 flex items-center">
                     <i class="fas fa-lightbulb mr-3"></i> 2. Reconhecimento de Padrões (Módulo 3)
                 </h3>
-                <label for="padroes" class="block text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</label>
-                <textarea id="padroes" name="padroes" rows="5" 
-                          class="w-full p-3 border border-yellow-300 rounded-lg shadow-sm focus:ring-yellow-500 focus:border-yellow-500" 
-                          required>
-                    {{ projeto_data.padroes | default('Ainda não preenchido no Módulo 3.') }}
-                </textarea>
+                <p class="text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</p>
+                <div class="bg-white p-3 border border-yellow-300 rounded-md whitespace-pre-wrap">{{ projeto_data.padroes | default('Ainda não preenchido no Módulo 3.') }}</div>
             </div>
 
             {# Seção 3: Abstração #}
@@ -61,12 +77,8 @@
                 <h3 class="text-xl font-bold text-indigo-700 mb-3 flex items-center">
                     <i class="fas fa-filter mr-3"></i> 3. Abstração (Módulo 4)
                 </h3>
-                <label for="abstracao" class="block text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</label>
-                <textarea id="abstracao" name="abstracao" rows="5" 
-                          class="w-full p-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" 
-                          required>
-                    {{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}
-                </textarea>
+                <p class="text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</p>
+                <div class="bg-white p-3 border border-indigo-300 rounded-md whitespace-pre-wrap">{{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}</div>
             </div>
 
             {# Seção 4: Algoritmos #}
@@ -74,21 +86,11 @@
                 <h3 class="text-xl font-bold text-green-700 mb-3 flex items-center">
                     <i class="fas fa-list-ol mr-3"></i> 4. Algoritmos (Módulo 5)
                 </h3>
-                <label for="algoritmo" class="block text-gray-800 font-medium mb-2">Sequência lógica de passos (SE/ENTÃO, ENQUANTO/PARA):</label>
-                <textarea id="algoritmo" name="algoritmo" rows="8" 
-                          class="w-full p-3 border border-green-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" 
-                          required>
-                    {{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}
-                </textarea>
-                <p class="mt-1 text-xs text-gray-600">Seu progresso será salvo automaticamente.</p>
+                <p class="text-gray-800 font-medium mb-2">Sequência lógica de passos (Algoritmo):</p>
+                <div class="bg-white p-3 border border-green-300 rounded-md whitespace-pre-wrap">{{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}</div>
             </div>
             
-            <div class="text-center mt-6">
-                <button type="submit" class="btn-primary py-3 px-8 text-lg font-semibold bg-primary-indigo hover:bg-indigo-700">
-                    <i class="fas fa-save mr-2"></i> Salvar Revisão Final
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 {% endblock %}
 
@@ -96,7 +98,7 @@
     <div class="flex justify-end pt-8">
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
             <button type="submit" class="btn-finish-big">
-                <i class="fas fa-award mr-2"></i> Finalizar Projeto e Gerar Certificado
+                <i class="fas fa-award mr-2"></i> Finalizar Módulo
             </button>
         </form>
     </div>
