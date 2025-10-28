@@ -5,122 +5,170 @@
 {% block content_title %}Módulo 5: Algoritmos - O Passo a Passo Lógico{% endblock %}
 
 {% block content %}
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-video mr-3"></i> Vídeo Aula: Sequência de Ações
-        </h2>
-        <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-500 mt-4">Crie instruções claras e organizadas para garantir resultados previsíveis e replicáveis.</p>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Sequência de Ações
+        </h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-500 mt-4">Crie instruções claras e organizadas para garantir resultados previsíveis e replicáveis.</p>
+    </div>
 
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
-        </h2>
-        <p class="text-gray-700 mb-4">Exemplos de fluxogramas e pseudocódigos aplicados a processos educacionais.</p>
-        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
-            <i class="fas fa-download mr-2"></i> Baixar Template de Fluxograma
-        </a>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-file-alt mr-3"></i> Material de Apoio (PDF)
+        </h2>
+        <p class="text-gray-700 mb-4">Exemplos de fluxogramas e pseudocódigos aplicados a processos educacionais.</p>
+        <a href="#" class="bg-secondary-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center transition duration-200">
+            <i class="fas fa-download mr-2"></i> Baixar Template de Fluxograma
+        </a>
+    </div>
 
-        <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
-        </h2>
-        <div class="space-y-6">
-            
-                        <div id="q-mod5-1" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-lg mb-4 text-gray-800">1. O que distingue um Algoritmo de um simples conjunto de instruções?</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Embora ajude, a utilização de cores não é uma característica definidora do algoritmo.')" data-correct="false">
-                        A forma de apresentação das ações, preferencialmente utilizando cores e caixas de texto.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Um algoritmo deve ter um fim e dar um resultado, não apenas listar ações.')" data-correct="false">
-                        O fato de listar todas as ações possíveis que o executor pode tomar, sem necessariamente chegar a um resultado.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-1', this, 'true', '✅ Correto! Um Algoritmo é uma sequência finita, bem definida e não ambígua de passos para resolver uma classe de problemas e produzir um resultado.')" data-correct="true">
-                        A garantia de que os passos são finitos, não ambíguos e produzirão um resultado esperado a partir da entrada.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Isso se aplica mais a Abstração e Decomposição do que ao Algoritmo em si.')" data-correct="false">
-                        O foco na identificação de padrões e a simplificação do problema complexo.
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-            
-                        <div id="q-mod5-2" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-lg mb-4 text-gray-800">2. Em um sistema de correção de provas, qual estrutura algorítmica é essencial para determinar se um aluno é aprovado ou reprovado?</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O laço de repetição é usado para executar o mesmo bloco de código várias vezes (ex: somar todas as notas).')" data-correct="false">
-                        Laço de Repetição (Loop)
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-2', this, 'true', '✅ Correto! A estrutura condicional (SE a nota for maior que 7, ENTÃO APROVADO) é usada para tomar decisões.')" data-correct="true">
-                        Estrutura Condicional (IF/THEN/ELSE)
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O array é uma estrutura de dados, não de controle de fluxo de um algoritmo.')" data-correct="false">
-                        Variável Array
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. Sequência se refere à ordem simples; a Condicional adiciona a lógica de decisão.')" data-correct="false">
-                        Estrutura de Sequência Simples
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-            
-                        <div id="q-mod5-3" class="border p-4 rounded-lg bg-white shadow">
-                <p class="font-semibold text-lg mb-4 text-gray-800">3. Qual dos seguintes exemplos do cotidiano representa um Algoritmo?</p>
-                <div class="space-y-2">
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Uma lista de compras é apenas uma lista de itens (dados), e não um processo com começo, meio e fim definido.')" data-correct="false">
-                        Uma lista de compras para o supermercado.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso é Abstração ou Modelagem, representando a essência do objeto (o Mapa), mas não a sequência de ações.')" data-correct="false">
-                        O mapa da cidade.
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-3', this, 'true', '✅ Correto! Uma receita culinária é um conjunto finito e ordenado de instruções que, se seguidas corretamente, levam a um resultado previsível.')" data-correct="true">
-                        Uma receita culinária com passos definidos (ingredientes, sequência de mistura, tempo de cozimento).
-                    </div>
-                                        <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso está mais relacionado à Decomposição (estrutura de classes) e Abstração (definições).')" data-correct="false">
-                        A hierarquia de cargos em uma empresa.
-                    </div>
-                </div>
-                                <div class="feedback-message mt-4 hidden"></div>
-            </div>
-        </div>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-clipboard-check mr-3"></i> Exercícios de Fixação
+        </h2>
+        <div class="space-y-6">
+            
+            <div id="q-mod5-1" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Conceitual</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">1. O que distingue um Algoritmo de um simples conjunto de instruções?</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Embora ajude, a utilização de cores não é uma característica definidora do algoritmo.')" data-correct="false">
+                        A) A forma de apresentação das ações, preferencialmente utilizando cores e caixas de texto.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Um algoritmo deve ter um fim e dar um resultado, não apenas listar ações.')" data-correct="false">
+                        B) O fato de listar todas as ações possíveis que o executor pode tomar, sem necessariamente chegar a um resultado.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'true', '✅ Correto! Um Algoritmo é uma sequência finita, bem definida e não ambígua de passos para resolver uma classe de problemas e produzir um resultado.')" data-correct="true">
+                        C) A garantia de que os passos são finitos, não ambíguos e produzirão um resultado esperado a partir da entrada.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-1', this, 'false', '❌ Incorreto. Isso se aplica mais a Abstração e Decomposição do que ao Algoritmo em si.')" data-correct="false">
+                        D) O foco na identificação de padrões e a simplificação do problema complexo.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod5-2" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Estrutura Algorítmica</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">2. Em um sistema de correção de provas, qual estrutura algorítmica é essencial para determinar se um aluno é aprovado ou reprovado?</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O laço de repetição é usado para executar o mesmo bloco de código várias vezes (ex: somar todas as notas).')" data-correct="false">
+                        A) Laço de Repetição (Loop)
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'true', '✅ Correto! A estrutura condicional (SE a nota for maior que 7, ENTÃO APROVADO) é usada para tomar decisões.')" data-correct="true">
+                        B) Estrutura Condicional (IF/THEN/ELSE)
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. O array é uma estrutura de dados, não de controle de fluxo de um algoritmo.')" data-correct="false">
+                        C) Variável Array
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-2', this, 'false', '❌ Incorreto. Sequência se refere à ordem simples; a Condicional adiciona a lógica de decisão.')" data-correct="false">
+                        D) Estrutura de Sequência Simples
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod5-3" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Aplicação no Cotidiano</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">3. Qual dos seguintes exemplos do cotidiano representa um Algoritmo?</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Uma lista de compras é apenas uma lista de itens (dados), e não um processo com começo, meio e fim definido.')" data-correct="false">
+                        A) Uma lista de compras para o supermercado.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso é Abstração ou Modelagem, representando a essência do objeto (o Mapa), mas não a sequência de ações.')" data-correct="false">
+                        B) O mapa da cidade.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'true', '✅ Correto! Uma receita culinária é um conjunto finito e ordenado de instruções que, se seguidas corretamente, levam a um resultado previsível.')" data-correct="true">
+                        C) Uma receita culinária com passos definidos (ingredientes, sequência de mistura, tempo de cozimento).
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-3', this, 'false', '❌ Incorreto. Isso está mais relacionado à Decomposição (estrutura de classes) e Abstração (definições).')" data-correct="false">
+                        D) A hierarquia de cargos em uma empresa.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod5-4" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Fase do PC</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">4. Em relação aos pilares do Pensamento Computacional, o Algoritmo é a fase que:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-4', this, 'false', '❌ Incorreto. Isso é o papel da Decomposição.')" data-correct="false">
+                        A) Divide o problema em subproblemas menores.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-4', this, 'false', '❌ Incorreto. Isso é o papel do Reconhecimento de Padrões.')" data-correct="false">
+                        B) Identifica similaridades e repetições na solução.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-4', this, 'true', '✅ Correto! O Algoritmo é a concretização da solução. Ele pega o modelo abstrato e o traduz em uma sequência executável de ações.')" data-correct="true">
+                        C) Converte a abstração em uma série de passos lógicos e executáveis.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-4', this, 'false', '❌ Incorreto. Isso é o papel da Abstração.')" data-correct="false">
+                        D) Foca apenas nos detalhes cruciais, ignorando o irrelevante.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            <div id="q-mod5-5" class="border p-4 rounded-lg bg-white shadow">
+                <p class="font-semibold text-sm mb-2 text-gray-500">Características</p>
+                <p class="font-semibold text-lg mb-4 text-gray-800">5. A principal característica que garante a REPLICABILIDADE e a previsibilidade de um algoritmo é:</p>
+                <div class="space-y-2">
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-5', this, 'false', '❌ Incorreto. A eficiência (rapidez) é uma métrica de qualidade, mas não a principal característica de replicabilidade.')" data-correct="false">
+                        A) A eficiência na execução (ser rápido).
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-5', this, 'false', '❌ Incorreto. A concisão (ser curto) é desejável, mas a não ambiguidade é crucial.')" data-correct="false">
+                        B) A concisão (ser curto e utilizar poucas linhas de código).
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-5', this, 'true', '✅ Correto! Se os passos não são ambíguos, qualquer pessoa ou máquina que seguir o algoritmo deve chegar exatamente ao mesmo resultado.')" data-correct="true">
+                        C) A não ambiguidade dos passos e das condições.
+                    </div>
+                    <div class="quiz-option bg-gray-100 p-3 rounded-lg cursor-pointer hover:bg-gray-200"
+                        onclick="checkAnswer('q-mod5-5', this, 'false', '❌ Incorreto. Embora a automação seja um resultado, a característica fundamental é a não ambiguidade.')" data-correct="false">
+                        D) A capacidade de automação por um computador.
+                    </div>
+                </div>
+                <div class="feedback-message mt-4 hidden"></div>
+            </div>
+            </div>
+    </div>
 
-        <div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
-        </h2>
-        <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
-        <form id="project-idea-form-mod5">
-            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
-            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
-                        <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
-        </form>
-    </div>
+    <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Fluxo de Ações
+        </h2>
+        <p class="text-gray-700 mb-4">Esta é a etapa final de planejamento do seu projeto. O Algoritmo transforma seu modelo abstrato em uma série de ações concretas.</p>
+        <form id="project-idea-form-mod5">
+            <label for="project_algorithm" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+            <textarea id="project_algorithm" name="project_algorithm" rows="8" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM."></textarea>
+            
+            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Algoritmo</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
-            </button>
-        </form>
-    </div>
+    <div class="mt-8 text-center">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='algoritmo') }}">
+            <button type="submit" class="btn-finish hover:shadow-lg">
+                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+            </button>
+        </form>
+    </div>
 {% endblock %}
