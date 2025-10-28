@@ -164,8 +164,9 @@
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
         </h2>
-        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
-        <form id="project-idea-form">
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem". **Por favor, preencha todos os campos no formato solicitado abaixo.**</p>
+        
+        <form id="project-idea-form" data-slug="{{ modulo.slug }}">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
 
@@ -184,7 +185,10 @@
                 <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)">
             </div>
             
+            <textarea id="project_idea" name="project_idea" class="hidden">{{ resposta_anterior }}</textarea>
+            
             <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Definição Inicial</button>
+            <div id="save-status" class="mt-3 text-sm font-medium"></div>
         </form>
     </div>
 {% endblock %}
@@ -197,4 +201,100 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    
+    <script>
+        // Função para simular o flash do Flask
+        function showStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('save-status');
+            statusDiv.textContent = message;
+            statusDiv.classList.remove('text-green-600', 'text-red-600');
+            statusDiv.classList.add(isSuccess ? 'text-green-600' : 'text-red-600');
+            
+            // Limpa a mensagem após 5 segundos
+            setTimeout(() => {
+                statusDiv.textContent = '';
+            }, 5000);
+        }
+
+        // Função para preencher os campos do formulário se houver uma resposta_anterior
+        function loadProjectIdea() {
+            const projectIdeaTextarea = document.getElementById('project_idea');
+            const previousData = projectIdeaTextarea.value.trim();
+            
+            if (previousData) {
+                try {
+                    // Esperamos que o texto seja um JSON que consolidamos no salvamento
+                    const data = JSON.parse(previousData);
+                    document.getElementById('project_name').value = data.project_name || '';
+                    document.getElementById('project_objective').value = data.project_objective || '';
+                    document.getElementById('project_target').value = data.project_target || '';
+                } catch (e) {
+                    console.error("Erro ao fazer parse da resposta anterior:", e);
+                    // Se não for JSON, o usuário pode ter digitado texto puro, não tentamos preencher
+                }
+            }
+        }
+        
+        // Chamada imediata para carregar o que foi salvo
+        loadProjectIdea();
+
+        // Lógica de envio do formulário (AJAX)
+        document.getElementById('project-idea-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const moduleSlug = form.getAttribute('data-slug');
+            const saveUrl = `{{ url_for('salvar_projeto_modulo', modulo_slug=modulo.slug) }}`;
+
+            // 1. Coleta e consolida os dados dos campos em um objeto
+            const dataToSave = {
+                project_name: document.getElementById('project_name').value,
+                project_objective: document.getElementById('project_objective').value,
+                project_target: document.getElementById('project_target').value
+            };
+            
+            // 2. Transforma o objeto consolidado em uma string JSON para o campo 'project_idea'
+            // O app.py espera um campo chamado 'project_idea' com a resposta.
+            const consolidatedResponse = JSON.stringify(dataToSave);
+            
+            // 3. Verifica se a resposta consolidada tem tamanho suficiente (mínimo de 10 caracteres no app.py)
+            if (consolidatedResponse.length < 10) {
+                 showStatus("Sua resposta é muito curta. Por favor, preencha os campos.", false);
+                 return;
+            }
+
+            // 4. Cria o payload JSON para o Flask (o Flask espera {project_idea: "..."})
+            const payload = {
+                project_idea: consolidatedResponse
+            };
+
+            // 5. Envia via Fetch API (AJAX)
+            fetch(saveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus(data.message, true);
+                    // Opcional: Atualiza o campo oculto com a nova resposta consolidada
+                    document.getElementById('project_idea').value = consolidatedResponse; 
+                } else {
+                    showStatus(data.message || 'Erro desconhecido ao salvar.', false);
+                }
+            })
+            .catch(error => {
+                console.error('Erro de rede:', error);
+                showStatus('Erro de conexão ao servidor.', false);
+            });
+        });
+    </script>
 {% endblock %}
