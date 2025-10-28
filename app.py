@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
 from datetime import datetime
-import json # NOVO: Importa json para manipular a chave de serviço
+import json 
 
 import firebase_admin 
 from firebase_admin import credentials, firestore, auth
@@ -15,24 +15,22 @@ from firebase_admin import credentials, firestore, auth
 app = Flask(__name__)
 
 # Configurações de segurança
-# Em produção, o Render fornecerá a 'SECRET_KEY'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sua_chave_secreta_padrao_muito_longa')
 
 
 # =========================================================
-# 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK (NOVO)
+# 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK
 # =========================================================
+# NOTA: A lógica para carregar as credenciais (via variável de ambiente ou arquivo)
+# deve permanecer exatamente como você a configurou para garantir a conexão.
 try:
-    # 1. Tenta carregar da variável de ambiente (USO EM PRODUÇÃO)
     FIREBASE_SERVICE_ACCOUNT_JSON = os.environ.get('FIREBASE_CONFIG_JSON')
     
     if FIREBASE_SERVICE_ACCOUNT_JSON:
-        # Carrega o JSON da string (variável de ambiente)
         cred_json = json.loads(FIREBASE_SERVICE_ACCOUNT_JSON)
         cred = credentials.Certificate(cred_json)
         print("INFO: Credenciais carregadas da variável de ambiente 'FIREBASE_CONFIG_JSON'.")
     else:
-        # 2. Tenta carregar de um arquivo local (USO EM DESENVOLVIMENTO)
         cred = credentials.Certificate('serviceAccountKey.json')
         print("INFO: Credenciais carregadas do arquivo local 'serviceAccountKey.json'.")
         
@@ -40,11 +38,9 @@ except FileNotFoundError:
     print("AVISO: Arquivo 'serviceAccountKey.json' não encontrado localmente.")
     cred = None
 except Exception as e:
-    # Este erro pode ocorrer se o JSON da variável de ambiente for mal-formado
     print(f"ERRO ao carregar credenciais: {e}")
     cred = None
 
-# Inicializa o Firebase apenas se as credenciais foram carregadas com sucesso
 if not firebase_admin._apps and cred:
     firebase_admin.initialize_app(cred, {
         'projectId': "pc-teacher-6c75f",
@@ -54,13 +50,13 @@ if not firebase_admin._apps and cred:
 elif not firebase_admin._apps:
     print("ERRO CRÍTICO: Firebase Admin SDK não foi inicializado. Verifique as credenciais.")
 
+
 # =========================================================
-# 3. HELPERS E DECORATORS (REVISADOS)
+# 3. HELPERS E DECORATORS
 # =========================================================
 
-# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS (Sem alterações) ---
+# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS ---
 MODULO_CONFIG = [
-    # ... (Seu MODULO_CONFIG permanece o mesmo) ...
     {
         'title': 'Introdução ao Pensamento Computacional',
         'field': 'introducao_concluido',
@@ -126,20 +122,17 @@ def get_firestore_doc(collection_name, doc_id):
     doc = doc_ref.get()
     if doc.exists:
         data = doc.to_dict()
-        data['id'] = doc.id # Adiciona o ID do documento ao dict
+        data['id'] = doc.id 
         return data
     return None
 
 def usuario_logado():
     """Retorna o objeto (dict) Usuario logado ou None, buscando no Firestore."""
     if 'usuario_id' in session:
-        # Busca o usuário pelo ID armazenado na sessão
         user_data = get_firestore_doc('usuarios', session['usuario_id'])
         
         if user_data:
-             # Busca o progresso associado (se existir)
             progresso_data = get_firestore_doc('progresso', session['usuario_id'])
-            # Anexa o progresso ao objeto do usuário para manter a compatibilidade
             user_data['progresso'] = progresso_data if progresso_data else {}
             return user_data
     return None
@@ -155,8 +148,7 @@ def requires_auth(func):
     return wrapper
 
 def calculate_progress(progresso_db):
-    """Calcula todas as métricas de progresso do curso.
-       progresso_db agora é um dicionário (dict) do Firestore."""
+    """Calcula todas as métricas de progresso do curso."""
     
     total_modules = len(MODULO_CONFIG)
     completed_modules = 0
@@ -170,20 +162,16 @@ def calculate_progress(progresso_db):
     for module_config in MODULO_CONFIG:
         db_field = module_config['field']
         
-        # MUDANÇA: Acessa o status de conclusão como uma chave de dicionário
         is_completed = progresso_db.get(db_field, False) 
         
-        # Lógica de Desbloqueio (BASEADA NA DEPENDÊNCIA explícita)
         dependency_field = module_config.get('dependency_field')
         
         if dependency_field is None:
             is_unlocked_for_current_module = True
         else:
-            # MUDANÇA: Acessa o status da dependência como chave de dicionário
             dependency_is_completed = progresso_db.get(dependency_field, False)
             is_unlocked_for_current_module = dependency_is_completed 
 
-        # Contadores
         if is_completed:
             completed_modules += 1
             completed_lessons += module_config['lessons']
@@ -213,8 +201,85 @@ def calculate_progress(progresso_db):
         'modules': dynamic_modules 
     }
 
+# Lógica para gerar o certificado (permanece a mesma, pois não depende do DB)
+def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria):
+    """Gera o conteúdo LaTeX para o certificado."""
+    # NOTE: Você pode precisar ajustar o layout e as dependências LaTeX.
+    
+    # Exemplo simples de template LaTeX
+    latex_template = r"""
+\documentclass[10pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\usepackage{fancybox}
+\usepackage{graphicx}
+\usepackage{color}
+
+\geometry{
+    a4paper,
+    landscape,
+    margin=1.5cm
+}
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\fcolorbox{black}{white}{\setlength{\fboxsep}{1cm}\fbox{
+\begin{minipage}{0.95\textwidth}
+\centering
+
+\vspace{1cm}
+{\Huge\bfseries Certificado de Conclusão}
+
+\vspace{0.8cm}
+{\Large Certificamos que}
+
+\vspace{1cm}
+{\color{blue}\Huge\bfseries %s}
+
+\vspace{0.5cm}
+{\Large Concluiu o curso online:}
+
+\vspace{0.8cm}
+{\huge\bfseries Pensamento Computacional para Professores}
+
+\vspace{0.8cm}
+{\Large com carga horária total de \textbf{%d horas}.}
+
+\vspace{1.5cm}
+{\Large Emitido em Manaus, Amazonas, em %s.}
+
+\vspace{2cm}
+\begin{tabular}{cc}
+\begin{minipage}{0.4\textwidth}
+\centering
+\hrule
+\vspace{0.2cm}
+\small Assinatura da Coordenação
+\end{minipage}
+&
+\begin{minipage}{0.4\textwidth}
+\centering
+\hrule
+\vspace{0.2cm}
+\small Assinatura do Instrutor
+\end{minipage}
+\end{tabular}
+
+\end{minipage}
+}}
+\end{center}
+\end{document}
+""" % (nome_completo, carga_horaria, data_conclusao_str)
+    
+    return latex_template
+
 # =========================================================
-# 4. ROTAS DE AUTENTICAÇÃO (REVISADAS)
+# 4. ROTAS DE AUTENTICAÇÃO
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -228,7 +293,7 @@ def cadastro():
         email = request.form.get('email')
         senha = request.form.get('senha')
         
-        # 1. Verifica se o e-mail já existe (Firestore Query)
+        # 1. Verifica se o e-mail já existe
         email_exists_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
         email_exists = next(email_exists_query, None)
         
@@ -236,28 +301,24 @@ def cadastro():
             flash('Este e-mail já está cadastrado. Tente fazer o login.', 'danger')
             return render_template('cadastro.html', nome_for_form=nome, email_for_form=email)
 
-        # 2. Cria novo usuário no Firebase Authentication (Recomendado) e Firestore
+        # 2. Cria novo usuário no Firebase Auth e Firestore
         try:
-            # 2.1 Criar no Firebase Authentication (para login seguro)
-            # Isso gera um UID (ID do usuário) único
             user_auth = auth.create_user(email=email, password=senha, display_name=nome)
             user_id = user_auth.uid
             
-            # 2.2 Salvar dados no Firestore (Coleção 'usuarios')
+            # Salvar dados no Firestore (Coleção 'usuarios')
             novo_usuario_data = {
                 'nome': nome,
                 'email': email,
-                'senha_hash': generate_password_hash(senha), # Mantém o hash da senha por compatibilidade, mas o Auth do Firebase deve ser a fonte de verdade
+                'senha_hash': generate_password_hash(senha), 
                 'instituicao': '',
                 'telefone': '',
                 'cargo': 'Professor(a)',
-                'created_at': firestore.SERVER_TIMESTAMP # Para registro de criação
+                'created_at': firestore.SERVER_TIMESTAMP
             }
-            # Usa o UID do Auth como ID do documento no Firestore
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
             
-            # 2.3 Cria um registro de progresso (Coleção 'progresso')
-            # O progresso é um documento separado, usando o mesmo UID
+            # Cria um registro de progresso (Coleção 'progresso')
             novo_progresso_data = {
                 'introducao_concluido': False,
                 'decomposicao_concluido': False,
@@ -270,10 +331,8 @@ def cadastro():
 
             flash('Cadastro realizado com sucesso! Faça login para começar.', 'success')
             return redirect(url_for('login'))
-        
+            
         except Exception as e:
-            # Em caso de falha de criação, tente limpar o registro
-            # Nota: O Firebase Auth lida com a maior parte da transação de forma atômica
             flash(f'Erro interno ao cadastrar: {str(e)}', 'danger')
             
     return render_template('cadastro.html', user=usuario)
@@ -288,24 +347,17 @@ def login():
         email = request.form.get('email')
         senha = request.form.get('senha')
         
-        # MUDANÇA: O Auth do Firebase é usado para validar a senha, mas
-        # para projetos Flask/Admin SDK, é mais simples buscar no Firestore
-        # e usar o werkzeug.security se você não estiver usando o Firebase
-        # Client SDK para login. 
-        
         # 1. Busca o usuário pelo e-mail
         user_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
         usuario_doc = next(user_query, None)
         
         if usuario_doc:
             usuario_data = usuario_doc.to_dict()
-            usuario_data['id'] = usuario_doc.id # O ID é o UID/Doc ID
+            usuario_data['id'] = usuario_doc.id 
             
             # 2. Verifica a senha (usando o hash armazenado por compatibilidade)
-            # IDEALMENTE: Você usaria o Firebase Client SDK aqui para fazer o login
-            # e obter o Token de autenticação.
             if 'senha_hash' in usuario_data and check_password_hash(usuario_data['senha_hash'], senha):
-                session['usuario_id'] = usuario_data['id'] # Salva o ID (UID) no Flask Session
+                session['usuario_id'] = usuario_data['id'] 
                 flash(f'Bem-vindo(a), {usuario_data["nome"]}!', 'success')
                 return redirect(url_for('dashboard'))
 
@@ -314,7 +366,6 @@ def login():
 
     return render_template('login.html', user=usuario)
 
-# A rota /logout permanece a mesma, pois só usa o Flask session
 @app.route('/logout')
 def logout():
     """Remove o ID da sessão e redireciona para a página inicial."""
@@ -347,13 +398,9 @@ def infor_curso_algoritmo():
     return render_template('infor-curso-algoritmo.html', user=usuario)
 
 
-
 # =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL (REVISADAS)
+# 5. ROTAS DE ÁREA RESTRITA E PERFIL
 # =========================================================
-
-# As rotas 'index', 'dashboard' e 'progresso' permanecem iguais em sua lógica de renderização,
-# pois usam a função 'usuario_logado' e 'calculate_progress' que foram atualizadas.
 
 @app.route('/')
 def index():
@@ -373,7 +420,7 @@ def perfil():
     usuario = usuario_logado()
     
     if request.method == 'POST':
-        user_id = usuario['id'] # Obtém o ID/UID do usuário logado
+        user_id = usuario['id'] 
         
         name = request.form.get('name')
         email = request.form.get('email')
@@ -385,16 +432,13 @@ def perfil():
         tem_erro = False
         
         try:
-            # 1. Dicionário para atualização no Firestore
             update_data = {}
             
             # 2. Checa e atualiza E-mail
             if email != usuario['email']:
-                # Verifica se o novo e-mail já existe para outro usuário (Firestore Query)
                 email_existente_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
                 email_existente = next(email_existente_query, None)
                 
-                # Garante que, se o e-mail existir, não é o documento do usuário atual
                 if email_existente and email_existente.id != user_id:
                     flash("Este novo e-mail já está em uso por outro usuário.", 'danger')
                     tem_erro = True
@@ -410,7 +454,6 @@ def perfil():
                     flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
                     tem_erro = True
                 else:
-                    # MUDANÇA: Atualiza no Firebase Authentication E no Firestore (para o hash)
                     auth.update_user(user_id, password=new_password)
                     update_data['senha_hash'] = generate_password_hash(new_password)
                     flash("Senha atualizada com sucesso!", 'success')
@@ -424,26 +467,21 @@ def perfil():
                 # 5. Commit no Firestore
                 db.collection('usuarios').document(user_id).update(update_data)
                 
-                # Se não atualizou a senha, exibe sucesso nos dados
                 if not new_password:
                     flash("Dados do perfil atualizados com sucesso!", 'success')
             
-            # Redireciona para recarregar o usuário atualizado
             return redirect(url_for('perfil'))
                 
         except Exception as e:
             flash(f"Ocorreu um erro inesperado ao salvar: {str(e)}", 'danger')
-            # Retorna o template para não perder os dados do formulário
             return render_template('perfil.html', user=usuario) 
 
-    # Lógica GET: A função usuario_logado já retorna o usuário atualizado
     return render_template('perfil.html', user=usuario)
 
 @app.route('/progresso')
 @requires_auth
 def progresso():
     usuario = usuario_logado()
-    # MUDANÇA: progresso_db agora é um dicionário contido dentro do objeto usuario
     progresso_db = usuario.get('progresso', {}) 
     
     progresso_data = calculate_progress(progresso_db) 
@@ -458,10 +496,8 @@ def progresso():
 
 
 # =========================================================
-# 6. ROTAS DE CERTIFICADO (REVISADAS)
+# 6. ROTAS DE CERTIFICADO
 # =========================================================
-# O cálculo do progresso já foi adaptado, estas rotas só precisam garantir
-# que pegam o progresso como dicionário.
 
 @app.route('/certificado')
 @requires_auth
@@ -506,11 +542,9 @@ def gerar_certificado():
         headers={'Content-Disposition': f'attachment;filename=Certificado_{nome_completo.replace(" ", "_")}.tex'}
     )
 
-# A função generate_latex_certificate não foi alterada, pois não toca no DB.
-
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO (REVISADAS)
+# 8. ROTAS DE CONTEÚDO DE CURSO (OTIMIZADAS)
 # =========================================================
 
 @app.route('/modulos')
@@ -525,44 +559,9 @@ def modulos():
     return render_template('modulos.html', user=usuario, modulos=modulos_list, progresso_data=progresso_data)
 
 
-@app.route('/salvar-projeto-modulo/<string:modulo_slug>', methods=['POST'])
-@requires_auth
-def salvar_projeto_modulo(modulo_slug):
-    usuario = usuario_logado()
-    user_id = usuario['id'] # UID do Firestore
-    
-    if not request.is_json:
-        return jsonify({'success': False, 'message': 'Requisição deve ser JSON.'}), 400
-        
-    data = request.get_json() 
-    field_name = f'project_idea_{MODULO_BY_SLUG.get(modulo_slug, {}).get("order", 0)}'
-    project_idea = data.get(field_name) 
-
-    if not project_idea or len(project_idea.strip()) < 10:
-        return jsonify({'success': False, 'message': 'Resposta muito curta ou ausente.'}), 400
-
-    # MUDANÇA: As respostas são armazenadas em um documento na coleção 'respostas_projeto'.
-    # Usamos uma chave composta (usuario_id + modulo_slug) para o ID do documento
-    doc_id = f"{user_id}_{modulo_slug}"
-    resposta_ref = db.collection('respostas_projeto').document(doc_id)
-
-    try:
-        # Dados a serem salvos/atualizados
-        resposta_data = {
-            'usuario_id': user_id,
-            'modulo_slug': modulo_slug,
-            'conteudo_resposta': project_idea,
-            'data_atualizacao': firestore.SERVER_TIMESTAMP # Atualiza o timestamp
-        }
-        
-        # Use set(data, merge=True) para criar se não existir ou atualizar se existir
-        resposta_ref.set(resposta_data, merge=True)
-        
-        return jsonify({'success': True, 'message': 'Ideia de projeto salva com sucesso!'})
-    
-    except Exception as e:
-        print(f"Erro ao salvar projeto do módulo {modulo_slug}: {e}") 
-        return jsonify({'success': False, 'message': f'Erro interno ao salvar no DB: {str(e)}'}), 500
+# ❌ ROTA REMOVIDA: A lógica de salvar o projeto foi movida
+# ❌ TOTALMENTE para o frontend (JavaScript/Firebase Client SDK).
+# O FRONTEND DEVE AGORA GERENCIAR O SALVAMENTO VIA JAVASCRIPT.
 
 
 @app.route('/concluir-modulo/<string:modulo_nome>', methods=['POST'])
@@ -570,7 +569,7 @@ def salvar_projeto_modulo(modulo_slug):
 def concluir_modulo(modulo_nome):
     usuario = usuario_logado()
     user_id = usuario['id']
-    progresso = usuario.get('progresso', {}) # Progresso como dicionário
+    progresso = usuario.get('progresso', {}) 
     
     slug_normalizado = modulo_nome.replace('_', '-')
     modulo_config = MODULO_BY_SLUG.get(slug_normalizado)
@@ -581,22 +580,21 @@ def concluir_modulo(modulo_nome):
 
     db_field = modulo_config['field']
     
-    # 1. VERIFICA DEPENDÊNCIA (usa o dicionário 'progresso')
+    # 1. VERIFICA DEPENDÊNCIA
     dependency_field = modulo_config.get('dependency_field')
     if dependency_field and not progresso.get(dependency_field, False):
         flash('Você deve completar o módulo anterior primeiro para registrar a conclusão deste.', 'warning')
         return redirect(url_for('modulos'))
 
-    # 2. ATUALIZA o campo no documento de progresso do usuário no Firestore
+    # 2. ATUALIZA o campo de progresso no Firestore
     try:
         progresso_ref = db.collection('progresso').document(user_id)
         
-        # Atualiza o campo específico no documento
         progresso_ref.update({
             db_field: True
         })
         
-        # Encontra o próximo módulo (lógica de redirecionamento permanece a mesma)
+        # Lógica de redirecionamento
         proximo_modulo_order = modulo_config['order'] + 1
         proximo_modulo = next((m for m in MODULO_CONFIG if m['order'] == proximo_modulo_order), None)
         
@@ -615,7 +613,6 @@ def concluir_modulo(modulo_nome):
 @requires_auth
 def conteudo_dinamico(modulo_slug):
     usuario = usuario_logado()
-    user_id = usuario['id']
     progresso = usuario.get('progresso', {})
     
     modulo_config = MODULO_BY_SLUG.get(modulo_slug)
@@ -624,48 +621,17 @@ def conteudo_dinamico(modulo_slug):
         flash('Módulo de conteúdo não encontrado.', 'danger')
         return redirect(url_for('modulos'))
     
-    # 2. Verifica a dependência (lógica de desbloqueio)
+    # 1. Verifica a dependência (lógica de desbloqueio)
     dependency_field = modulo_config.get('dependency_field')
     if dependency_field and not progresso.get(dependency_field, False):
         flash(f'Você deve completar o módulo anterior primeiro.', 'warning')
         return redirect(url_for('modulos'))
         
-    # 3. LÓGICA ESPECÍFICA PARA O MÓDULO FINAL (carregar respostas)
-    respostas_projeto_modulos = {}
-    extra_context = {}
-    
-    if modulo_slug == 'projeto-final':
-        # MUDANÇA: Busca todas as respostas do projeto deste usuário (Firestore Query)
-        respostas_query = db.collection('respostas_projeto').where('usuario_id', '==', user_id).stream()
-        
-        for r_doc in respostas_query:
-            r = r_doc.to_dict()
-            # Mapeia as respostas para um dicionário: {'introducao': 'texto...', 'decomposicao': 'texto...'}
-            respostas_projeto_modulos[r['modulo_slug']] = r['conteudo_resposta']
-            
-        respostas_projeto_ordenadas = []
-        for mod in MODULO_CONFIG:
-            if mod['slug'] != 'projeto-final': 
-                respostas_projeto_ordenadas.append({
-                    'title': mod['title'],
-                    'slug': mod['slug'],
-                    'resposta': respostas_projeto_modulos.get(mod['slug'], 'Nenhuma resposta salva.'),
-                    'is_saved': mod['slug'] in respostas_projeto_modulos
-                })
-        
-        extra_context = {'respostas_projeto': respostas_projeto_ordenadas}
-    else:
-        # Para outros módulos (1 a 5), checa se já existe uma resposta salva para preencher o campo
-        doc_id = f"{user_id}_{modulo_slug}"
-        resposta_pre_salva = get_firestore_doc('respostas_projeto', doc_id)
-        
-        extra_context = {
-            'resposta_anterior': resposta_pre_salva.get('conteudo_resposta', '') if resposta_pre_salva else ''
-        }
-
-    # 4. Renderiza o template do módulo
+    # 2. Renderiza o template do módulo
     template_name = modulo_config['template']
-    return render_template(template_name, user=usuario, progresso=progresso, modulo=modulo_config, **extra_context)
+    
+    # O carregamento de dados do projeto (Módulos 1 a 6) é feito pelo JavaScript no frontend.
+    return render_template(template_name, user=usuario, progresso=progresso, modulo=modulo_config)
 
 
 # =========================================================
@@ -673,7 +639,4 @@ def conteudo_dinamico(modulo_slug):
 # =========================================================
 
 if __name__ == '__main__':
-    # REMOVIDO: db.create_all() 
-    
-    # Roda o servidor de desenvolvimento
     app.run(debug=True)
