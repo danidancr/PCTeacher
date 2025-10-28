@@ -318,15 +318,15 @@ def cadastro():
             }
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
 
-            # Salvar dados no Firestore (Coleção 'usuarios')
+            # Cria um registro de projeto (colecao 'projetos')
             novo_projeto_data = {
-                'nome': '',
+                'nome_projeto': '',
                 'objetivo': '',
                 'publico-alvo': '', 
-                'instituicao': '',
-                'telefone': '',
-                'cargo': '',
-                'created_at': firestore.SERVER_TIMESTAMP
+                'decomposição': '',
+                'rec-padrão': '',
+                'abstração': '',
+                'algoritmo': ''
             }
             db.collection('projetos').document(user_id).set(novo_projeto_data)
             
