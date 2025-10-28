@@ -15,185 +15,73 @@
         <p class="text-gray-500 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
     </div>
 
-    <div class="content-section border-4 border-primary-indigo bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-cogs mr-3"></i> Seu Plano de Projeto Integrado
-        </h2>
-        <p class="text-gray-700 mb-4 font-semibold">Aqui você verá as respostas que forneceu em cada módulo, formando o seu plano de ação:</p>
-        
-        <p id="project-name-display-mod6" class="text-lg font-bold text-gray-800 mb-4">Carregando Projeto...</p>
-        <p id="load-feedback-mod6" class="text-sm font-semibold text-red-600 mb-4"></p>
+    <main class="main-content">
+            <h1>Meu Perfil</h1>
 
-        <div class="space-y-4 text-sm" id="project-summary-container">
-            
-            <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-file-alt mr-1"></i> Nome do Projeto e Desafio:</strong>
-                <p class="mt-1 text-gray-700 italic font-medium" id="proj-name">N/A</p>
-            </div>
-            
-            <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-puzzle-piece mr-1"></i> Módulo 1: Decomposição (Sub-tarefas):</strong>
-                <p class="mt-1 text-gray-700 italic" id="proj-mod1">Carregando...</p>
-            </div>
-            
-            <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-sitemap mr-1"></i> Módulo 2: Reconhecimento de Padrões:</strong>
-                <p class="mt-1 text-gray-700 italic" id="proj-mod2">Carregando...</p>
-            </div>
-            
-            <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-lightbulb mr-1"></i> Módulo 3: Abstração (Modelo Essencial):</strong>
-                <p class="mt-1 text-gray-700 italic" id="proj-mod3">Carregando...</p>
-            </div>
-            
-            <div class="p-3 border rounded-lg bg-white shadow">
-                <strong class="text-primary-indigo"><i class="fas fa-list-ol mr-1"></i> Módulo 4: Algoritmos (Passo a Passo Lógico):</strong>
-                <p class="mt-1 text-gray-700 italic" id="proj-mod4">Carregando...</p>
-            </div>
+            {% if mensagem_sucesso %}
+                <div class="alert success-message" style="color: #155724; background-color: #d4edda; border-color: #c3e6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                    {{ mensagem_sucesso }}
+                </div>
+            {% endif %}
+            {% if mensagem_erro %}
+                <div class="alert error-message" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                    {{ mensagem_erro }}
+                </div>
+            {% endif %}
 
-            <div class="text-center mt-6">
-                <button onclick="exportProjectData()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                    <i class="fas fa-download mr-2"></i> Exportar Projeto para Texto
-                </button>
-            </div>
-
-        </div>
-
-        <p class="mt-6 text-gray-800">Seu desafio final é revisar e consolidar este plano. Salve-o como seu Projeto Final. (A lógica de carregamento e salvamento deve ser implementada com Firestore).</p>
-    </div>
-
-{% endblock %}
-
-{% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_curso', modulo_nome='projeto-final') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-trophy mr-2"></i> Finalizar Curso e Gerar Certificado!
-            </button>
-        </form>
-    </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Variáveis globais dbClient e currentUserId devem estar disponíveis
-    
-    // Mapeamento das chaves de dados no Firebase (novo padrão aninhado) para as IDs dos elementos HTML
-    // NOTA: Os IDs do HTML (proj-mod1 a proj-mod4) foram ajustados para a ordem correta dos pilares (D-P-A-A).
-    const DATA_MAP = {
-        'modulo_1.project_name': 'proj-name',
-        'modulo_1.project_decomposition': 'proj-mod1', // Decomposição
-        'modulo_2.project_patterns': 'proj-mod2', // Reconhecimento de Padrões
-        'modulo_4.project_abstraction': 'proj-mod3', // Abstração (Módulo 4 do curso)
-        'modulo_5.project_algorithm': 'proj-mod4', // Algoritmos (Módulo 5 do curso)
-    };
-
-    // Função para obter o valor aninhado
-    function getNestedValue(data, path) {
-        return path.split('.').reduce((obj, key) => (obj && obj[key] !== 'undefined') ? obj[key] : null, data);
-    }
-
-    // Função para carregar e exibir todos os dados do projeto
-    async function loadProjectDataFinal() {
-        if (!window.currentUserId) {
-            document.getElementById('load-feedback-mod6').textContent = '❌ Erro: Usuário não autenticado.';
-            document.getElementById('project-name-display-mod6').textContent = 'Projeto não encontrado.';
-            return;
-        }
-
-        const feedback = document.getElementById('load-feedback-mod6');
-        const projectNameDisplay = document.getElementById('project-name-display-mod6');
-
-        feedback.textContent = 'Carregando todos os dados do projeto...';
-
-        try {
-            // Busca o documento único do usuário
-            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                const data = doc.data();
-                let allComplete = true; // Flag para verificar se todos os módulos foram preenchidos
+            <div class="profile-container">
                 
-                // 1. Exibir nome do projeto
-                const projectName = getNestedValue(data, 'modulo_1.project_name') || 'Projeto Sem Nome';
-                projectNameDisplay.textContent = `Seu Projeto Final: "${projectName}"`;
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        {{ user.nome[0] if user.nome else 'P' }} 
+                    </div>
+                    <div class="profile-info">
+                        <h2>{{ user.nome if user.nome else 'Professor(a)' }}</h2>
+                        <p>{{ user.cargo if user.cargo else 'Sem Cargo Definido' }}</p>
+                    </div>
+                </div>
 
-                // 2. Preencher todos os campos do resumo
-                for (const path in DATA_MAP) {
-                    const elementId = DATA_MAP[path];
-                    const element = document.getElementById(elementId);
+                <form class="profile-form" method="POST" action="{{ url_for('perfil') }}">
                     
-                    if (element) {
-                        const content = getNestedValue(data, path);
-                        
-                        if (content) {
-                            element.textContent = content;
-                            element.classList.remove('text-red-500');
-                        } else {
-                            // Se o dado não foi preenchido, marca visualmente e seta a flag
-                            element.textContent = 'Não preenchido. Por favor, revise o módulo correspondente.';
-                            element.classList.add('text-red-500');
-                            allComplete = false;
-                        }
-                    }
-                }
-                
-                if (allComplete) {
-                    feedback.textContent = '✅ Todos os dados do projeto foram carregados com sucesso. Seu plano está completo!';
-                } else {
-                    feedback.textContent = '⚠️ Revise as seções em vermelho. Seu projeto final tem módulos não preenchidos.';
-                    feedback.classList.remove('text-red-600');
-                    feedback.classList.add('text-orange-600');
-                }
+                    <div class="form-group">
+                        <label for="name">Nome Completo</label>
+                        <input type="text" id="name" name="name" value="{{ user.nome }}" required>
+                    </div>
+                    
+                    <div class="form-group grid-2-cols">
+                        <div>
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                        <div>
+                            <label for="phone">Telefone (Opcional)</label>
+                            <input type="text" id="phone" name="phone" value="{{ user.telefone }}">
+                        </div>
+                    </div>
 
-            } else {
-                feedback.textContent = '❌ Erro: Projeto não encontrado. Retorne ao Módulo 1.';
-            }
-        } catch (error) {
-            console.error("Erro ao carregar dados do projeto (Módulo Final):", error);
-            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
-        }
-    }
+                    <div class="form-group">
+                        <label for="institution">Instituição/Escola</label>
+                        <input type="text" id="institution" name="institution" value="{{ user.instituicao }}">
+                    </div>
 
-    // Função para exportar os dados para um arquivo de texto (para o usuário)
-    function exportProjectData() {
-        // Mapeamento simplificado para a exportação
-        const EXPORT_MAP = [
-            { title: 'Nome do Projeto e Desafio', id: 'proj-name' },
-            { title: '1. DECOMPOSIÇÃO (Divisão do Problema)', id: 'proj-mod1' },
-            { title: '2. RECONHECIMENTO DE PADRÕES (Otimização de Similaridades)', id: 'proj-mod2' },
-            { title: '3. ABSTRAÇÃO (O Modelo Essencial)', id: 'proj-mod3' },
-            { title: '4. ALGORITMOS (O Passo a Passo Lógico)', id: 'proj-mod4' },
-        ];
+                    <hr style="margin: 30px 0; border-color: #eee;">
 
-        let content = `--- PROJETO FINAL DE PENSAMENTO COMPUTACIONAL ---\n`;
-        content += `Data de Exportação: ${new Date().toLocaleString()}\n`;
-        content += `---------------------------------------------------\n\n`;
+                    <h2>Alterar Senha</h2>
 
-        EXPORT_MAP.forEach(item => {
-            const element = document.getElementById(item.id);
-            const value = element ? element.textContent.trim() : 'N/A';
-            content += `${item.title}:\n${value}\n\n`;
-        });
+                    <div class="form-group grid-2-cols">
+                        <div>
+                            <label for="new-password">Nova Senha</label>
+                            <input type="password" id="new-password" name="new_password" placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <div>
+                            <label for="confirm-password">Confirmar Nova Senha</label>
+                            <input type="password" id="confirm-password" name="confirm_password" placeholder="Repita a nova senha">
+                        </div>
+                    </div>
 
-        content += `---------------------------------------------------\nParabéns pela conclusão!`;
+                    <button type="submit" class="btn-save">Salvar Alterações</button>
+                </form>
 
-        const projectName = document.getElementById('proj-name').textContent.replace(/[^\w\s]/gi, '').trim() || 'Projeto_PC';
-        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-        const filename = `Projeto_Final_${projectName.replace(/\s/g, '_')}.txt`;
-        
-        // Cria um link temporário para download
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
-    // Chamada Inicial: Carregar dados ao carregar a página
-    window.addEventListener('load', loadProjectDataFinal);
-
-</script>
+            </div>
+        </main>
 {% endblock %}
