@@ -160,133 +160,61 @@
             </div>
     </div>
 
-<div class="content-section border-4 border-indigo-200 bg-indigo-50">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
-        </h2>
-        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
+{# ========================================================= #}
+    {# SEÇÃO DE PROJETO (USO DO ESCOPO) - AJUSTADA PARA A LÓGICA FLASK/AJAX #}
+    {# ========================================================= #}
+    <div class="content-section bg-indigo-50 border-indigo-300">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold text-primary-indigo">📝 Meu Projeto: Definição de Escopo</h2>
+            <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
+        </div>
         
-        <form action="{{ url_for('cadastro') }}" method="POST">
+        <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final. Neste módulo, vamos definir o **"o quê"** e o **"para quem"**.</p>
+        
+        {# Formulário de salvamento automático que chama a função saveProjectData() da base #}
+        <form id="project-form-introducao" method="POST" onchange="saveProjectData(this)">
             
-            <div class="input-group">
-                <label for="name">Nome Completo</label>
-                <input type="text" id="name" name="nome" required placeholder="Digite seu nome" 
-                    value="{{ request.form.get('nome', '') }}">
+            <div class="mb-4">
+                <label for="nome_projeto" class="block text-sm font-medium text-gray-700">Nome do Projeto:</label>
+                <input type="text" id="nome_projeto" name="nome_projeto" 
+                       value="{{ projeto_data.nome_projeto | default('') }}" 
+                       placeholder="Ex: Horta Automatizada na Escola"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>
             </div>
             
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com" 
-                    value="{{ request.form.get('email', '') }}">
+            <div class="mb-4">
+                <label for="objetivo" class="block text-sm font-medium text-gray-700">Qual o principal problema/objetivo que você quer resolver?</label>
+                <textarea id="objetivo" name="objetivo" rows="3"
+                          placeholder="Ex: Aumentar o interesse dos alunos em ciências, resolvendo o problema de desperdício de água."
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>{{ projeto_data.objetivo | default('') }}</textarea>
             </div>
             
-            <div class="input-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" name="senha" required placeholder="Crie uma senha">
+            <div class="mb-4">
+                <label for="publico_alvo" class="block text-sm font-medium text-gray-700">Qual é o seu público-alvo (alunos, série, disciplina)?</label>
+                <input type="text" id="publico_alvo" name="publico_alvo" 
+                       value="{{ projeto_data.publico_alvo | default('') }}" 
+                       placeholder="Ex: Alunos do 7º ano da disciplina de Ciências."
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-indigo focus:ring-primary-indigo p-2" required>
+                <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente.</p>
             </div>
             
-            <button type="submit" class="btn-primary-register">Criar Conta</button>
-            
-            <div class="login-link-group">
-                <p>Já tem uma conta? <a href="{{ url_for('login') }}">Fazer Login</a></p>
-            </div>
+            <button type="submit" class="hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-indigo hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo">
+                Salvar Agora
+            </button>
             
         </form>
     </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="mt-8 text-center">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='introducao') }}">
-            <button type="submit" class="btn-finish hover:shadow-lg">
-                <i class="fas fa-check-double mr-2"></i>Próximo Módulo
+    <div class="flex justify-end pt-4">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome=modulo.slug) }}">
+            <button type="submit" class="btn-finish">
+                <i class="fas fa-check-double mr-2"></i> Concluir Módulo 1: Introdução
             </button>
         </form>
     </div>
 {% endblock %}
 
-{% block scripts %}
-<script>
-    // ----------------------------------------------------------------------
-    // Variáveis globais dbClient e currentUserId estão no conteudo-base.html
-    // ----------------------------------------------------------------------
-
-    // 1. Função para carregar os dados do projeto (se existirem) ao abrir o Módulo 1
-    async function loadProjectData() {
-        if (!currentUserId) {
-            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
-            document.getElementById('save-feedback').textContent = 'Erro de autenticação. Recarregue a página.';
-            return;
-        }
-
-        const feedback = document.getElementById('save-feedback');
-        feedback.textContent = 'Carregando dados...';
-        
-        try {
-            // Tenta buscar o documento do projeto, usando o UID como ID do documento
-            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
-            const doc = await docRef.get();
-
-            if (doc.exists) {
-                const data = doc.data();
-                
-                // Carrega DADOS ESPECÍFICOS DO MÓDULO 1 (Escopo)
-                document.getElementById('project_name').value = data.modulo_1?.project_name || '';
-                document.getElementById('project_objective').value = data.modulo_1?.project_objective || '';
-                document.getElementById('project_target').value = data.modulo_1?.project_target || '';
-                
-                feedback.textContent = 'Dados do projeto carregados.';
-            } else {
-                feedback.textContent = 'Inicie seu projeto preenchendo os campos.';
-            }
-        } catch (error) {
-            console.error("Erro ao carregar dados do projeto:", error);
-            feedback.textContent = 'Erro ao carregar dados.';
-        }
-    }
-
-    // 2. Função para salvar/atualizar os dados do projeto (APENAS MÓDULO 1)
-    async function saveProjectData(event) {
-        event.preventDefault(); 
-        
-        if (!currentUserId) {
-            alert("Erro: Usuário não autenticado. Não é possível salvar.");
-            return;
-        }
-
-        const saveButton = document.getElementById('save-button');
-        const feedback = document.getElementById('save-feedback');
-        saveButton.disabled = true;
-        feedback.textContent = 'Salvando...';
-
-        // Estrutura os dados dentro da chave 'modulo_1'
-        const dataToSave = {
-            modulo_1: {
-                project_name: document.getElementById('project_name').value,
-                project_objective: document.getElementById('project_objective').value,
-                project_target: document.getElementById('project_target').value,
-                data_ultima_atualizacao_mod1: firebase.firestore.FieldValue.serverTimestamp()
-            },
-            // Este campo é útil para o Dashboard e Progresso geral do Flask
-            usuarioId: currentUserId 
-        };
-
-        try {
-            // Usa .set com { merge: true } no documento do UID.
-            // Se o documento não existir, ele é criado. Se existir, ele apenas adiciona/atualiza o 'modulo_1'.
-            await dbClient.collection("dados_projeto").doc(currentUserId)
-                .set(dataToSave, { merge: true });
-                
-            feedback.textContent = '✅ Definição Inicial salva com sucesso!';
-        } catch (error) {
-            console.error("Erro ao salvar dados do projeto:", error);
-            feedback.textContent = '❌ Erro ao salvar o projeto. Tente novamente.';
-        } finally {
-            saveButton.disabled = false;
-        }
-    }
-
-    // 3. Chamada Inicial: Carregar dados ao carregar a página
-    window.addEventListener('load', loadProjectData); 
-</script>
-{% endblock %}
+{# REMOVIDO: O bloco 'scripts' com a lógica de salvamento e carregamento do Firebase Client foi removido.
+   A lógica de salvamento agora está em 'base_dashboard.html' e é chamada por onchange="saveProjectData(this)". #}
