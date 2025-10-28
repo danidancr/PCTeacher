@@ -3,92 +3,92 @@
 {% block title %}Módulo 6: Projeto Final{% endblock %}
 
 {% block content_title %}
-    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Conclusão e Download
+    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Conclusão e Download
 {% endblock %}
 
 {% block content %}
-    <div class="content-section">
-        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
-            <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
-        </h2>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-700 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
-    </div>
+    <div class="content-section">
+        <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
+            <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
+        </h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-700 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
+    </div>
 
-    <div class="content-section border-4 border-indigo-300 bg-white shadow-lg">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-3xl font-bold text-gray-800">✅ Resumo Final do Projeto: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
-            {# Removido o feedback de salvamento, pois a edição não é mais o foco #}
-        </div>
-        
-        {# REVISÃO: Substituindo textareas por blocos de visualização estáticos #}
-        <div id="project-review-final">
-        
-            {# Seção 0: Definição do Projeto (Módulo 1) - ADICIONADO PÚBLICO-ALVO #}
-            <div class="mb-8 p-5 border border-gray-200 rounded-lg bg-gray-50">
-                <h3 class="text-xl font-bold text-gray-700 mb-3 flex items-center">
-                    <i class="fas fa-bookmark mr-3"></i> 0. Definição do Projeto (Módulo 1)
-                </h3>
-                <p class="text-gray-800 font-medium mb-2">Nome do Projeto:</p>
-                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.nome_projeto | default('Não preenchido.') }}</div>
-                
-                <p class="text-gray-800 font-medium mt-4 mb-2">Problema Central/Objetivo:</p>
-                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.objetivo | default('Não preenchido no Módulo 1.') }}</div>
+    <div class="content-section border-4 border-indigo-300 bg-white shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-3xl font-bold text-gray-800">✅ Resumo Final do Projeto: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
+            {# Removido o feedback de salvamento, pois a edição não é mais o foco #}
+        </div>
+        
+        {# REVISÃO: Substituindo textareas por blocos de visualização estáticos #}
+        <div id="project-review-final">
+        
+            {# Seção 0: Definição do Projeto (Módulo 1) - ADICIONADO PÚBLICO-ALVO #}
+            <div class="mb-8 p-5 border border-gray-200 rounded-lg bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-700 mb-3 flex items-center">
+                    <i class="fas fa-bookmark mr-3"></i> 0. Definição do Projeto (Módulo 1)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Nome do Projeto:</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.nome_projeto | default('Não preenchido.') }}</div>
+                
+                <p class="text-gray-800 font-medium mt-4 mb-2">Problema Central/Objetivo:</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.objetivo | default('Não preenchido no Módulo 1.') }}</div>
 
-                {# NOVO CAMPO #}
-                <p class="text-gray-800 font-medium mt-4 mb-2">Público-Alvo (Alunos, Série, Disciplina):</p>
-                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.publico_alvo | default('Não preenchido no Módulo 1.') }}</div>
-                
-            </div>
+                {# NOVO CAMPO #}
+                <p class="text-gray-800 font-medium mt-4 mb-2">Público-Alvo (Alunos, Série, Disciplina):</p>
+                <div class="bg-white p-3 border rounded-md whitespace-pre-wrap">{{ projeto_data.publico_alvo | default('Não preenchido no Módulo 1.') }}</div>
+                
+            </div>
 
-            {# Seção 1: Decomposição #}
-            <div class="mb-8 p-5 border border-red-200 rounded-lg bg-red-50">
-                <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center">
-                    <i class="fas fa-sitemap mr-3"></i> 1. Decomposição (Módulo 2)
-                </h3>
-                <p class="text-gray-800 font-medium mb-2">Subproblemas/Etapas Principais:</p>
-                <div class="bg-white p-3 border border-red-300 rounded-md whitespace-pre-wrap">{{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}</div>
-            </div>
+            {# Seção 1: Decomposição #}
+            <div class="mb-8 p-5 border border-red-200 rounded-lg bg-red-50">
+                <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center">
+                    <i class="fas fa-sitemap mr-3"></i> 1. Decomposição (Módulo 2)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Subproblemas/Etapas Principais:</p>
+                <div class="bg-white p-3 border border-red-300 rounded-md whitespace-pre-wrap">{{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}</div>
+            </div>
 
-            {# Seção 2: Reconhecimento de Padrões #}
-            <div class="mb-8 p-5 border border-yellow-200 rounded-lg bg-yellow-50">
-                <h3 class="text-xl font-bold text-yellow-700 mb-3 flex items-center">
-                    <i class="fas fa-lightbulb mr-3"></i> 2. Reconhecimento de Padrões (Módulo 3)
-                </h3>
-                <p class="text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</p>
-                <div class="bg-white p-3 border border-yellow-300 rounded-md whitespace-pre-wrap">{{ projeto_data.otimizacao_padrao | default('Ainda não preenchido no Módulo 3.') }}</div>
-            </div>
+            {# Seção 2: Reconhecimento de Padrões #}
+            <div class="mb-8 p-5 border border-yellow-200 rounded-lg bg-yellow-50">
+                <h3 class="text-xl font-bold text-yellow-700 mb-3 flex items-center">
+                    <i class="fas fa-lightbulb mr-3"></i> 2. Reconhecimento de Padrões (Módulo 3)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</p>
+                <div class="bg-white p-3 border border-yellow-300 rounded-md whitespace-pre-wrap">{{ projeto_data.rec_padrao | default('Ainda não preenchido no Módulo 3.') }}</div>
+            </div>
 
-            {# Seção 3: Abstração #}
-            <div class="mb-8 p-5 border border-indigo-200 rounded-lg bg-indigo-50">
-                <h3 class="text-xl font-bold text-indigo-700 mb-3 flex items-center">
-                    <i class="fas fa-filter mr-3"></i> 3. Abstração (Módulo 4)
-                </h3>
-                <p class="text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</p>
-                <div class="bg-white p-3 border border-indigo-300 rounded-md whitespace-pre-wrap">{{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}</div>
-            </div>
+            {# Seção 3: Abstração #}
+            <div class="mb-8 p-5 border border-indigo-200 rounded-lg bg-indigo-50">
+                <h3 class="text-xl font-bold text-indigo-700 mb-3 flex items-center">
+                    <i class="fas fa-filter mr-3"></i> 3. Abstração (Módulo 4)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</p>
+                <div class="bg-white p-3 border border-indigo-300 rounded-md whitespace-pre-wrap">{{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}</div>
+            </div>
 
-            {# Seção 4: Algoritmos #}
-            <div class="mb-8 p-5 border border-green-200 rounded-lg bg-green-50">
-                <h3 class="text-xl font-bold text-green-700 mb-3 flex items-center">
-                    <i class="fas fa-list-ol mr-3"></i> 4. Algoritmos (Módulo 5)
-                </h3>
-                <p class="text-gray-800 font-medium mb-2">Sequência lógica de passos (Algoritmo):</p>
-                <div class="bg-white p-3 border border-green-300 rounded-md whitespace-pre-wrap">{{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}</div>
-            </div>
-            
-        </div>
-    </div>
+            {# Seção 4: Algoritmos #}
+            <div class="mb-8 p-5 border border-green-200 rounded-lg bg-green-50">
+                <h3 class="text-xl font-bold text-green-700 mb-3 flex items-center">
+                    <i class="fas fa-list-ol mr-3"></i> 4. Algoritmos (Módulo 5)
+                </h3>
+                <p class="text-gray-800 font-medium mb-2">Sequência lógica de passos (Algoritmo):</p>
+                <div class="bg-white p-3 border border-green-300 rounded-md whitespace-pre-wrap">{{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}</div>
+            </div>
+            
+        </div>
+    </div>
 {% endblock %}
 
 {% block finish_button %}
-    <div class="flex justify-end pt-8">
-        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
-            <button type="submit" class="btn-finish-big">
-                <i class="fas fa-award mr-2"></i> Finalizar Módulo
-            </button>
-        </form>
-    </div>
+    <div class="flex justify-end pt-8">
+        <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome='projeto-final') }}">
+            <button type="submit" class="btn-finish-big">
+                <i class="fas fa-award mr-2"></i> Finalizar Módulo
+            </button>
+        </form>
+    </div>
 {% endblock %}
