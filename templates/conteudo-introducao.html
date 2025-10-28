@@ -165,26 +165,32 @@
             <i class="fas fa-lightbulb mr-3"></i> Questão de Projeto: O Escopo
         </h2>
         <p class="text-gray-700 mb-4">A sua resposta será armazenada para compor o seu projeto final nos Módulos 5/6. Neste módulo, vamos definir o "o quê" e o "para quem".</p>
-        <form id="project-idea-form">
+        
+        <form id="project-idea-form" onsubmit="saveProjectData(event)">
             
             <h3 class="text-xl font-semibold text-gray-800 mb-3">Definição Inicial do Projeto</h3>
-
+            
+            <input type="hidden" id="project_id" name="project_id" value=""> 
+            
             <div class="mb-4">
                 <label for="project_name" class="block text-gray-800 font-medium mb-2">1. Nome do Projeto Educacional:</label>
-                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental">
+                <input type="text" id="project_name" name="project_name" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Jornada de Robótica para o Ensino Fundamental" required>
             </div>
 
             <div class="mb-4">
                 <label for="project_objective" class="block text-gray-800 font-medium mb-2">2. Objetivo Geral (O que se espera que os alunos aprendam/alcancem):</label>
-                <textarea id="project_objective" name="project_objective" rows="2" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe."></textarea>
+                <textarea id="project_objective" name="project_objective" rows="2" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Desenvolver a capacidade de resolver problemas complexos e promover o trabalho em equipe." required></textarea>
             </div>
 
             <div class="mb-4">
                 <label for="project_target" class="block text-gray-800 font-medium mb-2">3. Público-Alvo (Nível de ensino, idade ou tipo de aluno):</label>
-                <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)">
+                <input type="text" id="project_target" name="project_target" class="w-full p-3 border border-indigo-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo" placeholder="Ex: Alunos do 5º ano do Ensino Fundamental (10-11 anos)" required>
             </div>
             
-            <button type="submit" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Salvar Definição Inicial</button>
+            <button type="submit" id="save-button" class="mt-4 bg-primary-indigo hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                Salvar Definição Inicial
+            </button>
+            <span id="save-feedback" class="ml-4 text-sm font-semibold"></span>
         </form>
     </div>
 {% endblock %}
@@ -197,4 +203,100 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 1. Variáveis Globais (Configuração do Firebase deve estar em um arquivo separado e importado)
+    // Assumindo que você já tem o `db` (instância do Firestore) e `auth` (instância do Auth) configurados.
+    const db = firebase.firestore(); // Exemplo: Se estiver usando o Firestore
+
+    // 2. Chave de armazenamento local para o ID do projeto (para persistir entre os módulos)
+    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+
+    // 3. Função para carregar os dados do projeto (se existirem) ao abrir o Módulo 1
+    async function loadProjectData() {
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        const projectForm = document.getElementById('project-idea-form');
+        
+        if (projectId) {
+            document.getElementById('project_id').value = projectId;
+            
+            try {
+                // Tenta buscar o documento no Firebase
+                const docRef = db.collection("projetos").doc(projectId);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    // Preenche os campos do formulário com os dados existentes do Módulo 1
+                    document.getElementById('project_name').value = data.project_name || '';
+                    document.getElementById('project_objective').value = data.project_objective || '';
+                    document.getElementById('project_target').value = data.project_target || '';
+                    
+                    document.getElementById('save-feedback').textContent = 'Dados carregados do projeto existente.';
+                } else {
+                    // O ID existe localmente, mas não no Firebase (algo deu errado), então limpa o ID
+                    localStorage.removeItem(PROJECT_ID_STORAGE_KEY);
+                    document.getElementById('project_id').value = '';
+                    document.getElementById('save-feedback').textContent = 'Pronto para iniciar um novo projeto.';
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do projeto:", error);
+                document.getElementById('save-feedback').textContent = 'Erro ao carregar dados.';
+            }
+        } else {
+            document.getElementById('save-feedback').textContent = 'Inicie seu projeto preenchendo os campos.';
+        }
+    }
+
+    // 4. Função para salvar/atualizar os dados do projeto
+    async function saveProjectData(event) {
+        event.preventDefault(); // Impede o envio tradicional do formulário
+        
+        const saveButton = document.getElementById('save-button');
+        const feedback = document.getElementById('save-feedback');
+        saveButton.disabled = true;
+        feedback.textContent = 'Salvando...';
+
+        const userId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'anon'; // Adapte para sua lógica de autenticação
+        let projectId = document.getElementById('project_id').value;
+
+        const formData = {
+            project_name: document.getElementById('project_name').value,
+            project_objective: document.getElementById('project_objective').value,
+            project_target: document.getElementById('project_target').value,
+            usuarioId: userId,
+            modulo_1_completado: true,
+            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            if (!projectId) {
+                // PRIMEIRA VEZ: CRIAR NOVO DOCUMENTO
+                const docRef = await db.collection("projetos").add(formData);
+                projectId = docRef.id;
+                
+                // SALVA O ID LOCALMENTE E NO CAMPO OCULTO
+                localStorage.setItem(PROJECT_ID_STORAGE_KEY, projectId);
+                document.getElementById('project_id').value = projectId;
+
+                feedback.textContent = '✅ Projeto criado e salvo com sucesso!';
+            } else {
+                // PRÓXIMAS VEZES (Módulos 2-5): ATUALIZAR O DOCUMENTO EXISTENTE
+                await db.collection("projetos").doc(projectId).update(formData);
+                feedback.textContent = '✅ Projeto atualizado com sucesso!';
+            }
+        } catch (error) {
+            console.error("Erro ao salvar dados do projeto:", error);
+            feedback.textContent = '❌ Erro ao salvar o projeto. Tente novamente.';
+        } finally {
+            saveButton.disabled = false;
+        }
+    }
+
+    // 5. Chamada Inicial: Carregar dados ao carregar a página
+    window.onload = loadProjectData;
+
+</script>
 {% endblock %}
