@@ -1,50 +1,62 @@
 {% extends "conteudo-base.html" %}
 
-{% block title %}Módulo 5: Projeto Final{% endblock %}
+{% block title %}Módulo 6: Projeto Final{% endblock %}
 
-{% block content_title %}Módulo 5: Projeto Final - Aplicando o PC{% endblock %}
+{% block content_title %}Módulo 6: Projeto Final - Aplicando o PC{% endblock %}
 
 {% block content %}
-    <!-- 1. Video Aula -->
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
         </h2>
         <div class="video-container">
-            <!-- URL de Exemplo. Substitua por sua própria URL do YouTube! -->
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p class="text-gray-500 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
     </div>
 
-    <!-- 2. Reúne as Respostas do Projeto -->
     <div class="content-section border-4 border-primary-indigo bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-cogs mr-3"></i> Seu Plano de Projeto Integrado
         </h2>
         <p class="text-gray-700 mb-4 font-semibold">Aqui você verá as respostas que forneceu em cada módulo, formando o seu plano de ação:</p>
         
-        <div class="space-y-4 text-sm">
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 0 - Problema Inicial:</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod0">[Carregue a resposta aqui: Exemplo de problema]</p>
+        <p id="project-name-display-mod6" class="text-lg font-bold text-gray-800 mb-4">Carregando Projeto...</p>
+        <p id="load-feedback-mod6" class="text-sm font-semibold text-red-600 mb-4"></p>
+
+        <div class="space-y-4 text-sm" id="project-summary-container">
+            
+            <div class="p-3 border rounded-lg bg-white shadow">
+                <strong class="text-primary-indigo"><i class="fas fa-file-alt mr-1"></i> Nome do Projeto:</strong>
+                <p class="mt-1 text-gray-700 italic font-medium" id="proj-name">N/A</p>
             </div>
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 1 - Decomposição:</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod1">[Carregue a resposta aqui: Exemplo de decomposição]</p>
+            
+            <div class="p-3 border rounded-lg bg-white shadow">
+                <strong class="text-primary-indigo"><i class="fas fa-puzzle-piece mr-1"></i> Módulo 1: Decomposição (Sub-tarefas):</strong>
+                <p class="mt-1 text-gray-700 italic" id="proj-mod1">Carregando...</p>
             </div>
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 2 - Padrões:</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod2">[Carregue a resposta aqui: Exemplo de padrões]</p>
+            
+            <div class="p-3 border rounded-lg bg-white shadow">
+                <strong class="text-primary-indigo"><i class="fas fa-sitemap mr-1"></i> Módulo 2: Reconhecimento de Padrões:</strong>
+                <p class="mt-1 text-gray-700 italic" id="proj-mod2">Carregando...</p>
             </div>
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 3 - Abstração:</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod3">[Carregue a resposta aqui: Exemplo de abstração]</p>
+            
+            <div class="p-3 border rounded-lg bg-white shadow">
+                <strong class="text-primary-indigo"><i class="fas fa-lightbulb mr-1"></i> Módulo 3: Abstração (Modelo Essencial):</strong>
+                <p class="mt-1 text-gray-700 italic" id="proj-mod3">Carregando...</p>
             </div>
-            <div class="p-3 border rounded-lg bg-white">
-                <strong class="text-primary-indigo">Módulo 4 - Algoritmo (Solução):</strong> 
-                <p class="mt-1 text-gray-700 italic" id="proj-mod4">[Carregue a resposta aqui: Exemplo de algoritmo]</p>
+            
+            <div class="p-3 border rounded-lg bg-white shadow">
+                <strong class="text-primary-indigo"><i class="fas fa-list-ol mr-1"></i> Módulo 4: Algoritmos (Passo a Passo Lógico):</strong>
+                <p class="mt-1 text-gray-700 italic" id="proj-mod4">Carregando...</p>
             </div>
+
+            <div class="text-center mt-6">
+                <button onclick="exportProjectData()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    <i class="fas fa-download mr-2"></i> Exportar Projeto para Texto
+                </button>
+            </div>
+
         </div>
 
         <p class="mt-6 text-gray-800">Seu desafio final é revisar e consolidar este plano. Salve-o como seu Projeto Final. (A lógica de carregamento e salvamento deve ser implementada com Firestore).</p>
@@ -60,4 +72,122 @@
             </button>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
+    const db = firebase.firestore(); 
+    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+
+    // Mapeamento das chaves de dados para as IDs dos elementos HTML
+    const DATA_MAP = {
+        'project_name': 'proj-name',
+        'project_decomposition': 'proj-mod1', // Módulo 1: Decomposição
+        'project_pattern_optimization': 'proj-mod2', // Módulo 2: Padrões (corrigido M2 e M3)
+        'project_abstraction': 'proj-mod3', // Módulo 3: Abstração
+        'project_algorithm': 'proj-mod4', // Módulo 4: Algoritmos
+    };
+
+    // Função para carregar e exibir todos os dados do projeto
+    async function loadProjectDataFinal() {
+        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        const feedback = document.getElementById('load-feedback-mod6');
+        const projectNameDisplay = document.getElementById('project-name-display-mod6');
+
+        if (!projectId) {
+            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
+            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
+            return;
+        }
+
+        feedback.textContent = 'Carregando todos os dados do projeto...';
+
+        try {
+            const docRef = db.collection("projetos").doc(projectId);
+            const doc = await docRef.get();
+
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // 1. Exibir nome do projeto
+                const projectName = data.project_name || 'Projeto Sem Nome';
+                projectNameDisplay.textContent = `Seu Projeto Final: "${projectName}"`;
+
+                // 2. Preencher todos os campos do resumo
+                for (const key in DATA_MAP) {
+                    const elementId = DATA_MAP[key];
+                    const element = document.getElementById(elementId);
+                    
+                    if (element) {
+                        // Verifica se o dado existe, senão exibe uma mensagem padrão
+                        const content = data[key] || 'Não preenchido. Por favor, revise o módulo correspondente.';
+                        element.textContent = content;
+
+                        // Se o dado não foi preenchido, marca visualmente o texto
+                        if (!data[key]) {
+                            element.classList.add('text-red-500');
+                        } else {
+                            element.classList.remove('text-red-500');
+                        }
+                    }
+                }
+                
+                feedback.textContent = '✅ Todos os dados do projeto foram carregados com sucesso. Revise seu plano.';
+
+            } else {
+                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados do projeto (Módulo Final):", error);
+            feedback.textContent = '❌ Erro de conexão ao carregar dados.';
+        }
+    }
+
+    // Função para exportar os dados para um arquivo de texto (para o usuário)
+    function exportProjectData() {
+        const projectName = document.getElementById('proj-name').textContent;
+        const decomposition = document.getElementById('proj-mod1').textContent;
+        const patterns = document.getElementById('proj-mod2').textContent;
+        const abstraction = document.getElementById('proj-mod3').textContent;
+        const algorithm = document.getElementById('proj-mod4').textContent;
+
+        const content = `
+--- PROJETO FINAL DE PENSAMENTO COMPUTACIONAL ---
+Nome do Projeto: ${projectName}
+Data de Exportação: ${new Date().toLocaleString()}
+---------------------------------------------------
+
+1. DECOMPOSIÇÃO (Módulo 1: Divisão do Problema):
+${decomposition}
+
+2. RECONHECIMENTO DE PADRÕES (Módulo 2: Otimização de Similaridades):
+${patterns}
+
+3. ABSTRAÇÃO (Módulo 3: O Modelo Essencial):
+${abstraction}
+
+4. ALGORITMOS (Módulo 4: O Passo a Passo Lógico):
+${algorithm}
+
+---------------------------------------------------
+Parabéns pela conclusão!
+        `.trim();
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const filename = `Projeto_Final_${projectName.replace(/\s/g, '_')}.txt`;
+        
+        // Cria um link temporário para download
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // Chamada Inicial: Carregar dados ao carregar a página
+    window.onload = loadProjectDataFinal;
+
+</script>
 {% endblock %}
