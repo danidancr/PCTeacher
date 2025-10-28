@@ -65,50 +65,50 @@ elif not firebase_admin._apps:
 # 3. HELPERS E DECORATORS
 # =========================================================
 
-# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS ---
+# --- CONFIGURAÇÃO ESTÁTICA DOS MÓDULOS (AJUSTADO: Adicionado 'problema-inicial') ---
 MODULO_CONFIG = [
     {
-        'title': 'Introdução ao Pensamento Computacional',
+        'title': 'Módulo 0: Problema Inicial',
         'field': 'introducao_concluido',
-        'slug': 'introducao',
+        'slug': 'problema-inicial', # Novo slug para o formulário
         'template': 'conteudo-introducao.html', 
-        'order': 1,
+        'order': 0, # Ordem 0 para ser a primeira atividade de projeto
         'description': 'Entenda o que é o Pensamento Computacional, seus pilares e por que ele é crucial para o futuro.',
         'lessons': 1, 'exercises': 5, 'dependency_field': None
     },
     {
-        'title': 'Decomposição',
+        'title': 'Módulo 1: Decomposição',
         'field': 'decomposicao_concluido',
         'slug': 'decomposicao',
         'template': 'conteudo-decomposicao.html', 
-        'order': 2,
+        'order': 1,
         'description': 'Aprenda a quebrar problemas complexos em partes menores e gerenciáveis.',
-        'lessons': 1, 'exercises': 5, 'dependency_field': 'introducao_concluido'
+        'lessons': 1, 'exercises': 5, 'dependency_field': 'problema-inicial_concluido' # Usar field do Problema Inicial se existir. Se não, manter introducao_concluido.
     },
     {
-        'title': 'Reconhecimento de Padrões',
+        'title': 'Módulo 2: Reconhecimento de Padrões',
         'field': 'reconhecimento_padroes_concluido',
-        'slug': 'rec-padrao',
+        'slug': 'padroes', # Slug ajustado para 'padroes'
         'template': 'conteudo-rec-padrao.html', 
-        'order': 3,
+        'order': 2,
         'description': 'Identifique similaridades e tendências para simplificar a resolução de problemas.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'decomposicao_concluido'
     },
     {
-        'title': 'Abstração',
+        'title': 'Módulo 3: Abstração',
         'field': 'abstracao_concluido',
         'slug': 'abstracao',
         'template': 'conteudo-abstracao.html', 
-        'order': 4,
+        'order': 3,
         'description': 'Foque apenas nas informações importantes, ignorando detalhes irrelevantes.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'reconhecimento_padroes_concluido'
     },
     {
-        'title': 'Algoritmos',
+        'title': 'Módulo 4: Algoritmos',
         'field': 'algoritmo_concluido',
         'slug': 'algoritmo',
         'template': 'conteudo-algoritmo.html', 
-        'order': 5,
+        'order': 4,
         'description': 'Desenvolva sequências lógicas e organizadas para resolver problemas de forma eficaz.',
         'lessons': 1, 'exercises': 5, 'dependency_field': 'abstracao_concluido'
     },
@@ -117,7 +117,7 @@ MODULO_CONFIG = [
         'field': 'projeto_final_concluido',
         'slug': 'projeto-final',
         'template': 'conteudo-projeto-final.html', 
-        'order': 6,
+        'order': 5,
         'description': 'Aplique todos os pilares do PC para solucionar um desafio prático de sala de aula.',
         'lessons': 1, 'exercises': 0, 'dependency_field': 'algoritmo_concluido'
     },
@@ -182,7 +182,11 @@ def calculate_progress(progresso_db):
     for module_config in MODULO_CONFIG:
         db_field = module_config['field']
         
-        is_completed = progresso_db.get(db_field, False) 
+        # O módulo introdução é o único com campo de progresso diferente do slug
+        if module_config['slug'] == 'problema-inicial':
+            is_completed = progresso_db.get('introducao_concluido', False)
+        else:
+            is_completed = progresso_db.get(db_field, False) 
         
         # Lógica de Desbloqueio
         dependency_field = module_config.get('dependency_field')
@@ -224,7 +228,7 @@ def calculate_progress(progresso_db):
     }
 
 # =========================================================
-# 4. ROTAS DE AUTENTICAÇÃO
+# 4. ROTAS DE AUTENTICAÇÃO (Não modificadas)
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -354,7 +358,7 @@ def infor_curso_algoritmo():
 
 
 # =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL
+# 5. ROTAS DE ÁREA RESTRITA E PERFIL (Não modificadas)
 # =========================================================
 
 @app.route('/')
@@ -504,7 +508,7 @@ def gerar_certificado():
 
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO (MODIFICADO PARA SALVAR PROJETOS)
+# 8. ROTAS DE CONTEÚDO DE CURSO (AJUSTADO)
 # =========================================================
 
 @app.route('/modulos')
@@ -533,20 +537,20 @@ def salvar_projeto_modulo(modulo_slug):
         return jsonify({'success': False, 'message': 'Banco de dados indisponível.'}), 503
 
     if not request.is_json:
-        # Se você estiver enviando o formulário com fetch/AJAX, você deve usar JSON.
-        # Se estiver enviando um POST tradicional, ajuste esta lógica.
         return jsonify({'success': False, 'message': 'Requisição deve ser JSON (application/json).'}), 400
         
     data = request.get_json() 
     
-    # Busca a ordem do módulo para usar como chave de campo (se necessário), mas usaremos 'project_idea'
-    modulo_ordem = MODULO_BY_SLUG.get(modulo_slug, {}).get("order", 0)
-    project_idea = data.get('project_idea') # Assumimos que o campo de texto se chama 'project_idea'
+    modulo_config = MODULO_BY_SLUG.get(modulo_slug)
+    if not modulo_config:
+        return jsonify({'success': False, 'message': 'Módulo inválido.'}), 400
+        
+    project_idea = data.get('project_idea') # O conteúdo RAW (JSON string para modulos 1-4, ou string simples para mod 0)
 
     if not project_idea or len(project_idea.strip()) < 10:
         return jsonify({'success': False, 'message': 'Resposta muito curta ou ausente (mínimo 10 caracteres).'}), 400
 
-    # Chave única: UID_slugdomodulo (ex: 1A2B3C_introducao)
+    # Chave única: UID_slugdomodulo 
     doc_id = f"{user_id}_{modulo_slug}"
     resposta_ref = db.collection('respostas_projeto').document(doc_id)
 
@@ -555,7 +559,7 @@ def salvar_projeto_modulo(modulo_slug):
         resposta_data = {
             'usuario_id': user_id,
             'modulo_slug': modulo_slug,
-            'modulo_order': modulo_ordem, # Útil para ordenação futura
+            'modulo_order': modulo_config.get("order", 0),
             'conteudo_resposta': project_idea.strip(),
             'data_atualizacao': firestore.SERVER_TIMESTAMP 
         }
@@ -563,10 +567,15 @@ def salvar_projeto_modulo(modulo_slug):
         # Cria se não existir ou atualiza se existir
         resposta_ref.set(resposta_data, merge=True)
         
-        # Atualiza o status de conclusão do módulo (opcional, dependendo de quando o módulo é dado como concluído)
-        # Se a resposta do projeto for o critério de conclusão:
-        # modulo_field = MODULO_BY_SLUG.get(modulo_slug)['field']
-        # db.collection('progresso').document(user_id).update({modulo_field: True})
+        # Opcional: Se a conclusão do módulo depende de salvar o projeto
+        # Para fins de demonstração, definiremos o campo de progresso como True
+        db_field_to_update = modulo_config['field']
+        
+        # Exceção para o slug 'problema-inicial', que usa o campo 'introducao_concluido'
+        if modulo_slug == 'problema-inicial':
+             db_field_to_update = 'introducao_concluido'
+             
+        db.collection('progresso').document(user_id).update({db_field_to_update: True})
         
         return jsonify({'success': True, 'message': 'Ideia de projeto salva com sucesso!', 'redirect_url': url_for('conteudo_dinamico', modulo_slug=modulo_slug)})
     
@@ -589,9 +598,12 @@ def concluir_modulo(modulo_nome):
         flash(f'Erro: Módulo "{modulo_nome}" não encontrado no mapeamento.', 'danger')
         return redirect(url_for('modulos'))
 
+    # O campo do DB deve ser o que está no config, exceto para o problema inicial
     db_field = modulo_config['field']
-    
-    # 1. VERIFICA DEPENDÊNCIA
+    if slug_normalizado == 'problema-inicial':
+        db_field = 'introducao_concluido'
+
+    # 1. VERIFICA DEPENDÊNCIA (Lógica mantida)
     dependency_field = modulo_config.get('dependency_field')
     if dependency_field and not progresso.get(dependency_field, False):
         flash('Você deve completar o módulo anterior primeiro para registrar a conclusão deste.', 'warning')
@@ -639,30 +651,22 @@ def conteudo_dinamico(modulo_slug):
         return redirect(url_for('modulos'))
         
     # LÓGICA ESPECÍFICA PARA PROJETOS (Pré-preenchimento ou Exibição)
-    respostas_projeto_modulos = {}
     extra_context = {}
     
     if modulo_slug == 'projeto-final':
         # Buscando TODAS as respostas do projeto para o relatório final
+        respostas_projeto_map = {}
         respostas_query = db.collection('respostas_projeto').where('usuario_id', '==', user_id).stream()
         
         for r_doc in respostas_query:
             r = r_doc.to_dict()
-            respostas_projeto_modulos[r['modulo_slug']] = r['conteudo_resposta']
+            # Mapeia as respostas pela chave slug: conteúdo
+            respostas_projeto_map[r['modulo_slug']] = r['conteudo_resposta']
             
-        respostas_projeto_ordenadas = []
-        for mod in MODULO_CONFIG:
-            if mod['slug'] != 'projeto-final': 
-                respostas_projeto_ordenadas.append({
-                    'title': mod['title'],
-                    'slug': mod['slug'],
-                    'resposta': respostas_projeto_modulos.get(mod['slug'], 'Nenhuma resposta salva.'),
-                    'is_saved': mod['slug'] in respostas_projeto_modulos
-                })
-        
-        extra_context = {'respostas_projeto': respostas_projeto_ordenadas}
+        # Passa o mapa de slug: resposta para o template
+        extra_context = {'respostas_projeto': respostas_projeto_map}
     else:
-        # Para módulos com formulário (1 a 5), checa se já existe uma resposta salva para pré-preencher
+        # Para módulos com formulário (0 a 4), checa se já existe uma resposta salva para pré-preencher
         doc_id = f"{user_id}_{modulo_slug}"
         resposta_pre_salva = get_firestore_doc('respostas_projeto', doc_id)
         
