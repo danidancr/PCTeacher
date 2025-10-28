@@ -2,7 +2,9 @@
 
 {% block title %}Módulo 6: Projeto Final{% endblock %}
 
-{% block content_title %}Módulo 6: Projeto Final - Aplicando o PC{% endblock %}
+{% block content_title %}
+    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Aplicando o PC
+{% endblock %}
 
 {% block content %}
     <div class="content-section">
@@ -12,76 +14,91 @@
         <div class="video-container">
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <p class="text-gray-500 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
+        <p class="text-gray-700 mt-4">Aprenda a juntar as quatro partes do Pensamento Computacional para resolver seu desafio.</p>
     </div>
 
-    <main class="main-content">
-            <h1>Meu Perfil</h1>
+    <div class="content-section border-4 border-indigo-300 bg-white shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-3xl font-bold text-gray-800">📋 Resumo do Projeto Final: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
+            {# Feedback de salvamento será atualizado pelo JS da base_dashboard #}
+            <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity"></span>
+        </div>
+        
+        <p class="text-gray-700 mb-6">Revise e finalize as quatro etapas do Pensamento Computacional que você desenvolveu. Todas as edições feitas aqui são salvas automaticamente.</p>
 
-            {% if mensagem_sucesso %}
-                <div class="alert success-message" style="color: #155724; background-color: #d4edda; border-color: #c3e6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-                    {{ mensagem_sucesso }}
-                </div>
-            {% endif %}
-            {% if mensagem_erro %}
-                <div class="alert error-message" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-                    {{ mensagem_erro }}
-                </div>
-            {% endif %}
-
-            <div class="profile-container">
-                
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        {{ user.nome[0] if user.nome else 'P' }} 
-                    </div>
-                    <div class="profile-info">
-                        <h2>{{ user.nome if user.nome else 'Professor(a)' }}</h2>
-                        <p>{{ user.cargo if user.cargo else 'Sem Cargo Definido' }}</p>
-                    </div>
-                </div>
-
-                <form class="profile-form" method="POST" action="{{ url_for('perfil') }}">
-                    
-                    <div class="form-group">
-                        <label for="name">Nome Completo</label>
-                        <input type="text" id="name" name="name" value="{{ user.nome }}" required>
-                    </div>
-                    
-                    <div class="form-group grid-2-cols">
-                        <div>
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" value="{{ user.email }}" required>
-                        </div>
-                        <div>
-                            <label for="phone">Telefone (Opcional)</label>
-                            <input type="text" id="phone" name="phone" value="{{ user.telefone }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="institution">Instituição/Escola</label>
-                        <input type="text" id="institution" name="institution" value="{{ user.instituicao }}">
-                    </div>
-
-                    <hr style="margin: 30px 0; border-color: #eee;">
-
-                    <h2>Alterar Senha</h2>
-
-                    <div class="form-group grid-2-cols">
-                        <div>
-                            <label for="new-password">Nova Senha</label>
-                            <input type="password" id="new-password" name="new_password" placeholder="Mínimo 6 caracteres">
-                        </div>
-                        <div>
-                            <label for="confirm-password">Confirmar Nova Senha</label>
-                            <input type="password" id="confirm-password" name="confirm_password" placeholder="Repita a nova senha">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-save">Salvar Alterações</button>
-                </form>
-
+        {# Formulário principal com campos de revisão #}
+        <form id="project-form-modulo-6" method="POST" onchange="saveProjectData(this)">
+            <input type="hidden" name="modulo_slug" value="{{ modulo.slug }}">
+            
+            {# Seção 1: Decomposição #}
+            <div class="mb-8 p-5 border border-red-200 rounded-lg bg-red-50">
+                <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center">
+                    <i class="fas fa-sitemap mr-3"></i> 1. Decomposição (Módulo 2)
+                </h3>
+                <label for="decomposicao" class="block text-gray-800 font-medium mb-2">Problema dividido em partes menores (subproblemas):</label>
+                <textarea id="decomposicao" name="decomposicao" rows="5" 
+                          class="w-full p-3 border border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500" 
+                          required>
+                    {{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}
+                </textarea>
             </div>
-        </main>
+
+            {# Seção 2: Reconhecimento de Padrões #}
+            <div class="mb-8 p-5 border border-yellow-200 rounded-lg bg-yellow-50">
+                <h3 class="text-xl font-bold text-yellow-700 mb-3 flex items-center">
+                    <i class="fas fa-lightbulb mr-3"></i> 2. Reconhecimento de Padrões (Módulo 3)
+                </h3>
+                <label for="padroes" class="block text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</label>
+                <textarea id="padroes" name="padroes" rows="5" 
+                          class="w-full p-3 border border-yellow-300 rounded-lg shadow-sm focus:ring-yellow-500 focus:border-yellow-500" 
+                          required>
+                    {{ projeto_data.padroes | default('Ainda não preenchido no Módulo 3.') }}
+                </textarea>
+            </div>
+
+            {# Seção 3: Abstração #}
+            <div class="mb-8 p-5 border border-indigo-200 rounded-lg bg-indigo-50">
+                <h3 class="text-xl font-bold text-indigo-700 mb-3 flex items-center">
+                    <i class="fas fa-filter mr-3"></i> 3. Abstração (Módulo 4)
+                </h3>
+                <label for="abstracao" class="block text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</label>
+                <textarea id="abstracao" name="abstracao" rows="5" 
+                          class="w-full p-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                          required>
+                    {{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}
+                </textarea>
+            </div>
+
+            {# Seção 4: Algoritmos #}
+            <div class="mb-8 p-5 border border-green-200 rounded-lg bg-green-50">
+                <h3 class="text-xl font-bold text-green-700 mb-3 flex items-center">
+                    <i class="fas fa-list-ol mr-3"></i> 4. Algoritmos (Módulo 5)
+                </h3>
+                <label for="algoritmo" class="block text-gray-800 font-medium mb-2">Sequência lógica de passos (SE/ENTÃO, ENQUANTO/PARA):</label>
+                <textarea id="algoritmo" name="algoritmo" rows="8" 
+                          class="w-full p-3 border border-green-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500" 
+                          required>
+                    {{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}
+                </textarea>
+                <p class="mt-1 text-xs text-gray-600">Seu progresso será salvo automaticamente.</p>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button type="submit" class="btn-primary py-3 px-8 text-lg font-semibold bg-primary-indigo hover:bg-indigo-700">
+                    <i class="fas fa-save mr-2"></i> Salvar Revisão Final
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block finish_button %}
+    <div class="flex justify-end pt-8">
+        {# O botão de conclusão do Módulo 6 geralmente é o fim do curso e pode redirecionar para uma página de Certificado/Conclusão #}
+        <form method="POST" action="{{ url_for('concluir_curso') }}">
+            <button type="submit" class="btn-finish-big">
+                <i class="fas fa-award mr-2"></i> Finalizar Projeto e Gerar Certificado
+            </button>
+        </form>
+    </div>
 {% endblock %}
