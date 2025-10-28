@@ -139,7 +139,7 @@
             </div>
     </div>
 
-   <div class="content-section border-4 border-indigo-200 bg-indigo-50">
+  <div class="content-section border-4 border-indigo-200 bg-indigo-50">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-sitemap mr-3"></i> Questão de Projeto: Otimização da Metodologia por Padrões
         </h2>
@@ -176,90 +176,90 @@
 
 {% block scripts %}
 <script>
-    // Assegurar que as variáveis globais do Firebase e a chave de storage estejam disponíveis
-    const db = firebase.firestore(); 
-    const PROJECT_ID_STORAGE_KEY = 'current_project_id';
+    // As variáveis globais 'dbClient' (Firestore) e 'currentUserId' (UID do usuário) 
+    // devem estar disponíveis a partir do 'conteudo-base.html' para esta lógica funcionar.
 
-    // 1. Função para carregar os dados do projeto E os dados do Módulo 3 (se existirem)
+    // 1. Função para carregar os dados do Módulo 1 e Módulo 3
     async function loadProjectDataMod3() {
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
+        // Verifica se o UID do usuário está disponível
+        if (!window.currentUserId) {
+            console.error("UID do usuário não encontrado. Não é possível carregar ou salvar dados.");
+            document.getElementById('save-feedback-mod3').textContent = 'Erro de autenticação. Recarregue a página.';
+            return;
+        }
+
         const feedback = document.getElementById('save-feedback-mod3');
         const saveButton = document.getElementById('save-button-mod3');
         const projectNameDisplay = document.getElementById('project-name-display-mod3');
 
-        if (!projectId) {
-            feedback.textContent = '❌ Erro: Por favor, inicie ou carregue seu projeto no Módulo 1.';
-            projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
-            return;
-        }
-
-        saveButton.disabled = false; // Habilita o botão se o ID for encontrado
-        feedback.textContent = 'Carregando dados...';
+        saveButton.disabled = true;
+        feedback.textContent = 'Carregando dados do projeto...';
 
         try {
-            const docRef = db.collection("projetos").doc(projectId);
+            // Busca o documento único do usuário (dados_projeto/UID_DO_USUARIO)
+            const docRef = dbClient.collection("dados_projeto").doc(currentUserId);
             const doc = await docRef.get();
 
             if (doc.exists) {
                 const data = doc.data();
                 
-                // Exibe o nome do projeto (Boa Prática de UX)
-                const projectName = data.project_name || 'Projeto Sem Nome';
-                projectNameDisplay.textContent = `Projeto Atual: "${projectName}"`;
+                // 1. CARREGA DADOS DO MÓDULO 1 (para UX)
+                const project_name = data.modulo_1?.project_name || 'Projeto Sem Nome (Módulo 1 Pendente)';
+                projectNameDisplay.textContent = `Projeto Atual: "${project_name}"`;
 
-                // Preenche o campo de otimização de padrão se já foi salvo
-                document.getElementById('project_pattern_optimization').value = data.project_pattern_optimization || '';
+                // 2. CARREGA DADOS ESPECÍFICOS DO MÓDULO 3 (NOVO CAMPO: project_pattern_optimization)
+                document.getElementById('project_pattern_optimization').value = data.modulo_3?.project_pattern_optimization || '';
                 
-                feedback.textContent = data.project_pattern_optimization ? 'Dados do Módulo 3 carregados.' : 'Pronto para preencher a otimização de padrões.';
+                feedback.textContent = data.modulo_3?.project_pattern_optimization ? 'Dados do Módulo 3 carregados com sucesso.' : 'Pronto para otimizar por padrões.';
 
+                saveButton.disabled = false;
             } else {
-                feedback.textContent = '❌ Erro: Projeto não encontrado no Firebase com o ID salvo.';
-                saveButton.disabled = true;
+                feedback.textContent = 'Atenção: Projeto não encontrado. Certifique-se de salvar o Módulo 1 primeiro.';
+                projectNameDisplay.textContent = 'Projeto não encontrado. Retorne ao Módulo 1.';
             }
         } catch (error) {
             console.error("Erro ao carregar dados do projeto (Módulo 3):", error);
             feedback.textContent = '❌ Erro de conexão ao carregar dados.';
-            saveButton.disabled = true;
         }
     }
 
-    // 2. Função para atualizar os dados do projeto no Firebase (Update)
+    // 2. Função para salvar/atualizar os dados do Módulo 3
     async function saveProjectDataMod3(event) {
         event.preventDefault(); 
         
+        if (!window.currentUserId) {
+            alert("Erro: Usuário não autenticado. Não é possível salvar.");
+            return;
+        }
+
         const saveButton = document.getElementById('save-button-mod3');
         const feedback = document.getElementById('save-feedback-mod3');
         saveButton.disabled = true;
         feedback.textContent = 'Salvando...';
 
-        const projectId = localStorage.getItem(PROJECT_ID_STORAGE_KEY);
-
-        if (!projectId) {
-            feedback.textContent = '❌ Erro: ID do projeto não encontrado. Volte ao Módulo 1.';
-            saveButton.disabled = false;
-            return;
-        }
-
-        const formData = {
-            project_pattern_optimization: document.getElementById('project_pattern_optimization').value,
-            modulo_3_completado: true, // Adiciona um flag de conclusão
-            data_ultima_atualizacao: firebase.firestore.FieldValue.serverTimestamp()
+        // Estrutura os dados DENTRO da chave 'modulo_3' com o novo campo
+        const dataToSave = {
+            modulo_3: {
+                project_pattern_optimization: document.getElementById('project_pattern_optimization').value,
+                data_ultima_atualizacao_mod3: firebase.firestore.FieldValue.serverTimestamp()
+            }
         };
 
         try {
-            // Usa o método .doc().update() para atualizar apenas os campos deste módulo
-            await db.collection("projetos").doc(projectId).update(formData);
+            // Usa .set com { merge: true } no documento do UID, garantindo que apenas modulo_3 seja atualizado.
+            await dbClient.collection("dados_projeto").doc(currentUserId)
+                .set(dataToSave, { merge: true });
+                
             feedback.textContent = '✅ Otimização por padrões salva e projeto atualizado!';
         } catch (error) {
             console.error("Erro ao salvar dados do projeto (Módulo 3):", error);
-            feedback.textContent = '❌ Erro ao salvar. Verifique se o Módulo 1 foi salvo corretamente.';
+            feedback.textContent = '❌ Erro ao salvar. Tente novamente.';
         } finally {
             saveButton.disabled = false;
         }
     }
 
-    // Chamada Inicial: Carregar dados ao carregar a página
-    window.onload = loadProjectDataMod3;
-
+    // 3. Chamada Inicial: Carregar dados ao carregar a página
+    window.addEventListener('load', loadProjectDataMod3);
 </script>
 {% endblock %}
