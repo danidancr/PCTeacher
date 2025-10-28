@@ -159,11 +159,11 @@
 
             {# Informação de contexto do projeto (Nome do Projeto do Módulo 1) #}
             <p id="project-name-display" class="text-sm italic text-gray-600 mb-4">
-                Projeto Atual: **{{ projeto_data.nome_projeto | default('Projeto Sem Nome') }}**
+                Projeto Atual: {{ projeto_data.nome_projeto | default('Projeto Sem Nome') }}
             </p>
             
             <div class="mb-4">
-                <label for="algoritmo" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um **Algoritmo** (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, incluindo **condições lógicas (SE/ENTÃO)** e **repetições (ENQUANTO/PARA)**, que sua solução deve executar.</label>
+                <label for="algoritmo" class="block text-gray-800 font-medium mb-2">Baseado na Abstração definida no Módulo 4, crie um Algoritmo (o passo a passo) para resolver o problema do seu projeto. Descreva a sequência de ações, que sua solução deve executar.</label>
                 <textarea id="algoritmo" name="algoritmo" rows="8" 
                           class="w-full p-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-primary-indigo focus:border-primary-indigo" 
                           placeholder="Exemplo de Pseudocódigo/Passos: 1. INICIAR 2. LER a nota do aluno (Entrada). 3. SE (Nota for maior ou igual a 7.0) ENTÃO Exibir 'Aprovado' (Saída). 4. SENÃO Exibir 'Reprovado' (Saída). 5. FIM." required>
@@ -172,11 +172,6 @@
                 </textarea>
                 <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente.</p>
             </div>
-            
-            <button type="submit" class="mt-4 hidden sm:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-indigo hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo">
-                Salvar Algoritmo
-            </button>
-            
         </form>
     </div>
 {% endblock %}
@@ -185,7 +180,7 @@
     <div class="flex justify-end pt-4">
         <form method="POST" action="{{ url_for('concluir_modulo', modulo_nome=modulo.slug) }}">
             <button type="submit" class="btn-finish">
-                <i class="fas fa-check-double mr-2"></i> Concluir Módulo 5: Ver Projeto Final
+                <i class="fas fa-check-double mr-2"></i> Concluir Módulo 5: Algoritmo
             </button>
         </form>
     </div>
