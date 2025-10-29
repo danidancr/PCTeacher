@@ -15,7 +15,7 @@ gunicorn
 # NOTA: O WeasyPrint requer também a criação do arquivo apt.txt 
 #       para as dependências de sistema (Pango, Cairo, etc.)
 # ==========================================================
-WeasyPrint
+xhtml2pdf
 cffi
 cairocffi 
 
