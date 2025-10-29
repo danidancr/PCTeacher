@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* CSS re-utilizado da tela de login */
+        /* CSS re-utilizado da tela de login, adaptado para ser responsivo e moderno */
         :root {
             --color-primary-dark: #1F192F; 
             --color-primary-light: #FFFFFF; 
@@ -17,6 +17,8 @@
             --color-blue: #2D6073 ;
             --color-text-dark: #000000;
             --color-text-light: #ffffff;
+            --color-success: #155724;
+            --color-error: #721c24;
             --font-family: 'Poppins', sans-serif;
         }
 
@@ -37,171 +39,459 @@
 
         .login-box {
             background-color: white;
-            padding: 50px 40px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
             text-align: center;
             margin: 20px;
         }
-
+        
         h2 {
             font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 30px;
+            font-weight: 700;
+            margin-bottom: 10px;
             color: var(--color-primary-dark);
         }
-        
-        /* Estilos para Mensagens Flash */
+
+        p.subtitle {
+            margin-bottom: 30px; 
+            font-size: 0.95rem; 
+            color: #666;
+        }
+
+        /* Estilos para Mensagens */
+        #message-area {
+            min-height: 25px; /* Espaço para a mensagem */
+            margin-bottom: 20px;
+        }
+
         .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             font-weight: 500;
             text-align: left;
             font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .alert.danger {
             background-color: #f8d7da;
-            color: #721c24;
+            color: var(--color-error);
             border: 1px solid #f5c6cb;
         }
         .alert.success {
             background-color: #d4edda;
-            color: #155724;
+            color: var(--color-success);
             border: 1px solid #c3e6cb;
         }
-        .alert.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
+        
         .input-group {
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             text-align: left;
         }
 
         .input-group label {
             display: block;
             margin-bottom: 5px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--color-text-dark);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .input-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 0.95rem;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .input-group input:focus {
             border-color: var(--color-primary-dark);
             outline: none;
-            box-shadow: 0 0 0 1px var(--color-primary-dark);
+            box-shadow: 0 0 0 2px rgba(31, 25, 47, 0.2); /* Sombra do primary-dark */
+        }
+        
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
-        .buttons-group {
-            margin-top: 30px;
+        @media (min-width: 600px) {
+            .grid-2-cols {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .btn-submit {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-size: 1rem;
-            font-weight: 600;
-            border-radius: 6px;
-            text-decoration: none;
-            transition: opacity 0.3s;
+            font-weight: 700;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
             background-color: var(--color-primary-dark);
             color: var(--color-text-light);
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(31, 25, 47, 0.3);
+            text-transform: uppercase;
         }
 
         .btn-submit:hover {
-            opacity: 0.9;
+            background-color: #0c0813;
+        }
+        
+        .btn-submit:active {
+            transform: scale(0.99);
         }
 
         .back-link {
             display: block;
-            margin-top: 20px;
+            margin-top: 25px;
             font-size: 0.9rem;
             color: #555;
             text-decoration: none;
         }
         .back-link:hover {
+            color: var(--color-primary-dark);
             text-decoration: underline;
         }
+
+        #loading-indicator {
+            display: none;
+            margin-top: 10px;
+            color: var(--color-primary-dark);
+            font-weight: 500;
+        }
         
+        /* Ocultar campos de senha até que a validação de nome/email seja implementada */
+        #password-fields {
+            display: none;
+        }
+        .fields-active #password-fields {
+            display: block;
+        }
+        .fields-active #name-email-fields {
+            opacity: 0.6; /* Diminui a opacidade dos campos já verificados */
+            pointer-events: none;
+        }
+        #step-status {
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: var(--color-primary-dark);
+        }
     </style>
 </head>
 <body>
 
     <div class="login-box">
         
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert {{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <div id="message-area">
+            <!-- As mensagens de alerta serão inseridas aqui pelo JavaScript -->
+        </div>
         
-        <h2>Definir Nova Senha</h2>
+        <h2>Redefinir Senha</h2>
 
-        <p style="margin-bottom: 20px; font-size: 0.9rem; color: #666;">
-            Para redefinir, confirme suas credenciais e insira a nova senha.
+        <p class="subtitle">
+            Para redefinir, primeiro confirme suas credenciais.
         </p>
         
-        <form action="{{ url_for('nova_senha') }}" method="POST">
-            
-            <!-- Campo Nome -->
-            <div class="input-group">
-                <label for="nome">Nome Cadastrado</label>
-                <input type="text" id="nome" name="nome" 
-                       value="{{ nome_for_form if nome_for_form is defined else '' }}" 
-                       required placeholder="Nome cadastrado" autocomplete="name">
+        <p id="step-status">Passo 1: Confirme Nome e E-mail</p>
+
+        <form id="reset-form">
+            <div id="name-email-fields">
+                <div class="input-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
             </div>
 
-            <!-- Campo E-mail -->
-            <div class="input-group">
-                <label for="email">E-mail Cadastrado</label>
-                <input type="email" id="email" name="email" 
-                       value="{{ email_for_form if email_for_form is defined else '' }}" 
-                       required placeholder="seu.email@exemplo.com" autocomplete="email">
+            <div id="password-fields">
+                 <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0 25px 0;">
+                <div class="grid-2-cols">
+                    <div class="input-group">
+                        <label for="new-password">Nova Senha</label>
+                        <input type="password" id="new-password" name="new_password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="confirm-password">Confirmar Nova Senha</label>
+                        <input type="password" id="confirm-password" name="confirm_password" placeholder="Repita a nova senha" minlength="6" required>
+                    </div>
+                </div>
             </div>
 
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-
-            <!-- Campo Nova Senha -->
-            <div class="input-group">
-                <label for="new_password">Nova Senha</label>
-                <input type="password" id="new_password" name="new_password" 
-                       required placeholder="Mínimo 6 caracteres" autocomplete="new-password">
-            </div>
-
-            <!-- Campo Confirmar Senha -->
-            <div class="input-group">
-                <label for="confirm_password">Confirmar Nova Senha</label>
-                <input type="password" id="confirm_password" name="confirm_password" 
-                       required placeholder="Repita a nova senha" autocomplete="new-password">
-            </div>
-            
             <div class="buttons-group">
-                <button type="submit" class="btn-submit">Redefinir Senha</button>
+                <button type="submit" class="btn-submit" id="main-button">VERIFICAR CREDENCIAIS</button>
             </div>
-
-            <a href="{{ url_for('login') }}" class="back-link">Lembrei a senha, voltar para o Login</a>
+            
+            <div id="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i> Processando...
+            </div>
         </form>
+
+        <a href="#" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar à tela de Login
+        </a>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração e Inicialização do Firebase (Variáveis MANDATÓRIAS do Canvas)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId = null;
+        let currentStep = 1; // 1: Verificar Credenciais (Nome/Email), 2: Alterar Senha
+        let userDocRef = null; // Referência do documento do usuário encontrado
+
+        if (firebaseConfig) {
+            setLogLevel('Debug');
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            // Autenticação
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("Firebase autenticado. UID:", userId);
+                } else {
+                    try {
+                         if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Erro na autenticação:", error);
+                    }
+                }
+            });
+        } else {
+             console.error("Firebase Config não disponível. A funcionalidade de BD não funcionará.");
+             displayMessage('danger', 'Erro: Configuração do Firebase ausente.');
+        }
+
+        // --- Funções de UI ---
+
+        /**
+         * Exibe uma mensagem de alerta na área de mensagens.
+         * @param {string} type - 'success', 'danger', ou 'info'.
+         * @param {string} message - O texto da mensagem.
+         */
+        function displayMessage(type, message) {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = '';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type}`;
+            alertDiv.textContent = message;
+            messageArea.appendChild(alertDiv);
+            
+            // Força a exibição com um pequeno atraso para a transição
+            setTimeout(() => alertDiv.classList.add('show'), 10); 
+        }
+
+        /**
+         * Gerencia o estado de carregamento/processamento.
+         * @param {boolean} isLoading 
+         */
+        function setLoading(isLoading) {
+            const button = document.getElementById('main-button');
+            const loading = document.getElementById('loading-indicator');
+            button.disabled = isLoading;
+            loading.style.display = isLoading ? 'block' : 'none';
+            button.style.opacity = isLoading ? 0.6 : 1;
+        }
+
+        /**
+         * Atualiza o estado visual do formulário (Passo 1 ou Passo 2).
+         */
+        function updateFormState() {
+            const box = document.querySelector('.login-box');
+            const button = document.getElementById('main-button');
+            const status = document.getElementById('step-status');
+
+            if (currentStep === 2) {
+                box.classList.add('fields-active');
+                button.textContent = 'ALTERAR SENHA';
+                button.classList.remove('btn-submit');
+                button.classList.add('btn-save');
+                status.textContent = 'Passo 2: Defina e Confirme a Nova Senha';
+                document.getElementById('new-password').focus();
+            } else {
+                box.classList.remove('fields-active');
+                button.textContent = 'VERIFICAR CREDENCIAIS';
+                button.classList.remove('btn-save');
+                button.classList.add('btn-submit');
+                status.textContent = 'Passo 1: Confirme Nome e E-mail';
+            }
+        }
+
+        // --- Funções de Banco de Dados (Firestore) ---
+
+        /**
+         * Tenta encontrar um usuário pelo Nome e Email no Firestore.
+         * @param {string} name - Nome completo.
+         * @param {string} email - Endereço de e-mail.
+         * @returns {Promise<Object|null>} O documento do usuário ou null.
+         */
+        async function findUserByCredentials(name, email) {
+            if (!db) return null;
+
+            const usersCollectionPath = `/artifacts/${appId}/public/data/users`;
+            const usersRef = collection(db, usersCollectionPath);
+            
+            // O Firestore não permite consultas where em múltiplos campos diferentes de índice
+            // sem a criação de um índice composto. Vamos usar uma abordagem que
+            // exige a criação de um índice 'email' e faremos a verificação de 'nome' no cliente.
+            // Para simplificar, vou procurar pelo email (que é único) e verificar o nome localmente.
+            const q = query(usersRef, where("email", "==", email.toLowerCase()));
+            
+            try {
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    console.log("Nenhum usuário encontrado com este e-mail.");
+                    return null;
+                }
+
+                // Verifica se o nome completo (case-insensitive) corresponde
+                let foundDoc = null;
+                querySnapshot.forEach(doc => {
+                    const userData = doc.data();
+                    if (userData.nome.toLowerCase() === name.toLowerCase()) {
+                        foundDoc = doc;
+                    }
+                });
+
+                return foundDoc;
+
+            } catch (e) {
+                console.error("Erro ao buscar usuário:", e);
+                displayMessage('danger', 'Erro ao verificar credenciais. Tente novamente.');
+                return null;
+            }
+        }
+
+        /**
+         * Atualiza a senha (simulada por passwordHash) no Firestore.
+         * NOTA: Em um app real, você usaria o Firebase Auth (updatePassword ou sendPasswordResetEmail),
+         * mas aqui simulamos a atualização de um campo no BD.
+         * @param {Object} docRef - A referência do documento do usuário.
+         * @param {string} newPassword - A nova senha a ser salva (seria hasheada no backend).
+         */
+        async function updatePasswordInFirestore(docRef, newPassword) {
+            if (!docRef) return false;
+
+            // Simulação de hash de senha - NUNCA SALVE SENHA EM TEXTO PURO!
+            // Para o propósito deste exercício, usaremos a senha pura.
+            const passwordHashPlaceholder = `HASH_PLACEHOLDER_${newPassword}`;
+
+            try {
+                await updateDoc(docRef, {
+                    passwordHash: passwordHashPlaceholder, // O campo que você usaria para armazenar o hash da senha
+                    dataAtualizacao: new Date().toISOString()
+                });
+                return true;
+            } catch (e) {
+                console.error("Erro ao atualizar a senha:", e);
+                return false;
+            }
+        }
+
+
+        // --- Lógica de Submissão ---
+
+        document.getElementById('reset-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            document.getElementById('message-area').innerHTML = '';
+
+            const form = e.target;
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const newPassword = form.new_password.value;
+            const confirmPassword = form.confirm_password.value;
+
+            if (currentStep === 1) {
+                // Passo 1: Verificar Nome e Email
+                if (!name || !email) {
+                    displayMessage('danger', 'Por favor, preencha o nome completo e o e-mail.');
+                    setLoading(false);
+                    return;
+                }
+
+                const userDoc = await findUserByCredentials(name, email);
+
+                if (userDoc) {
+                    userDocRef = doc(db, userDoc.ref.path); // Salva a referência para o próximo passo
+                    currentStep = 2;
+                    displayMessage('success', 'Credenciais confirmadas! Prossiga para a nova senha.');
+                    updateFormState();
+                } else {
+                    displayMessage('danger', 'Nome ou E-mail não encontrados/correspondem aos registros.');
+                }
+
+            } else if (currentStep === 2) {
+                // Passo 2: Alterar Senha
+                if (newPassword.length < 6) {
+                    displayMessage('danger', 'A nova senha deve ter no mínimo 6 caracteres.');
+                    setLoading(false);
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    displayMessage('danger', 'A nova senha e a confirmação de senha não coincidem.');
+                    setLoading(false);
+                    return;
+                }
+                
+                if (!userDocRef) {
+                    displayMessage('danger', 'Erro interno: Usuário não identificado. Recarregue a página.');
+                    setLoading(false);
+                    return;
+                }
+                
+                const success = await updatePasswordInFirestore(userDocRef, newPassword);
+
+                if (success) {
+                    displayMessage('success', 'Senha alterada com sucesso! Você pode voltar ao login.');
+                    // Desativa o formulário após o sucesso
+                    document.getElementById('main-button').disabled = true;
+                    document.getElementById('password-fields').style.opacity = 0.6;
+                } else {
+                    displayMessage('danger', 'Falha ao salvar a nova senha. Tente novamente.');
+                }
+            }
+
+            setLoading(false);
+        });
+
+        // Inicializa o estado visual do formulário
+        updateFormState();
+    </script>
 </body>
 </html>
