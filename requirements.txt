@@ -9,15 +9,3 @@ firebase-admin
 
 # Servidor Web de produção (obrigatório para rodar o Flask no Render)
 gunicorn
-
-# ==========================================================
-# DEPENDÊNCIAS PARA GERAÇÃO DE PDF (WeasyPrint)
-# NOTA: O WeasyPrint requer também a criação do arquivo apt.txt 
-#       para as dependências de sistema (Pango, Cairo, etc.)
-# ==========================================================
-xhtml2pdf
-cffi
-cairocffi 
-
-# Opcional: Se estiver usando o Flask-WeasyPrint para integração mais fácil
-# Flask-WeasyPrint
