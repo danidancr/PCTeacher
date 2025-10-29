@@ -35,7 +35,8 @@
             padding: 15px;
             border-radius: 5px;
             border: 1px solid #e2e8f0;
-            white-space: pre-wrap; /* Mantém quebras de linha e espaços do textarea */
+            /* CRUCIAL: Mantém quebras de linha e espaços inseridos pelo usuário no textarea */
+            white-space: pre-wrap; 
         }
         .user-info {
             text-align: right;
@@ -51,12 +52,18 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
+        /* Garantindo quebras de página entre as grandes seções, se o conteúdo for longo */
+        h2 {
+            page-break-before: auto;
+        }
     </style>
 </head>
 <body>
     <div class="user-info">
         Professor(a): **{{ user.nome | default('Usuário Desconhecido') }}**<br>
-        Data de Emissão: {{ '{:%d de %B de %Y}'.format(datetime.now()) }}
+        
+        {# LINHA AJUSTADA: Usa a variável 'datetime' passada do backend e formata a saída #}
+        Data de Emissão: {{ datetime.now().strftime('%d de %B de %Y') }}
     </div>
 
     <h1>PROJETO FINAL: PENSAMENTO COMPUTACIONAL NA PRÁTICA</h1>
