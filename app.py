@@ -35,8 +35,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sua_chave_secreta_padra
 # =========================================================
 # 1.1 CONFIGURAÇÃO FIREBASE ADMIN SDK
 # =========================================================
-# NOTA: A lógica para carregar as credenciais (via variável de ambiente ou arquivo)
-# deve permanecer exatamente como você a configurou para garantir a conexão.
+# NOTA: Esta lógica deve ser configurada corretamente no Render
 try:
     FIREBASE_SERVICE_ACCOUNT_JSON = os.environ.get('FIREBASE_CONFIG_JSON')
     
@@ -45,6 +44,7 @@ try:
         cred = credentials.Certificate(cred_json)
         print("INFO: Credenciais carregadas da variável de ambiente 'FIREBASE_CONFIG_JSON'.")
     else:
+        # AVISO: Isso só funcionará localmente se o arquivo existir
         cred = credentials.Certificate('serviceAccountKey.json')
         print("INFO: Credenciais carregadas do arquivo local 'serviceAccountKey.json'.")
         
@@ -56,11 +56,15 @@ except Exception as e:
     cred = None
 
 if not firebase_admin._apps and cred:
-    firebase_admin.initialize_app(cred, {
-        'projectId': "pc-teacher-6c75f",
-    })
-    db = firestore.client()
-    print("INFO: Firebase Admin SDK inicializado com sucesso.")
+    try:
+        firebase_admin.initialize_app(cred, {
+            'projectId': "pc-teacher-6c75f",
+        })
+        db = firestore.client()
+        print("INFO: Firebase Admin SDK inicializado com sucesso.")
+    except Exception as e:
+        print(f"ERRO CRÍTICO: Firebase Admin SDK falhou ao inicializar: {e}")
+        db = None
 elif not firebase_admin._apps:
     print("ERRO CRÍTICO: Firebase Admin SDK não foi inicializado. Verifique as credenciais.")
 
@@ -132,6 +136,7 @@ MODULO_BY_SLUG = {m['slug']: m for m in MODULO_CONFIG}
 
 def get_firestore_doc(collection_name, doc_id):
     """Auxiliar para buscar um documento no Firestore e retornar como dict."""
+    if not db: return None # Verifica se o DB está inicializado
     doc_ref = db.collection(collection_name).document(str(doc_id))
     doc = doc_ref.get()
     if doc.exists:
@@ -162,9 +167,9 @@ def get_projeto_usuario(user_id):
     if projeto_data:
         # Mapeamento de chaves antigas para novas (se necessário, baseado em como você as nomeou antes):
         if 'otimizacao_padrao' in projeto_data: 
-             projeto_data['rec_padrao'] = projeto_data.pop('otimizacao_padrao')
+            projeto_data['rec_padrao'] = projeto_data.pop('otimizacao_padrao')
         if 'publico-alvo' in projeto_data: 
-             projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
+            projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
         
         default_data.update(projeto_data)
         return default_data
@@ -174,6 +179,7 @@ def get_projeto_usuario(user_id):
 
 def usuario_logado():
     """Retorna o objeto (dict) Usuario logado ou None, buscando no Firestore."""
+    if not db: return None # Verifica se o DB está inicializado
     if 'usuario_id' in session:
         user_id = session['usuario_id']
         user_data = get_firestore_doc('usuarios', user_id)
@@ -336,6 +342,10 @@ def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
+    if not db: 
+        flash("Serviço de banco de dados indisponível. Tente mais tarde.", 'danger')
+        return render_template('cadastro.html')
+        
     usuario = usuario_logado()
     if usuario:
         return redirect(url_for('dashboard'))
@@ -397,6 +407,7 @@ def cadastro():
             return redirect(url_for('login'))
             
         except Exception as e:
+            print(f"ERRO AO CADASTRAR: {e}")
             flash(f'Erro interno ao cadastrar: {str(e)}', 'danger')
             
     return render_template('cadastro.html', user=usuario)
@@ -404,6 +415,10 @@ def cadastro():
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if not db: 
+        flash("Serviço de banco de dados indisponível. Tente mais tarde.", 'danger')
+        return render_template('login.html')
+        
     usuario = usuario_logado()
     if usuario:
         return redirect(url_for('dashboard'))
@@ -451,29 +466,22 @@ def recuperar_senha():
 
     if request.method == 'POST':
         email = request.form.get('email')
-
-        # 1. Verifica se o e-mail está cadastrado (Melhor prática: evitar dizer se existe ou não)
-        user_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
-        usuario_doc = next(user_query, None)
         
-        if usuario_doc:
-            try:
-                # Usa o Firebase Auth para enviar o e-mail de redefinição
-                # O link no e-mail será gerado de acordo com as configurações de Email Action no Firebase
-                auth.send_password_reset_email(email)
-                
-                flash('Um link para redefinição de senha foi enviado para o seu e-mail.', 'success')
-                # Por segurança, sempre redireciona para a mesma página para evitar loop de formulário
-                # e para ocultar o status exato (e-mail enviado com sucesso vs e-mail inexistente)
-                return redirect(url_for('recuperar_senha')) 
-                
-            except Exception as e:
-                print(f"ERRO AO ENVIAR EMAIL: {e}")
-                flash('Ocorreu um erro ao tentar enviar o e-mail. Tente novamente mais tarde.', 'danger')
-        else:
-             # Retorna sucesso mesmo que o e-mail não exista para evitar enumerar usuários
-             flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
-             return redirect(url_for('recuperar_senha')) 
+        # MELHOR PRÁTICA DE SEGURANÇA: Sempre retorna uma mensagem de sucesso/neutra,
+        # independentemente de o e-mail existir, para evitar enumeração de usuários.
+        
+        try:
+            # Tenta enviar o e-mail de redefinição via Firebase Auth
+            auth.send_password_reset_email(email)
+            flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
+            
+        except Exception as e:
+            # Loga o erro REAL no console do Render para debug
+            print(f"ERRO CRÍTICO (FIREBASE) AO ENVIAR EMAIL: {e}")
+            # Retorna a mensagem neutra para o usuário
+            flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
+            
+        return redirect(url_for('recuperar_senha')) 
             
     return render_template('recuperar_senha.html')
 
@@ -496,7 +504,12 @@ def resetar_senha():
 
     if request.method == 'POST':
         new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
         
+        if new_password != confirm_password:
+             flash("As novas senhas digitadas não coincidem.", 'danger')
+             return render_template('resetar_senha.html', oobCode=oob_code)
+
         if len(new_password) < 6:
             flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
             return render_template('resetar_senha.html', oobCode=oob_code)
@@ -506,8 +519,6 @@ def resetar_senha():
             auth.confirm_password_reset(oob_code, new_password)
             
             # 2. Atualiza o hash no Firestore (para login de compatibilidade com senha_hash)
-            # Nota: Esta etapa é essencial se você ainda usa check_password_hash no /login
-            
             # Pega o e-mail do usuário pelo token (requer oobCode e auth)
             user_email = auth.check_action_code(oob_code).email
             
@@ -526,20 +537,20 @@ def resetar_senha():
         except Exception as e:
             # Trata erros como token inválido ou expirado
             error_message = str(e)
+            print(f"ERRO AO REDEFINIR SENHA (FIREBASE): {error_message}")
             
             if 'expired' in error_message or 'invalid' in error_message:
-                 flash('O link de redefinição expirou ou é inválido. Tente novamente.', 'danger')
+                flash('O link de redefinição expirou ou é inválido. Tente novamente.', 'danger')
             else:
-                 flash(f'Erro ao redefinir a senha: {error_message}', 'danger')
-                 
+                flash(f'Erro ao redefinir a senha. Tente solicitar um novo link.', 'danger')
+                
             return redirect(url_for('recuperar_senha')) # Redireciona para tentar o processo novamente
 
     # Método GET: Exibe o formulário de nova senha
     return render_template('resetar_senha.html', oobCode=oob_code)
 
 # =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL
-# (Mantidas as rotas originais)
+# 5. ROTAS DE INFORMAÇÕES DO CURSO
 # =========================================================
 
 @app.route('/infor-curso-decomposicao')
@@ -664,7 +675,6 @@ def progresso():
 
 # =========================================================
 # 7. ROTAS DE CERTIFICADO
-# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/certificado')
@@ -713,7 +723,6 @@ def gerar_certificado():
 
 # =========================================================
 # 8. ROTAS DE GERENCIAMENTO DE PROJETOS (REVISADAS)
-# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/projeto/salvar', methods=['POST'])
@@ -763,7 +772,6 @@ def salvar_projeto():
 
 # =========================================================
 # 8.1. ROTA DE DOWNLOAD PDF (NOVA)
-# (Mantidas as rotas originais)
 # =========================================================
 @app.route('/download-projeto-pdf/<string:projeto_id>')
 @requires_auth
@@ -819,7 +827,6 @@ def download_projeto_pdf(projeto_id):
 
 # =========================================================
 # 9. ROTAS DE CONTEÚDO DE CURSO
-# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/modulos')
@@ -864,19 +871,21 @@ def concluir_modulo(modulo_nome):
             db_field: True
         })
         
-        # Lógica de redirecionamento
+        # 3. Lógica de redirecionamento para o próximo módulo
         proximo_modulo_order = modulo_config['order'] + 1
         proximo_modulo = next((m for m in MODULO_CONFIG if m['order'] == proximo_modulo_order), None)
-        
+
         if proximo_modulo:
-            flash(f'Módulo "{modulo_config["title"]}" concluído com sucesso! Prossiga para o próximo: {proximo_modulo["title"]}', 'success')
+            flash(f'Parabéns! Módulo "{modulo_config["title"]}" concluído! Avance para o próximo.', 'success')
+            return redirect(url_for('conteudo_dinamico', modulo_slug=proximo_modulo['slug']))
         else:
-            flash(f'Módulo "{modulo_config["title"]}" concluído com sucesso! Você finalizou o curso!', 'success')
-        
+            flash('Parabéns! Você concluiu todos os módulos! Vá para a seção de certificado.', 'success')
+            return redirect(url_for('certificado'))
+
     except Exception as e:
-        flash(f'Erro ao concluir o módulo: {e}', 'danger')
-        
-    return redirect(url_for('modulos'))
+        print(f"ERRO AO CONCLUIR MÓDULO: {e}")
+        flash(f'Erro ao registrar a conclusão do módulo: {str(e)}', 'danger')
+        return redirect(url_for('modulos'))
 
 
 @app.route('/conteudo/<string:modulo_slug>')
@@ -884,60 +893,45 @@ def concluir_modulo(modulo_nome):
 def conteudo_dinamico(modulo_slug):
     usuario = usuario_logado()
     progresso = usuario.get('progresso', {})
-    projeto_data = usuario.get('projeto', {}) # Pega os dados do projeto
     
     modulo_config = MODULO_BY_SLUG.get(modulo_slug)
-
     if not modulo_config:
-        flash('Módulo de conteúdo não encontrado.', 'danger')
+        flash('Módulo não encontrado.', 'danger')
         return redirect(url_for('modulos'))
-    
-    # 1. Verifica a dependência (lógica de desbloqueio)
+
+    # Verificação de acesso (desbloqueio)
     dependency_field = modulo_config.get('dependency_field')
-    if dependency_field and not progresso.get(dependency_field, False):
-        flash(f'Você deve completar o módulo anterior primeiro.', 'warning')
-        return redirect(url_for('modulos'))
+    is_unlocked = True # Assume que o primeiro módulo está desbloqueado
+    if dependency_field:
+        is_unlocked = progresso.get(dependency_field, False)
         
-    # 2. Renderiza o template do módulo
-    template_name = modulo_config['template']
+    if not is_unlocked:
+        flash('Este módulo está bloqueado. Conclua o anterior para liberá-lo.', 'warning')
+        return redirect(url_for('modulos'))
+
+    # Preparar contexto para o template
+    is_completed = progresso.get(modulo_config['field'], False)
     
-    # Passa os dados do projeto para que o frontend possa pré-preencher formulários.
-    return render_template(
-        template_name, 
-        user=usuario, 
-        progresso=progresso, 
-        modulo=modulo_config,
-        projeto_data=projeto_data 
-    )
+    # Se for o projeto final, carrega os dados do projeto
+    projeto_data = usuario.get('projeto', {}) if modulo_slug == 'projeto-final' else None
 
-
-#==========================================================
-# 10. INJEÇÃO DE CONTEXTO
-#==========================================================
-
-def get_firebase_client_config():
-    """Retorna as configurações do Firebase Client SDK.
-        As chaves públicas devem ser armazenadas em variáveis de ambiente.
-    """
-    return {
-        "apiKey": os.environ.get("FIREBASE_API_KEY", "SUA_API_KEY_AQUI"),
-        "authDomain": os.environ.get("FIREBASE_AUTH_DOMAIN", "pc-teacher-6c75f.firebaseapp.com"),
-        "projectId": os.environ.get("FIREBASE_PROJECT_ID", "pc-teacher-6c75f"),
-        "storageBucket": os.environ.get("FIREBASE_STORAGE_BUCKET", "pc-teacher-6c75f.appspot.com"),
-        "messagingSenderId": os.environ.get("FIREBASE_MESSAGING_SENDER_ID", "SEU_SENDER_ID"),
-        "appId": os.environ.get("FIREBASE_APP_ID", "SEU_APP_ID")
+    context = {
+        'user': usuario,
+        'modulo': modulo_config,
+        'is_completed': is_completed,
+        'projeto_data': projeto_data,
+        'title': modulo_config['title']
     }
 
-
-@app.context_processor
-def inject_globals():
-    """Injeta variáveis que devem estar disponíveis em todos os templates."""
-    return dict(firebase_config=get_firebase_client_config())
+    # Renderiza o template específico do módulo
+    return render_template(modulo_config['template'], **context)
 
 
 # =========================================================
-# 11. EXECUÇÃO
+# 10. INICIALIZAÇÃO
 # =========================================================
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Quando rodando localmente, configure a porta 5000 (ou use a que o Render sugere)
+    # No Render, a variável de ambiente PORT será definida automaticamente.
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
