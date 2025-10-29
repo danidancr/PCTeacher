@@ -336,6 +336,42 @@ def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
     
     return latex_template
 
+
+def update_user_password(email, new_password):
+    """
+    Atualiza a senha do usuário no Firebase Auth usando o Admin SDK.
+    """
+    if not db or not auth_service:
+        return False, "Serviço de autenticação não está disponível."
+
+    try:
+        # 1. Encontrar o usuário pelo e-mail
+        # Se o usuário não existir, get_user_by_email levanta uma exceção
+        user_auth = auth_service.get_user_by_email(email)
+        user_id = user_auth.uid
+
+        # 2. Atualizar a senha no Firebase Auth
+        auth_service.update_user(user_id, password=new_password)
+
+        # 3. Atualizar o hash da senha no Firestore (para compatibilidade com a rota de login)
+        db.collection('usuarios').document(user_id).update({
+            'senha_hash': generate_password_hash(new_password)
+        })
+
+        return True, "Senha redefinida com sucesso! Você já pode fazer login com a nova senha."
+
+    except firebase_admin.exceptions.FirebaseError as e:
+        error_message = "Erro no Firebase: Usuário não encontrado ou credenciais inválidas."
+        # Tenta identificar o erro específico
+        if 'not found' in str(e).lower() or 'no user record' in str(e).lower():
+            error_message = "Usuário com este e-mail não encontrado."
+        print(f"ERRO FIREBASE AUTH: {e}")
+        return False, error_message
+    except Exception as e:
+        print(f"ERRO INESPERADO ao atualizar senha: {str(e)}")
+        return False, f"Erro interno do servidor: {str(e)}"
+
+
 # =========================================================
 # 4. ROTAS DE AUTENTICAÇÃO
 # =========================================================
@@ -460,7 +496,7 @@ def logout():
 @app.route('/nova_senha', methods=['GET', 'POST'])
 def nova_senha():
     """
-    Rota para exibir o formulário (GET) e processar a redefinição de senha (POST).
+    Reta para exibir o formulário (GET) e processar a redefinição de senha (POST).
     """
     if request.method == 'POST':
         # 1. Obter dados do formulário
@@ -481,7 +517,7 @@ def nova_senha():
             flash('A senha deve ter no mínimo 6 caracteres.', 'danger')
             return render_template('recuperar_senha.html', email_for_form=email)
 
-        # 3. Chamar a função de atualização da senha (simulada)
+        # 3. Chamar a função de atualização da senha (agora definida acima)
         success, message = update_user_password(email, new_password)
 
         if success:
