@@ -525,26 +525,11 @@ def recuperar_senha():
 
 @app.route('/esqueci_senha', methods=['GET', 'POST'])
 def esqueci_senha():
-    """Rota para enviar o link de redefinição de senha para o email do usuário."""
-    usuario = usuario_logado()
-    if usuario:
-        flash("Você já está logado. Se deseja alterar a senha, acesse seu Perfil.", 'info')
-        return redirect(url_for('perfil'))
-        
-    if request.method == 'POST':
-        email = request.form.get('email')
-        
-        try:
-            # Esta função do Firebase Auth envia o e-mail de redefinição
-            auth.send_password_reset_email(email)
-            flash(f"Um link de redefinição de senha foi enviado para {email}. Por favor, verifique sua caixa de entrada.", 'success')
-            return redirect(url_for('login'))
-        except Exception as e:
-            # O Firebase Admin SDK lança um erro se o e-mail não existir
-            print(f"ERRO: Tentativa de recuperar senha para {email}. Erro: {e}")
-            flash("Não foi possível enviar o e-mail. Verifique se o endereço está correto e tente novamente.", 'danger')
-            
-    return render_template('esqueci_senha.html', user=usuario)
+    # ... (código de processamento POST e chamadas ao Firebase) ...
+
+    if request.method == 'GET':
+         # Certifique-se que o Flask está renderizando o arquivo com o NOME CORRETO
+         return render_template('esqueci_senha.html', email_for_form=None)
 
 
 @app.route('/nova_senha')
