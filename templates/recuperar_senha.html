@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ... Seu CSS permanece o mesmo ... */
         :root {
             --color-primary-dark: #1F192F;
             --color-blue: #2D6073 ;
@@ -15,129 +16,15 @@
             --color-error: #721c24;
             --font-family: 'Poppins', sans-serif;
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-family);
-        }
-        body {
-            background-color: var(--color-blue);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .reset-box {
-            background-color: white;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            margin: 20px;
-        }
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--color-primary-dark);
-        }
-        p.subtitle {
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-            color: #666;
-        }
-        #message-area {
-            min-height: 25px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .alert {
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-        .alert.danger {
-            background-color: #f8d7da;
-            color: var(--color-error);
-            border: 1px solid #f5c6cb;
-        }
-        .alert.success {
-            background-color: #d4edda;
-            color: var(--color-success);
-            border: 1px solid #c3e6cb;
-        }
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: var(--color-primary-dark);
-            font-size: 0.9rem;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-group input:focus {
-            border-color: var(--color-primary-dark);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(31, 25, 47, 0.2);
-        }
-        .grid-2-cols {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        @media (min-width: 600px) {
-            .grid-2-cols {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            background-color: var(--color-primary-dark);
-            color: var(--color-text-light);
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(31, 25, 47, 0.3);
-            text-transform: uppercase;
-            margin-top: 15px;
-        }
-        .btn-submit:hover {
-            background-color: #0c0813;
-        }
-        .btn-submit:active {
-            transform: scale(0.99);
-        }
-        .back-link {
-            display: block;
-            margin-top: 25px;
-            font-size: 0.9rem;
-            color: #555;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            color: var(--color-primary-dark);
-            text-decoration: underline;
+        /* ... (Resto do seu CSS) ... */
+        /* Novo estilo para o campo de e-mail desabilitado */
+        .input-group input:disabled {
+            background-color: #f4f4f4;
+            color: #777;
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
 </head>
 <body>
 
@@ -156,13 +43,13 @@
         </div>
 
         <h2>Redefinir Senha</h2>
-        <p class="subtitle">Informe seu e-mail e defina a nova senha.</p>
+        <p class="subtitle">Insira a nova senha para o seu e-mail.</p>
 
-        <form action="{{ url_for('nova_senha') }}" method="POST">
+        <form id="password-reset-form"> 
 
             <div class="input-group">
-                <label for="email">E-mail Cadastrado</label>
-                <input type="email" id="email" name="email" value="{{ email_for_form | default('') }}" required>
+                <label for="email">E-mail de Redefinição</label>
+                <input type="email" id="email" name="email" value="" disabled> 
             </div>
 
             <div class="grid-2-cols">
@@ -178,6 +65,9 @@
 
             <div class="buttons-group">
                 <button type="submit" class="btn-submit" id="main-button">REDEFINIR SENHA</button>
+                <div id="loading-spinner" style="display:none; margin-top: 15px;">
+                    <i class="fas fa-spinner fa-spin"></i> Redefinindo...
+                </div>
             </div>
         </form>
 
@@ -185,5 +75,103 @@
             <i class="fas fa-arrow-left"></i> Voltar à tela de Login
         </a>
     </div>
+
+    <script>
+        // Use a função para mostrar mensagens no template sem o Flask flash
+        function displayMessage(message, category) {
+            const area = document.getElementById('message-area');
+            area.innerHTML = `<div class="alert ${category}">${message}</div>`;
+        }
+
+        // =========================================================
+        // 🚨 Configuração do Firebase Client SDK (MUITO IMPORTANTE!)
+        // =========================================================
+        // Você precisa das chaves de configuração do seu projeto Firebase (apiKey, authDomain, etc.)
+        // Estas chaves NÃO são as chaves do Admin SDK, são as chaves públicas do seu app web.
+        // É seguro colocá-las aqui ou carregá-las de uma variável de ambiente pública.
+        const firebaseConfig = {
+            apiKey: "{{ FIREBASE_API_KEY }}", // Você precisa passar esta variável no Flask context
+            authDomain: "{{ FIREBASE_AUTH_DOMAIN }}", // Você precisa passar esta variável no Flask context
+            // ... outras chaves se necessário
+        };
+
+        // Inicializa o Firebase Client SDK
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const authClient = firebase.auth();
+        const form = document.getElementById('password-reset-form');
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const emailInput = document.getElementById('email');
+        const submitButton = document.getElementById('main-button');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        // 1. LER OS PARÂMETROS DA URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const actionCode = urlParams.get('oobCode'); // Este é o token do Firebase
+        const emailFromUrl = urlParams.get('email'); // O e-mail pode estar na URL
+
+        if (!actionCode) {
+            displayMessage("Link de redefinição inválido ou expirado. Tente novamente.", 'danger');
+            submitButton.disabled = true;
+        } else {
+            // Se o token existe, verifica o e-mail associado
+            emailInput.value = emailFromUrl || 'Buscando...';
+            
+            authClient.verifyPasswordResetCode(actionCode).then((email) => {
+                emailInput.value = email; // Define o e-mail no campo
+                submitButton.disabled = false;
+                displayMessage("E-mail verificado. Defina sua nova senha.", 'success');
+            }).catch((error) => {
+                console.error("Erro ao verificar o código:", error);
+                displayMessage("O código de redefinição é inválido ou expirou. Tente o processo novamente.", 'danger');
+                submitButton.disabled = true;
+            });
+        }
+
+
+        // 2. Lógica de Submissão do Formulário
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (newPassword !== confirmPassword) {
+                displayMessage("As novas senhas digitadas não coincidem.", 'danger');
+                return;
+            }
+            if (newPassword.length < 6) {
+                displayMessage("A nova senha deve ter no mínimo 6 caracteres.", 'danger');
+                return;
+            }
+
+            submitButton.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+
+            authClient.confirmPasswordReset(actionCode, newPassword).then(() => {
+                displayMessage("✅ Senha redefinida com sucesso! Você será redirecionado em 3 segundos.", 'success');
+                // Após o sucesso, você pode querer chamar uma rota do Flask para limpar o cache ou registrar o evento
+                setTimeout(() => {
+                     // Redireciona para o login
+                    window.location.href = "{{ url_for('login') }}"; 
+                }, 3000);
+
+            }).catch((error) => {
+                console.error("Erro ao redefinir senha:", error);
+                // Exibe erro (ex: senha muito fraca, token inválido novamente)
+                let errorMessage = "Erro ao redefinir senha. Verifique se o código não expirou e a senha é válida.";
+                if (error.code === 'auth/weak-password') {
+                    errorMessage = "A senha é muito fraca. Escolha uma senha com pelo menos 6 caracteres.";
+                }
+                displayMessage(errorMessage, 'danger');
+                submitButton.style.display = 'block';
+                loadingSpinner.style.display = 'none';
+            });
+        });
+
+    </script>
 </body>
 </html>
