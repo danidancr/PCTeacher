@@ -458,96 +458,33 @@ def logout():
 # 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (NOVAS)
 # =========================================================
 
-@app.route('/recuperar-senha', methods=['GET', 'POST'])
-def recuperar_senha():
-    """Página para o usuário enviar o e-mail para recuperação de senha."""
-    if usuario_logado():
-        return redirect(url_for('dashboard'))
-
+@app.route('/nova_senha', methods=['GET', 'POST'])
+def nova_senha():
     if request.method == 'POST':
+        # 1. Obter os dados do formulário
+        nome = request.form.get('nome')
         email = request.form.get('email')
-        
-        # MELHOR PRÁTICA DE SEGURANÇA: Sempre retorna uma mensagem de sucesso/neutra,
-        # independentemente de o e-mail existir, para evitar enumeração de usuários.
-        
-        try:
-            # Tenta enviar o e-mail de redefinição via Firebase Auth
-            auth.send_password_reset_email(email)
-            flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
-            
-        except Exception as e:
-            # Loga o erro REAL no console do Render para debug
-            print(f"ERRO CRÍTICO (FIREBASE) AO ENVIAR EMAIL: {e}")
-            # Retorna a mensagem neutra para o usuário
-            flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
-            
-        return redirect(url_for('recuperar_senha')) 
-            
-    return render_template('recuperar_senha.html')
-
-
-@app.route('/resetar-senha', methods=['GET', 'POST'])
-def resetar_senha():
-    """
-    Página onde o usuário define a nova senha após clicar no link do e-mail.
-    Esta rota geralmente recebe o 'oobCode' (token) do Firebase via URL.
-    """
-    if usuario_logado():
-        return redirect(url_for('dashboard'))
-        
-    # Obtém o token de redefinição (oobCode) da URL
-    oob_code = request.args.get('oobCode')
-
-    if not oob_code:
-        flash('O link de redefinição está faltando ou é inválido.', 'danger')
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
-        
+
+        # 2. **Validação Inicial (Campos Obrigatórios e Tamanho)**
+        if not (nome and email and new_password and confirm_password):
+            flash('Por favor, preencha todos os campos.', 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
+
+        # 3. **Verificar se as Senhas Coincidem**
         if new_password != confirm_password:
-             flash("As novas senhas digitadas não coincidem.", 'danger')
-             return render_template('resetar_senha.html', oobCode=oob_code)
+            flash('A Nova Senha e a Confirmação de Senha não coincidem.', 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
 
+        # 4. **Verificar Requisitos da Senha (Mínimo 6 caracteres)**
         if len(new_password) < 6:
-            flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
-            return render_template('resetar_senha.html', oobCode=oob_code)
-
-        try:
-            # 1. Finaliza a redefinição no Firebase Auth
-            auth.confirm_password_reset(oob_code, new_password)
-            
-            # 2. Atualiza o hash no Firestore (para login de compatibilidade com senha_hash)
-            # Pega o e-mail do usuário pelo token (requer oobCode e auth)
-            user_email = auth.check_action_code(oob_code).email
-            
-            user_query = db.collection('usuarios').where('email', '==', user_email).limit(1).stream()
-            usuario_doc = next(user_query, None)
-            
-            if usuario_doc:
-                user_id = usuario_doc.id
-                db.collection('usuarios').document(user_id).update({
-                    'senha_hash': generate_password_hash(new_password)
-                })
-            
-            flash('Sua senha foi redefinida com sucesso! Faça login com a nova senha.', 'success')
-            return redirect(url_for('login'))
-            
-        except Exception as e:
-            # Trata erros como token inválido ou expirado
-            error_message = str(e)
-            print(f"ERRO AO REDEFINIR SENHA (FIREBASE): {error_message}")
-            
-            if 'expired' in error_message or 'invalid' in error_message:
-                flash('O link de redefinição expirou ou é inválido. Tente novamente.', 'danger')
-            else:
-                flash(f'Erro ao redefinir a senha. Tente solicitar um novo link.', 'danger')
-                
-            return redirect(url_for('recuperar_senha')) # Redireciona para tentar o processo novamente
-
-    # Método GET: Exibe o formulário de nova senha
-    return render_template('resetar_senha.html', oobCode=oob_code)
+            flash('A nova senha deve ter no mínimo 6 caracteres.', 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
+        
+        # ... Prosseguir para a lógica do BD
+        
+    return render_template('recuperar_senha.html')
 
 # =========================================================
 # 5. ROTAS DE INFORMAÇÕES DO CURSO
