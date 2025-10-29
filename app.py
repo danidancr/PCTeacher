@@ -494,99 +494,52 @@ def logout():
 # 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (NOVAS)
 # =========================================================
 
-# ... (Seu código anterior) ...
-
 # =========================================================
-# 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (NOVAS)
+# 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (CORRIGIDAS)
 # =========================================================
 
-# Ajuste: Se esta rota é para EDIÇÃO de PERFIL/SENHA de um usuário LOGADO, 
-# ela deve usar o decorator @requires_auth. O nome 'nova_senha' sugere RECUPERAÇÃO,
-# mas o código interno (atualização de perfil, email, etc.) é de EDIÇÃO DE PERFIL.
-# Vou tratar como 'EDIÇÃO DE PERFIL' similar à rota '/perfil'.
-@app.route('/nova_senha', methods=['GET', 'POST'])
-@requires_auth # Protegendo a rota com login obrigatório
-def nova_senha():
-    # 'usuario' e 'user_id' são definidos aqui pelo decorator e pela função usuario_logado()
+@app.route('/esqueci_senha', methods=['GET', 'POST'])
+def esqueci_senha():
+    """Rota para enviar o link de redefinição de senha para o email do usuário."""
     usuario = usuario_logado()
-    user_id = usuario['id'] # Obtém o ID do usuário logado
-    
-    # OBS: O template que você está usando é 'recuperar_senha.html'. 
-    # Para edição de perfil, o template correto seria 'perfil.html'. 
-    # Mantenho o template 'recuperar_senha.html' por enquanto, mas considere a troca.
-    template_name = 'recuperar_senha.html' 
-    
-    if request.method == 'POST':
-        # 1. Obter dados do formulário
-        email = request.form.get('email')
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_password')
+    if usuario:
+        flash("Você já está logado. Se deseja alterar a senha, acesse seu Perfil.", 'info')
+        return redirect(url_for('perfil'))
         
-        # Variáveis que estavam faltando na sua versão original, mas são usadas no passo 4.
-        name = request.form.get('name') 
-        phone = request.form.get('phone')
-        institution = request.form.get('institution')
-
-        tem_erro = False
+    if request.method == 'POST':
+        email = request.form.get('email')
         
         try:
-            update_data = {}
-            
-            # 2. Checa e atualiza E-mail
-            # 'usuario' está definido
-            if email != usuario['email']:
-                email_existente_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
-                email_existente = next(email_existente_query, None)
-                
-                if email_existente and email_existente.id != user_id:
-                    flash("Este novo e-mail já está em uso por outro usuário.", 'danger')
-                    tem_erro = True
-                else:
-                    update_data['email'] = email
-                    # Atualiza no Firebase Auth
-                    auth.update_user(user_id, email=email)
-                    
-            # 3. Processa a mudança de senha
-            if new_password:
-                if new_password != confirm_password:
-                    flash("As novas senhas digitadas não coincidem.", 'danger')
-                    tem_erro = True
-                elif len(new_password) < 6:
-                    flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
-                    tem_erro = True
-                else:
-                    # 'auth' e 'generate_password_hash' estão definidos
-                    auth.update_user(user_id, password=new_password)
-                    update_data['senha_hash'] = generate_password_hash(new_password)
-                    flash("Senha atualizada com sucesso!", 'success')
-
-            # 4. Atualiza dados básicos
-            # 'name', 'phone', 'institution' estão definidos (capturados do form)
-            update_data['nome'] = name
-            update_data['telefone'] = phone
-            update_data['instituicao'] = institution
-            
-            if not tem_erro and update_data:
-                # 5. Commit no Firestore
-                db.collection('usuarios').document(user_id).update(update_data)
-                
-                if not new_password:
-                    flash("Dados do perfil atualizados com sucesso!", 'success')
-            
-            # Redireciona para a rota 'perfil' após o sucesso da atualização.
-            # Se você insiste em 'recuperar_senha', ajuste o nome da rota no url_for.
-            return redirect(url_for('perfil'))
-                
+            # Esta função do Firebase Auth envia o e-mail de redefinição
+            auth.send_password_reset_email(email)
+            flash(f"Um link de redefinição de senha foi enviado para {email}. Por favor, verifique sua caixa de entrada.", 'success')
+            return redirect(url_for('login'))
         except Exception as e:
-            # Em caso de erro, exibe a mensagem e re-renderiza o formulário com os dados do usuário.
-            flash(f"Ocorreu um erro inesperado ao salvar: {str(e)}", 'danger')
-            return render_template(template_name, user=usuario)  
+            # O Firebase Admin SDK lança um erro se o e-mail não existir
+            print(f"ERRO: Tentativa de recuperar senha para {email}. Erro: {e}")
+            flash("Não foi possível enviar o e-mail. Verifique se o endereço está correto e tente novamente.", 'danger')
+            
+    return render_template('esqueci_senha.html', user=usuario)
 
-    # Se a requisição for GET:
-    # 'usuario' está definido pela chamada inicial.
-    return render_template(template_name, user=usuario)
 
-# A linha extra de 'return render_template' no final foi removida.
+@app.route('/nova_senha')
+def nova_senha_deprecated():
+    """
+    Rota antiga/desnecessária. Se ela for usada para EDIÇÃO DE PERFIL, use a rota '/perfil'.
+    Se for usada para REDEFINIÇÃO DE SENHA, use a rota '/redefinir_senha'.
+    O código original era uma duplicação da rota '/perfil'.
+    Vou redirecionar para 'perfil' se logado, ou 'esqueci_senha' se deslogado.
+    """
+    usuario = usuario_logado()
+    if usuario:
+        flash("Você foi redirecionado para a página de Perfil.", 'info')
+        return redirect(url_for('perfil'))
+    else:
+        # Se está deslogado, presumimos que a intenção era redefinir a senha
+        flash("Para definir uma nova senha, use o formulário de recuperação.", 'info')
+        return redirect(url_for('esqueci_senha'))
+
+# ... (Remova o código antigo da rota /nova_senha para evitar duplicação) ...
 
 # =========================================================
 # 5. ROTAS DE INFORMAÇÕES DO CURSO
