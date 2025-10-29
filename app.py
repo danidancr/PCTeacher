@@ -4,7 +4,7 @@ import os
 from functools import wraps
 from datetime import datetime
 import json
-import io # Necessário para gerar o PDF na memória
+import io 
 
 # Importação para geração de PDF (WeasyPrint)
 try:
@@ -160,19 +160,12 @@ def get_projeto_usuario(user_id):
     }
 
     if projeto_data:
-        # Apenas mescla os dados existentes com os defaults para garantir a presença de todas as chaves
-        # Nota: Se o Firestore estiver usando chaves antigas ('otimizacao_padrao', 'publico-alvo', etc.),
-        # você deve mapeá-las aqui. A lógica de compatibilidade abaixo foi ajustada para os novos nomes:
-        
         # Mapeamento de chaves antigas para novas (se necessário, baseado em como você as nomeou antes):
-        # Ex: Se antes usava 'otimizacao_padrao' e agora quer 'rec_padrao':
         if 'otimizacao_padrao' in projeto_data: 
              projeto_data['rec_padrao'] = projeto_data.pop('otimizacao_padrao')
-        # Ex: Se antes usava 'publico-alvo' e agora quer 'publico_alvo':
         if 'publico-alvo' in projeto_data: 
              projeto_data['publico_alvo'] = projeto_data.pop('publico-alvo')
-        # ... Adicione outros mapeamentos conforme necessário ...
-
+        
         default_data.update(projeto_data)
         return default_data
         
@@ -209,7 +202,6 @@ def requires_auth(func):
 # ... (A função calculate_progress permanece a mesma) ...
 def calculate_progress(progresso_db):
     """Calcula todas as métricas de progresso do curso."""
-    # (A lógica de cálculo de progresso permanece a mesma)
     
     total_modules = len(MODULO_CONFIG)
     completed_modules = 0
@@ -340,7 +332,6 @@ def generate_latex_certificate(nome_completo, data_conclusao_str, carga_horaria)
 
 # =========================================================
 # 4. ROTAS DE AUTENTICAÇÃO
-# (Mantidas as rotas de autenticação)
 # =========================================================
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -379,8 +370,7 @@ def cadastro():
             }
             db.collection('usuarios').document(user_id).set(novo_usuario_data)
 
-            # === AJUSTE DE PROJETOS: CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
-            # USANDO AS NOVAS CHAVES DE VARIÁVEIS DE PROJETO
+            # === CRIAÇÃO INICIAL DO DOCUMENTO 'PROJETOS'
             novo_projeto_data = {
                 'nome_projeto': '',
                 'objetivo': '', 
@@ -448,9 +438,108 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('index'))
 
+
 # =========================================================
-# 4.1 INFORMAÇÃO
-# (Mantidas as rotas de informação)
+# 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (NOVAS)
+# =========================================================
+
+@app.route('/recuperar-senha', methods=['GET', 'POST'])
+def recuperar_senha():
+    """Página para o usuário enviar o e-mail para recuperação de senha."""
+    if usuario_logado():
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+
+        # 1. Verifica se o e-mail está cadastrado (Melhor prática: evitar dizer se existe ou não)
+        user_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
+        usuario_doc = next(user_query, None)
+        
+        if usuario_doc:
+            try:
+                # Usa o Firebase Auth para enviar o e-mail de redefinição
+                # O link no e-mail será gerado de acordo com as configurações de Email Action no Firebase
+                auth.send_password_reset_email(email)
+                
+                flash('Um link para redefinição de senha foi enviado para o seu e-mail.', 'success')
+                # Por segurança, sempre redireciona para a mesma página para evitar loop de formulário
+                # e para ocultar o status exato (e-mail enviado com sucesso vs e-mail inexistente)
+                return redirect(url_for('recuperar_senha')) 
+                
+            except Exception as e:
+                print(f"ERRO AO ENVIAR EMAIL: {e}")
+                flash('Ocorreu um erro ao tentar enviar o e-mail. Tente novamente mais tarde.', 'danger')
+        else:
+             # Retorna sucesso mesmo que o e-mail não exista para evitar enumerar usuários
+             flash('Se o e-mail estiver cadastrado, um link para redefinição de senha foi enviado.', 'success')
+             return redirect(url_for('recuperar_senha')) 
+            
+    return render_template('recuperar_senha.html')
+
+
+@app.route('/resetar-senha', methods=['GET', 'POST'])
+def resetar_senha():
+    """
+    Página onde o usuário define a nova senha após clicar no link do e-mail.
+    Esta rota geralmente recebe o 'oobCode' (token) do Firebase via URL.
+    """
+    if usuario_logado():
+        return redirect(url_for('dashboard'))
+        
+    # Obtém o token de redefinição (oobCode) da URL
+    oob_code = request.args.get('oobCode')
+
+    if not oob_code:
+        flash('O link de redefinição está faltando ou é inválido.', 'danger')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        
+        if len(new_password) < 6:
+            flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
+            return render_template('resetar_senha.html', oobCode=oob_code)
+
+        try:
+            # 1. Finaliza a redefinição no Firebase Auth
+            auth.confirm_password_reset(oob_code, new_password)
+            
+            # 2. Atualiza o hash no Firestore (para login de compatibilidade com senha_hash)
+            # Nota: Esta etapa é essencial se você ainda usa check_password_hash no /login
+            
+            # Pega o e-mail do usuário pelo token (requer oobCode e auth)
+            user_email = auth.check_action_code(oob_code).email
+            
+            user_query = db.collection('usuarios').where('email', '==', user_email).limit(1).stream()
+            usuario_doc = next(user_query, None)
+            
+            if usuario_doc:
+                user_id = usuario_doc.id
+                db.collection('usuarios').document(user_id).update({
+                    'senha_hash': generate_password_hash(new_password)
+                })
+            
+            flash('Sua senha foi redefinida com sucesso! Faça login com a nova senha.', 'success')
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            # Trata erros como token inválido ou expirado
+            error_message = str(e)
+            
+            if 'expired' in error_message or 'invalid' in error_message:
+                 flash('O link de redefinição expirou ou é inválido. Tente novamente.', 'danger')
+            else:
+                 flash(f'Erro ao redefinir a senha: {error_message}', 'danger')
+                 
+            return redirect(url_for('recuperar_senha')) # Redireciona para tentar o processo novamente
+
+    # Método GET: Exibe o formulário de nova senha
+    return render_template('resetar_senha.html', oobCode=oob_code)
+
+# =========================================================
+# 5. ROTAS DE ÁREA RESTRITA E PERFIL
+# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/infor-curso-decomposicao')
@@ -475,8 +564,7 @@ def infor_curso_algoritmo():
 
 
 # =========================================================
-# 5. ROTAS DE ÁREA RESTRITA E PERFIL
-# (Mantidas as rotas de área restrita)
+# 6. ROTAS DE ÁREA RESTRITA E PERFIL
 # =========================================================
 
 @app.route('/')
@@ -521,6 +609,8 @@ def perfil():
                     tem_erro = True
                 else:
                     update_data['email'] = email
+                    # Atualiza no Firebase Auth
+                    auth.update_user(user_id, email=email)
                     
             # 3. Processa a mudança de senha
             if new_password:
@@ -573,8 +663,8 @@ def progresso():
 
 
 # =========================================================
-# 6. ROTAS DE CERTIFICADO
-# (Mantidas as rotas de certificado)
+# 7. ROTAS DE CERTIFICADO
+# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/certificado')
@@ -622,7 +712,8 @@ def gerar_certificado():
 
 
 # =========================================================
-# 7. ROTAS DE GERENCIAMENTO DE PROJETOS (REVISADAS)
+# 8. ROTAS DE GERENCIAMENTO DE PROJETOS (REVISADAS)
+# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/projeto/salvar', methods=['POST'])
@@ -671,7 +762,8 @@ def salvar_projeto():
 
 
 # =========================================================
-# 7.1. ROTA DE DOWNLOAD PDF (NOVA)
+# 8.1. ROTA DE DOWNLOAD PDF (NOVA)
+# (Mantidas as rotas originais)
 # =========================================================
 @app.route('/download-projeto-pdf/<string:projeto_id>')
 @requires_auth
@@ -726,7 +818,8 @@ def download_projeto_pdf(projeto_id):
 
 
 # =========================================================
-# 8. ROTAS DE CONTEÚDO DE CURSO
+# 9. ROTAS DE CONTEÚDO DE CURSO
+# (Mantidas as rotas originais)
 # =========================================================
 
 @app.route('/modulos')
@@ -819,14 +912,13 @@ def conteudo_dinamico(modulo_slug):
 
 
 #==========================================================
-# add algo
+# 10. INJEÇÃO DE CONTEXTO
 #==========================================================
 
 def get_firebase_client_config():
     """Retorna as configurações do Firebase Client SDK.
         As chaves públicas devem ser armazenadas em variáveis de ambiente.
     """
-    # (Mantido, mas será menos crítico se o salvamento for via Flask)
     return {
         "apiKey": os.environ.get("FIREBASE_API_KEY", "SUA_API_KEY_AQUI"),
         "authDomain": os.environ.get("FIREBASE_AUTH_DOMAIN", "pc-teacher-6c75f.firebaseapp.com"),
@@ -844,7 +936,7 @@ def inject_globals():
 
 
 # =========================================================
-# 9. EXECUÇÃO
+# 11. EXECUÇÃO
 # =========================================================
 
 if __name__ == '__main__':
