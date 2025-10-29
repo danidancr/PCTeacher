@@ -482,8 +482,52 @@ def nova_senha():
             flash('A nova senha deve ter no mínimo 6 caracteres.', 'danger')
             return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
         
-        # ... Prosseguir para a lógica do BD
-        
+        # 5. Buscar e validar o usuário pelo Nome e E-mail (Lógica de Segurança)
+        try:
+            # 5a. Buscar pelo email no Firestore
+            user_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
+            usuario_doc = next(user_query, None)
+            
+            if not usuario_doc:
+                # Se não encontrar, lança exceção para a mensagem genérica de erro
+                raise ValueError("Credenciais não encontradas.")
+                
+            usuario_data = usuario_doc.to_dict()
+            user_id = usuario_doc.id
+            
+            # 5b. Verificar se o nome coincide (case-insensitive para robustez)
+            # Nota: O nome armazenado no DB é o ponto de segurança adicional
+            if usuario_data.get('nome', '').strip().lower() != nome.strip().lower():
+                # Falha de segurança: E-mail existe, mas o nome não bate
+                raise ValueError("Credenciais não encontradas.")
+                
+            # 6. Atualizar Senha no Firebase Auth e Firestore
+            
+            # 6a. Hash da nova senha para o Firestore
+            hashed_password = generate_password_hash(new_password)
+            
+            # 6b. Atualizar no Firebase Auth (necessário para o processo de login do Firebase)
+            auth.update_user(user_id, password=new_password)
+            
+            # 6c. Atualizar o hash no Firestore (necessário para o check_password_hash no Flask/Login)
+            db.collection('usuarios').document(user_id).update({
+                'senha_hash': hashed_password,
+                'updated_at': firestore.SERVER_TIMESTAMP
+            })
+            
+            flash('Senha redefinida com sucesso! Você já pode fazer login com a nova senha.', 'success')
+            return redirect(url_for('login'))
+            
+        except ValueError:
+            # Captura a falha de credenciais (segurança: retorna mensagem genérica de erro)
+            flash('As credenciais fornecidas (Nome e E-mail) não correspondem a nenhum usuário.', 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
+            
+        except Exception as e:
+            print(f"ERRO AO REDEFINIR SENHA: {e}")
+            flash('Ocorreu um erro interno ao tentar redefinir a senha. Tente novamente mais tarde.', 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
+
     return render_template('recuperar_senha.html')
 
 # =========================================================
