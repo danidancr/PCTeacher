@@ -20,30 +20,28 @@
     <div class="content-section border-4 border-indigo-300 bg-white shadow-lg">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-3xl font-bold text-gray-800">✍️ Revisão e Edição Final: <span class="text-primary-indigo">{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}</span></h2>
-            {# Indicador de Status de Salvamento #}
+            {# Este span será atualizado pela função JavaScript saveProjectData #}
             <span id="project-save-feedback" class="text-sm font-semibold opacity-0 transition-opacity ml-4 p-2 rounded"></span>
         </div>
-        
-        {# AÇÃO AJUSTADA para o backend: a rota 'salvar_projeto' no backend já deve saber de onde redirecionar. #}
-        <form id="project-form-final" method="POST" action="{{ url_for('salvar_projeto') }}"> 
+        
+        {# AJUSTE CHAVE: Formulário configurado para Salvamento Automático via JavaScript #}
+        <form id="project-form-final" method="POST" onchange="saveProjectData(this)"> 
             <div id="project-review-final">
-        
+        
                 {# Seção 0: Definição do Projeto (Módulo 1) #}
                 <div class="mb-8 p-5 border border-gray-200 rounded-lg bg-gray-50">
                     <h3 class="text-xl font-bold text-gray-700 mb-3 flex items-center">
                         <i class="fas fa-bookmark mr-3"></i> 0. Definição do Projeto (Módulo 1)
                     </h3>
                     <p class="text-gray-800 font-medium mb-2">Nome do Projeto:</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <input type="text" name="nome_projeto" value="{{ projeto_data.nome_projeto | default('Projeto Não Nomeado') }}" class="project-field w-full p-3 border border-gray-300 rounded-md shadow-sm" required>
-                    
+                    
                     <p class="text-gray-800 font-medium mt-4 mb-2">Problema Central/Objetivo:</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="objetivo" rows="4" class="project-field w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y">{{ projeto_data.objetivo | default('Não preenchido no Módulo 1.') }}</textarea>
 
                     <p class="text-gray-800 font-medium mt-4 mb-2">Público-Alvo (Alunos, Série, Disciplina):</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="publico_alvo" rows="3" class="project-field w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y">{{ projeto_data.publico_alvo | default('Não preenchido no Módulo 1.') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente ao mudar o foco do campo.</p>
                 </div>
 
                 {# Seção 1: Decomposição #}
@@ -52,8 +50,8 @@
                         <i class="fas fa-sitemap mr-3"></i> 1. Decomposição (Módulo 2)
                     </h3>
                     <p class="text-gray-800 font-medium mb-2">Subproblemas/Etapas Principais:</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="decomposicao" rows="6" class="project-field w-full p-3 border border-red-300 rounded-md shadow-sm resize-y">{{ projeto_data.decomposicao | default('Ainda não preenchido no Módulo 2.') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente ao mudar o foco do campo.</p>
                 </div>
 
                 {# Seção 2: Reconhecimento de Padrões #}
@@ -62,8 +60,8 @@
                         <i class="fas fa-lightbulb mr-3"></i> 2. Reconhecimento de Padrões (Módulo 3)
                     </h3>
                     <p class="text-gray-800 font-medium mb-2">Similaridades, tendências ou repetições identificadas:</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="rec_padrao" rows="6" class="project-field w-full p-3 border border-yellow-300 rounded-md shadow-sm resize-y">{{ projeto_data.rec_padrao | default('Ainda não preenchido no Módulo 3.') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente ao mudar o foco do campo.</p>
                 </div>
 
                 {# Seção 3: Abstração #}
@@ -72,8 +70,8 @@
                         <i class="fas fa-filter mr-3"></i> 3. Abstração (Módulo 4)
                     </h3>
                     <p class="text-gray-800 font-medium mb-2">Modelo essencial e detalhes irrelevantes ignorados:</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="abstracao" rows="6" class="project-field w-full p-3 border border-indigo-300 rounded-md shadow-sm resize-y">{{ projeto_data.abstracao | default('Ainda não preenchido no Módulo 4.') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente ao mudar o foco do campo.</p>
                 </div>
 
                 {# Seção 4: Algoritmos #}
@@ -82,24 +80,18 @@
                         <i class="fas fa-list-ol mr-3"></i> 4. Algoritmos (Módulo 5)
                     </h3>
                     <p class="text-gray-800 font-medium mb-2">Sequência lógica de passos (Algoritmo):</p>
-                    {# ADICIONADA CLASSE project-field #}
                     <textarea name="algoritmo" rows="8" class="project-field w-full p-3 border border-green-300 rounded-md shadow-sm resize-y">{{ projeto_data.algoritmo | default('Ainda não preenchido no Módulo 5.') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Seu progresso será salvo automaticamente ao mudar o foco do campo.</p>
                 </div>
-                
-                <div class="flex flex-col sm:flex-row justify-center mt-6 mb-4 space-y-4 sm:space-y-0 sm:space-x-4">
-                    
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md">
-                        <i class="fas fa-save mr-2"></i> Salvar Edições Finais (Manual)
-                    </button>
-
-                    {# Novo botão para download do PDF #}
+                
+                {# Adicionando o botão de PDF para manter a funcionalidade de download do backend #}
+                <div class="flex justify-center mt-6 mb-4">
                     {% if user.id %}
                     <a href="{{ url_for('download_projeto_pdf', projeto_id=user.id) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md flex items-center justify-center">
-                        <i class="fas fa-file-pdf mr-2"></i> Baixar Projeto (PDF)
-                    </a>
+                        <i class="fas fa-file-pdf mr-2"></i> Baixar Projeto (PDF)
+                    </a>
                     {% endif %}
-
-                </div>
+                </div>
             </div>
         </form>
     </div>
