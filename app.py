@@ -482,6 +482,11 @@ def nova_senha():
             flash('A nova senha deve ter no mínimo 6 caracteres.', 'danger')
             return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
         
+        # Se o DB não estiver conectado, falha aqui
+        if not db:
+            flash("Serviço de banco de dados indisponível. Tente mais tarde.", 'danger')
+            return render_template('recuperar_senha.html', nome_for_form=nome, email_for_form=email)
+
         # 5. Buscar e validar o usuário pelo Nome e E-mail (Lógica de Segurança)
         try:
             # 5a. Buscar pelo email no Firestore
