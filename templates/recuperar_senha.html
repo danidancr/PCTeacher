@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Definir Nova Senha - PC Teacher</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        /* Variáveis CSS */
         :root {
-            --color-primary-dark: #1F192F; 
-            --color-primary-light: #FFFFFF; 
-            --color-accent-blue: #1F192F; 
+            --color-primary-dark: #1F192F;
             --color-blue: #2D6073 ;
-            --color-text-dark: #000000;
             --color-text-light: #ffffff;
             --color-success: #155724;
             --color-error: #721c24;
             --font-family: 'Poppins', sans-serif;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: var(--font-family);
         }
-
         body {
             background-color: var(--color-blue);
             display: flex;
@@ -36,8 +28,7 @@
             align-items: center;
             min-height: 100vh;
         }
-
-        .login-box {
+        .reset-box {
             background-color: white;
             padding: 40px 30px;
             border-radius: 12px;
@@ -47,27 +38,22 @@
             text-align: center;
             margin: 20px;
         }
-        
         h2 {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 10px;
             color: var(--color-primary-dark);
         }
-
         p.subtitle {
-            margin-bottom: 30px; 
-            font-size: 0.95rem; 
+            margin-bottom: 30px;
+            font-size: 0.95rem;
             color: #666;
         }
-
-        /* Estilos para Mensagens (Integração com Flask flash messages) */
         #message-area {
-            min-height: 25px; 
+            min-height: 25px;
             margin-bottom: 20px;
             text-align: left;
         }
-
         .alert {
             padding: 12px;
             border-radius: 8px;
@@ -75,7 +61,6 @@
             font-size: 0.9rem;
             margin-bottom: 10px;
         }
-
         .alert.danger {
             background-color: #f8d7da;
             color: var(--color-error);
@@ -86,20 +71,17 @@
             color: var(--color-success);
             border: 1px solid #c3e6cb;
         }
-        
         .input-group {
-            margin-bottom: 15px; 
+            margin-bottom: 15px;
             text-align: left;
         }
-
         .input-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 600;
-            color: var(--color-text-dark);
+            color: var(--color-primary-dark);
             font-size: 0.9rem;
         }
-
         .input-group input {
             width: 100%;
             padding: 12px;
@@ -108,25 +90,21 @@
             font-size: 0.95rem;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-
         .input-group input:focus {
             border-color: var(--color-primary-dark);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(31, 25, 47, 0.2); 
+            box-shadow: 0 0 0 2px rgba(31, 25, 47, 0.2);
         }
-        
         .grid-2-cols {
             display: grid;
             grid-template-columns: 1fr;
             gap: 15px;
         }
-
         @media (min-width: 600px) {
             .grid-2-cols {
                 grid-template-columns: 1fr 1fr;
             }
         }
-
         .btn-submit {
             width: 100%;
             padding: 14px;
@@ -140,16 +118,14 @@
             transition: background-color 0.3s, transform 0.1s;
             box-shadow: 0 4px 10px rgba(31, 25, 47, 0.3);
             text-transform: uppercase;
+            margin-top: 15px;
         }
-
         .btn-submit:hover {
             background-color: #0c0813;
         }
-        
         .btn-submit:active {
             transform: scale(0.99);
         }
-
         .back-link {
             display: block;
             margin-top: 25px;
@@ -165,10 +141,9 @@
 </head>
 <body>
 
-    <div class="login-box">
-        
+    <div class="reset-box">
+
         <div id="message-area">
-            <!-- Estrutura do Jinja para exibir as mensagens de alerta do Flask -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -179,19 +154,14 @@
                 {% endif %}
             {% endwith %}
         </div>
-        
-        <h2>Redefinir Senha</h2>
-        <p class="subtitle">Informe seu e-mail cadastrado e defina a nova senha.</p>
 
-        <!-- Ação do Formulário Aponta Direto para a Rota do Flask -->
+        <h2>Redefinir Senha</h2>
+        <p class="subtitle">Informe seu e-mail e defina a nova senha.</p>
+
         <form action="{{ url_for('nova_senha') }}" method="POST">
-            
-            <!-- Campo 'Nome Completo' removido para simplificar, mas o backend precisará ser ajustado -->
-            <input type="hidden" name="nome" value="PLACEHOLDER_FOR_BACKEND">
 
             <div class="input-group">
                 <label for="email">E-mail Cadastrado</label>
-                <!-- Repopula o campo em caso de erro de validação (necessário no Flask) -->
                 <input type="email" id="email" name="email" value="{{ email_for_form | default('') }}" required>
             </div>
 
@@ -211,12 +181,9 @@
             </div>
         </form>
 
-        <!-- Link de Voltar -->
         <a href="{{ url_for('login') }}" class="back-link">
             <i class="fas fa-arrow-left"></i> Voltar à tela de Login
         </a>
     </div>
-
-    <!-- O código JavaScript não é mais necessário aqui, pois a submissão é via Flask -->
 </body>
 </html>
