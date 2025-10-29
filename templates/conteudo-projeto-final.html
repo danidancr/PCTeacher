@@ -3,14 +3,13 @@
 {% block title %}Módulo 6: Projeto Final{% endblock %}
 
 {% block content_title %}
-    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final - Conclusão e Download
+    <i class="fas fa-rocket text-primary-indigo mr-2"></i> Módulo 6: Projeto Final
 {% endblock %}
 
 {% block content %}
     <div class="content-section">
         <h2 class="text-2xl font-semibold text-primary-indigo mb-4 flex items-center">
             <i class="fas fa-video mr-3"></i> Vídeo Aula: Montando e Avaliando o Projeto
-            <i class="fas fa-edit ml-auto text-yellow-500"></i>          
         </h2>
         <div class="video-container">
             <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -105,92 +104,4 @@
             </button>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('project-form-final');
-            // Seleciona todos os campos com a classe 'project-field'
-            const fields = form.querySelectorAll('.project-field'); 
-            const saveStatus = document.getElementById('project-save-feedback');
-            let timeout = null;
-            const SAVE_DELAY = 1500; // 1.5 segundos
-
-            /**
-             * Envia os dados do formulário via AJAX.
-             */
-            function autosave() {
-                const formData = new FormData(form);
-                const data = {};
-                for (let [key, value] of formData.entries()) {
-                    data[key] = value;
-                }
-
-                // 1. Indica que está salvando
-                saveStatus.textContent = 'Salvando...';
-                saveStatus.classList.remove('opacity-0', 'text-green-600', 'text-red-600');
-                saveStatus.classList.add('opacity-100', 'text-gray-500');
-
-                fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        // Importante para a rota Flask retornar JSON em vez de tentar redirecionar
-                        'Accept': 'application/json', 
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams(data)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        saveStatus.textContent = 'Salvo! ✅';
-                        saveStatus.classList.remove('text-gray-500', 'text-red-600');
-                        saveStatus.classList.add('text-green-600');
-                    } else {
-                        saveStatus.textContent = 'Erro ao salvar. ❌';
-                        saveStatus.classList.remove('text-gray-500', 'text-green-600');
-                        saveStatus.classList.add('text-red-600');
-                        console.error('Erro no autosave:', result.message);
-                    }
-                })
-                .catch(error => {
-                    saveStatus.textContent = 'Erro de conexão. ⚠️';
-                    saveStatus.classList.remove('text-gray-500', 'text-green-600');
-                    saveStatus.classList.add('text-red-600');
-                    console.error('Erro na requisição fetch:', error);
-                })
-                .finally(() => {
-                    // Oculta a mensagem após 3 segundos
-                    setTimeout(() => {
-                        saveStatus.classList.remove('opacity-100');
-                        saveStatus.classList.add('opacity-0');
-                    }, 3000);
-                });
-            }
-
-            /**
-             * Listener para disparar o autosave quando o usuário interage
-             */
-            fields.forEach(field => {
-                field.addEventListener('input', function() {
-                    // Limpa o timeout anterior (debounce)
-                    clearTimeout(timeout);
-                    // Define um novo timeout para salvar após o delay
-                    timeout = setTimeout(autosave, SAVE_DELAY);
-                });
-            });
-
-            // Opcional: Intercepta o salvamento manual para mostrar feedback
-            form.addEventListener('submit', function(e) {
-                // Executa o salvamento imediatamente ao clicar no botão
-                clearTimeout(timeout); 
-                autosave(); 
-                // Se você não quiser que a página recarregue ao clicar no botão 'Salvar Edições Finais',
-                // adicione e.preventDefault();
-                // e.preventDefault(); 
-            });
-        });
-    </script>
 {% endblock %}
