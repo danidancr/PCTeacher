@@ -495,41 +495,62 @@ def logout():
 # =========================================================
 @app.route('/nova_senha', methods=['GET', 'POST'])
 def nova_senha():
-    """
-    Reta para exibir o formulário (GET) e processar a redefinição de senha (POST).
-    """
     if request.method == 'POST':
         # 1. Obter dados do formulário
         email = request.form.get('email')
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
+        tem_erro = False
+        
+        try:
+            update_data = {}
+            
+            # 2. Checa e atualiza E-mail
+            if email != usuario['email']:
+                email_existente_query = db.collection('usuarios').where('email', '==', email).limit(1).stream()
+                email_existente = next(email_existente_query, None)
+                
+                if email_existente and email_existente.id != user_id:
+                    flash("Este novo e-mail já está em uso por outro usuário.", 'danger')
+                    tem_erro = True
+                else:
+                    update_data['email'] = email
+                    # Atualiza no Firebase Auth
+                    auth.update_user(user_id, email=email)
+                    
+            # 3. Processa a mudança de senha
+            if new_password:
+                if new_password != confirm_password:
+                    flash("As novas senhas digitadas não coincidem.", 'danger')
+                    tem_erro = True
+                elif len(new_password) < 6:
+                    flash("A nova senha deve ter no mínimo 6 caracteres.", 'danger')
+                    tem_erro = True
+                else:
+                    auth.update_user(user_id, password=new_password)
+                    update_data['senha_hash'] = generate_password_hash(new_password)
+                    flash("Senha atualizada com sucesso!", 'success')
 
-        # 2. Validação básica (campos vazios e correspondência de senhas)
-        if not email or not new_password or not confirm_password:
-            flash('Preencha todos os campos.', 'danger')
-            return render_template('recuperar_senha.html', email_for_form=email)
+            # 4. Atualiza dados básicos
+            update_data['nome'] = name
+            update_data['telefone'] = phone
+            update_data['instituicao'] = institution
+            
+            if not tem_erro and update_data:
+                # 5. Commit no Firestore
+                db.collection('usuarios').document(user_id).update(update_data)
+                
+                if not new_password:
+                    flash("Dados do perfil atualizados com sucesso!", 'success')
+            
+            return redirect(url_for('recuperar_senha'))
+                
+        except Exception as e:
+            flash(f"Ocorreu um erro inesperado ao salvar: {str(e)}", 'danger')
+            return render_template('recuperar_senha.html', user=usuario) 
 
-        if new_password != confirm_password:
-            flash('As senhas não correspondem. Por favor, digite-as novamente.', 'danger')
-            return render_template('recuperar_senha.html', email_for_form=email)
+    return render_template('recuperar_senha.html', user=usuario)
 
-        if len(new_password) < 6:
-            flash('A senha deve ter no mínimo 6 caracteres.', 'danger')
-            return render_template('recuperar_senha.html', email_for_form=email)
-
-        # 3. Chamar a função de atualização da senha (agora definida acima)
-        success, message = update_user_password(email, new_password)
-
-        if success:
-            flash(message, 'success')
-            # Redireciona para a tela de login após o sucesso
-            return redirect(url_for('login'))
-        else:
-            flash(message, 'danger')
-            # Mantém na mesma página em caso de erro
-            return render_template('recuperar_senha.html', email_for_form=email)
-
-    # Rota GET: Exibe o formulário de redefinição
     return render_template('recuperar_senha.html')
 
 # =========================================================
