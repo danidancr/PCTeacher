@@ -494,6 +494,31 @@ def logout():
 # 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (NOVAS)
 # =========================================================
 
+@app.route('/recuperar_senha', methods=['POST'])
+def recuperar_senha():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"message": "O campo 'email' é obrigatório."}), 400
+
+    try:
+        # **A FUNÇÃO CHAVE DO FIREBASE AUTH**
+        # Ela envia um email com o link de redefinição para o usuário.
+        auth.send_password_reset_email(email)
+
+        # Resposta de sucesso (NÃO informe se o e-mail existe ou não por questões de segurança)
+        return jsonify({
+            "message": "Se o e-mail estiver registrado, um link de recuperação de senha foi enviado."
+        }), 200
+
+    except firebase_admin.exceptions.FirebaseError as e:
+        # O Firebase Admin SDK não costuma levantar erros específicos de "e-mail não encontrado" 
+        # para a função de reset, garantindo que a resposta ao usuário seja sempre a mesma 
+        # (por segurança). Se houver um erro de conexão ou configuração, ele aparecerá aqui.
+        print(f"Erro ao enviar email de recuperação: {e}")
+        return jsonify({"message": "Erro ao processar a solicitação."}), 500
+    
 # =========================================================
 # 4.1 ROTAS DE RECUPERAÇÃO DE SENHA (CORRIGIDAS)
 # =========================================================
