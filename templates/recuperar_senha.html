@@ -3,175 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Definir Nova Senha - PC Teacher</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Recuperar Senha</title>
     <style>
-        /* ... Seu CSS permanece o mesmo ... */
-        :root {
-            --color-primary-dark: #1F192F;
-            --color-blue: #2D6073 ;
-            --color-text-light: #ffffff;
-            --color-success: #155724;
-            --color-error: #721c24;
-            --font-family: 'Poppins', sans-serif;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
-        /* ... (Resto do seu CSS) ... */
-        /* Novo estilo para o campo de e-mail desabilitado */
-        .input-group input:disabled {
-            background-color: #f4f4f4;
-            color: #777;
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none; /* Escondido por padrão */
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
 </head>
 <body>
 
-    <div class="reset-box">
+<div class="container">
+    <h2>🔒 Recuperação de Senha</h2>
 
-        <div id="message-area">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert {{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+    <div id="message"></div>
+
+    <form id="resetForm">
+        <p>Informe o e-mail associado à sua conta. Enviaremos um link seguro para você redefinir sua senha.</p>
+        
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com">
         </div>
+        
+        <button type="submit" id="submitBtn">Enviar Link de Recuperação</button>
+    </form>
 
-        <h2>Redefinir Senha</h2>
-        <p class="subtitle">Insira a nova senha para o seu e-mail.</p>
+    <a href="/login" class="back-link">Voltar para o Login</a>
+</div>
 
-        <form id="password-reset-form"> 
+<script>
+    document.getElementById('resetForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Impede o envio padrão do formulário
 
-            <div class="input-group">
-                <label for="email">E-mail de Redefinição</label>
-                <input type="email" id="email" name="email" value="" disabled> 
-            </div>
+        const email = document.getElementById('email').value;
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
 
-            <div class="grid-2-cols">
-                <div class="input-group">
-                    <label for="new-password">Nova Senha</label>
-                    <input type="password" id="new-password" name="new_password" placeholder="Mínimo 6 caracteres" minlength="6" required>
-                </div>
-                <div class="input-group">
-                    <label for="confirm-password">Confirmar Senha</label>
-                    <input type="password" id="confirm-password" name="confirm_password" placeholder="Repita a nova senha" minlength="6" required>
-                </div>
-            </div>
+        // Limpa mensagens anteriores
+        messageDiv.style.display = 'none';
+        messageDiv.className = '';
+        messageDiv.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
 
-            <div class="buttons-group">
-                <button type="submit" class="btn-submit" id="main-button">REDEFINIR SENHA</button>
-                <div id="loading-spinner" style="display:none; margin-top: 15px;">
-                    <i class="fas fa-spinner fa-spin"></i> Redefinindo...
-                </div>
-            </div>
-        </form>
-
-        <a href="{{ url_for('login') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i> Voltar à tela de Login
-        </a>
-    </div>
-
-    <script>
-        // Use a função para mostrar mensagens no template sem o Flask flash
-        function displayMessage(message, category) {
-            const area = document.getElementById('message-area');
-            area.innerHTML = `<div class="alert ${category}">${message}</div>`;
-        }
-
-        // =========================================================
-        // 🚨 Configuração do Firebase Client SDK (MUITO IMPORTANTE!)
-        // =========================================================
-        // Você precisa das chaves de configuração do seu projeto Firebase (apiKey, authDomain, etc.)
-        // Estas chaves NÃO são as chaves do Admin SDK, são as chaves públicas do seu app web.
-        // É seguro colocá-las aqui ou carregá-las de uma variável de ambiente pública.
-        const firebaseConfig = {
-            apiKey: "{{ FIREBASE_API_KEY }}", // Você precisa passar esta variável no Flask context
-            authDomain: "{{ FIREBASE_AUTH_DOMAIN }}", // Você precisa passar esta variável no Flask context
-            // ... outras chaves se necessário
-        };
-
-        // Inicializa o Firebase Client SDK
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const authClient = firebase.auth();
-        const form = document.getElementById('password-reset-form');
-        const newPasswordInput = document.getElementById('new-password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const emailInput = document.getElementById('email');
-        const submitButton = document.getElementById('main-button');
-        const loadingSpinner = document.getElementById('loading-spinner');
-
-        // 1. LER OS PARÂMETROS DA URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const actionCode = urlParams.get('oobCode'); // Este é o token do Firebase
-        const emailFromUrl = urlParams.get('email'); // O e-mail pode estar na URL
-
-        if (!actionCode) {
-            displayMessage("Link de redefinição inválido ou expirado. Tente novamente.", 'danger');
-            submitButton.disabled = true;
-        } else {
-            // Se o token existe, verifica o e-mail associado
-            emailInput.value = emailFromUrl || 'Buscando...';
-            
-            authClient.verifyPasswordResetCode(actionCode).then((email) => {
-                emailInput.value = email; // Define o e-mail no campo
-                submitButton.disabled = false;
-                displayMessage("E-mail verificado. Defina sua nova senha.", 'success');
-            }).catch((error) => {
-                console.error("Erro ao verificar o código:", error);
-                displayMessage("O código de redefinição é inválido ou expirou. Tente o processo novamente.", 'danger');
-                submitButton.disabled = true;
+        try {
+            // **IMPORTANTE**: Altere 'ENDERECO_DA_SUA_ROTA_FLASK' para a rota correta do seu Flask (ex: /recuperar_senha)
+            const response = await fetch('/recuperar_senha', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
             });
-        }
 
+            const data = await response.json();
 
-        // 2. Lógica de Submissão do Formulário
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+            if (response.ok) {
+                // Sucesso (A mensagem é sempre a mesma por segurança)
+                messageDiv.textContent = data.message || 'Verifique sua caixa de entrada. Um link de recuperação foi enviado.';
+                messageDiv.classList.add('success');
+            } else {
+                // Erro (se o Flask retornar 4xx ou 5xx)
+                messageDiv.textContent = data.message || 'Erro ao processar a solicitação. Tente novamente.';
+                messageDiv.classList.add('error');
+            }
             
-            const newPassword = newPasswordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            messageDiv.textContent = 'Erro de conexão com o servidor. Verifique sua rede.';
+            messageDiv.classList.add('error');
+        } finally {
+            messageDiv.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Link de Recuperação';
+        }
+    });
+</script>
 
-            if (newPassword !== confirmPassword) {
-                displayMessage("As novas senhas digitadas não coincidem.", 'danger');
-                return;
-            }
-            if (newPassword.length < 6) {
-                displayMessage("A nova senha deve ter no mínimo 6 caracteres.", 'danger');
-                return;
-            }
-
-            submitButton.style.display = 'none';
-            loadingSpinner.style.display = 'block';
-
-            authClient.confirmPasswordReset(actionCode, newPassword).then(() => {
-                displayMessage("✅ Senha redefinida com sucesso! Você será redirecionado em 3 segundos.", 'success');
-                // Após o sucesso, você pode querer chamar uma rota do Flask para limpar o cache ou registrar o evento
-                setTimeout(() => {
-                     // Redireciona para o login
-                    window.location.href = "{{ url_for('login') }}"; 
-                }, 3000);
-
-            }).catch((error) => {
-                console.error("Erro ao redefinir senha:", error);
-                // Exibe erro (ex: senha muito fraca, token inválido novamente)
-                let errorMessage = "Erro ao redefinir senha. Verifique se o código não expirou e a senha é válida.";
-                if (error.code === 'auth/weak-password') {
-                    errorMessage = "A senha é muito fraca. Escolha uma senha com pelo menos 6 caracteres.";
-                }
-                displayMessage(errorMessage, 'danger');
-                submitButton.style.display = 'block';
-                loadingSpinner.style.display = 'none';
-            });
-        });
-
-    </script>
 </body>
 </html>
